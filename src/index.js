@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// 1、引入Provider
+import { Provider } from 'react-redux'
+import store from '@/store/store'
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(
+    // 2、根组件使用Provider 标签包裹。那么我们下层组件可以通过react context 属性获取到传递的store 对象
+    <Provider store={store}>
+        <App />
+    </Provider>,
+    document.getElementById('root'),
+);
+                        
