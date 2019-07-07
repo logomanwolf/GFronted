@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
-class content extends Component {
-    state = {  }
-    render() { 
-        return ( 
-    <div>
-    <Row>
-      <Col span={18} push={6}>
-        col-18 col-push-6
-      </Col>
-      <Col span={6} pull={18}>
-        col-6 col-pull-18
-      </Col>
-    </Row>
-  </div>
+import ControlPanel from './controlPanel'
+import AutoComplete from "./autoComplete";
+class Content extends Component {
+  state = {}
+  render() {
+    return (
+      <div>
+        <Row>
+          <Col span={6} >
+            <Row className="left-side-row"><ControlPanel /></Row>        
+            <Row className="left-side-row"><AutoComplete/></Row>
+            <Row className="left-side-row"></Row>
+          </Col>
+          <Col span={18}>
+            
+          </Col>
+        </Row>
+      </div>
 
 
-         );
-    }
+    );
+  }
 }
  
-export default content;
+export default Content;
