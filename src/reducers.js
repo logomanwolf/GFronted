@@ -1,30 +1,35 @@
 import { combineReducers } from 'redux'
-import {user,hotel,} from './action'
 
 // 用户Reducer
-const toUser = (state = {}, action) => {
-    if (action.type === user.userId) {
+const updateNodes = (state = {}, action) => {
+    if (action.type === "updateNodes" ) {
         return Object.assign(state, {
-            'userID': action.text
+            'nodeMap': action.content
         });
     }
     return state;
 }
-
-// 酒店Reducer
-const toHotel = (state = {}, action) => {
-    if (action.type === hotel.roomId) {
+const updateNodeMap=(state = {}, action) => {
+    if (action.type === "updateNodeMap" ) {
         return Object.assign(state, {
-            'roomId': action.text
+            'nodeMap': action.content
         });
     }
     return state;
 }
-
+const addG=(state = {}, action) => {
+    if (action.type === "addG" ) {
+        return Object.assign(state, {
+            'g': action.content
+        });
+    }
+    return state;
+}
 // combineReducers 合并Reducer
 const reducer = combineReducers({
-    toUser,
-    toHotel,
+    updateNodes,
+    updateNodeMap,
+    addG
 });
 
 // 在这里，我们导出reducers， 并在store.js 文件导入获取该 最终达到reducer 对象
