@@ -20,6 +20,7 @@ class ForceGraph extends Component {
             container: canvas,
             data: data
         });
+        console.log(g)
          // eslint-disable-next-line
         const force = new d3Force({
             width: canvas.width,

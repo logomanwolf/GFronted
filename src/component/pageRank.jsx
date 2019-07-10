@@ -1,5 +1,6 @@
 import React from 'react'
-import { Card,List, } from 'antd';
+import { Card, List, } from 'antd';
+import { connect } from 'react-redux';
 const PageRank = () => {
     const listItem = ['aaa', 'bbb', 'ccc'];
     return ( 
@@ -10,5 +11,15 @@ const PageRank = () => {
             </Card></div>
      );
 }
+const mapStateToProps = (state, ownProps) => {
+    const pageRank = state.addPagerRank.pageRank;
+    console.log(pageRank);
+    return {
+        pageRank
+    }
+} 
+const Connects = connect(
+    mapStateToProps
+)(PageRank)
  
-export default PageRank;
+export default Connects;

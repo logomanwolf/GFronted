@@ -25,11 +25,20 @@ const addG=(state = {}, action) => {
     }
     return state;
 }
+const addPagerRank = (state = {}, action) => {
+    if (action.type === "addPagerRank" ) {
+        return Object.assign(state, {
+            'pageRank': action.content
+        });
+    }
+    return state;
+}
 // combineReducers 合并Reducer
 const reducer = combineReducers({
     updateNodes,
     updateNodeMap,
-    addG
+    addG,
+    addPagerRank
 });
 
 // 在这里，我们导出reducers， 并在store.js 文件导入获取该 最终达到reducer 对象
