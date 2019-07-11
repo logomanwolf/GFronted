@@ -9,7 +9,7 @@ class Content extends Component {
   render() {
     return (
       <Col span={24} >
-        <Row style={{borderWidth:1,borderStyle:"solid",width:"1760px",height:"990px"}}>
+        <Row style={{borderWidth:1,borderStyle:"solid",width:"1920px",height:"1080px"}}>
           <Col span={6} >
             <Row className="left-side-row"><ControlPanel /></Row>        
             <Row className="left-side-row"><AutoComplete/></Row>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'antd';
+import { Card ,Row,Col} from 'antd';
 // import  data from "../data/data";
 import ForceGraph from './forceGraph'
 const Canvas = () => {
@@ -8,9 +8,10 @@ const Canvas = () => {
         <div>
             <Card bordered={true}
                 style={{ marginTop: "20px",marginRight: "20px" }}
-                size={"small"} className="canvas" >
+                size={"small"} >
                 {/* {data.nodes[0].id} */}
-                <ForceGraph/>
+                <Col span={20}><ForceGraph /></Col>
+                <Col span={4}><img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" className="heatmap" /></Col>
             </Card>
         </div>
     );

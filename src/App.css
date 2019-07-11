@@ -9,6 +9,11 @@
   padding: 20px;
   /* margin: 0px 0px 0px 0px */
 }
-.canvas {
-  
+.heatmap{
+  z-index: 100;
+  background: #1DA57A;
+  height:200;
+  position: absolute;
+  right:80px; 
+  top:80px;
 }
