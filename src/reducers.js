@@ -1,17 +1,25 @@
 import { combineReducers } from 'redux'
 
-// 用户Reducer
-const updateNodes = (state = {}, action) => {
-    if (action.type === "updateNodes" ) {
-        return Object.assign(state, {
-            'nodeMap': action.content
+// 更改数据使得，点击选择search后，canvas中相应节点颜色发生变化
+const alterData = (state = {}, action) => {
+    if (action.type === "alterData" ) {
+        return Object.assign({},state, {
+            'id': action.content
+        });
+    }
+    return state;
+}
+const addCommunityDetect = (state = {}, action) => {
+    if (action.type === "addCommunityDetect" ) {
+        return Object.assign({},state, {
+            'community': action.content
         });
     }
     return state;
 }
 const updateNodeMap=(state = {}, action) => {
     if (action.type === "updateNodeMap" ) {
-        return Object.assign(state, {
+        return Object.assign({},state, {
             'nodeMap': action.content
         });
     }
@@ -19,26 +27,28 @@ const updateNodeMap=(state = {}, action) => {
 }
 const addG=(state = {}, action) => {
     if (action.type === "addG" ) {
-        return Object.assign(state, {
+        return Object.assign({},state, {
             'g': action.content
         });
     }
     return state;
 }
-const addPagerRank = (state = {}, action) => {
-    if (action.type === "addPagerRank" ) {
-        return Object.assign(state, {
+const addPageRank = (state = {}, action) => {
+    if (action.type === "addPageRank" ) {
+        return Object.assign({},state, {
             'pageRank': action.content
         });
     }
     return state;
 }
+
 // combineReducers 合并Reducer
 const reducer = combineReducers({
-    updateNodes,
+    alterData,
     updateNodeMap,
     addG,
-    addPagerRank
+    addPageRank,
+    addCommunityDetect
 });
 
 // 在这里，我们导出reducers， 并在store.js 文件导入获取该 最终达到reducer 对象

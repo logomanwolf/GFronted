@@ -4,6 +4,8 @@ import createAction from '../actions';
 import { connect } from 'react-redux'
 class ForceGraph extends Component {
     state = {}
+    g = {}
+    force={}
     // G=require('../utils/G.js')
     constructor(){
         super();
@@ -16,32 +18,50 @@ class ForceGraph extends Component {
         const { addG } = this.props;
         var gl = canvas.getContext('webgl2');
          // eslint-disable-next-line
-        const g = new G({
+        this.g = new G({
             container: canvas,
             data: data
         });
-        console.log(g)
+        console.log(this.g)
          // eslint-disable-next-line
-        const force = new d3Force({
+        this.force = new d3Force({
             width: canvas.width,
             height: canvas.height
         });
-        addG(g.data());   
-        force.data(g.data());
-        force.start()
-        force.onTick(() => {
-            g.draw()
-        })
+        addG(this.g.data());   
+        this.force.data(this.g.data());
+        this.force.start()
+        this.force.onTick(() => {
+            this.g.draw()
+        });
         
     }
+    componentWillReceiveProps(newProps) {
+        const { id } = newProps;
+        if (id !== undefined && id !== null) {
+            console.log(id)
+            this.g.getNodeById(id).style({ fill: '#FFC125' });
+            this.force.data(this.g.data());
+            this.g.draw();
+            // this.force.start()
+            // this.force.onTick(() => {
+            //     this.g.draw()
+            // });
+        }
+  }
     render() { 
         return (
-            <canvas ref={this.canvas} width="1200" height="700" >
-                您的浏览器不支持canvas，请更换浏览器.
-            </canvas>
+            <canvas ref={this.canvas} width="1400px" height="920px"  />
+                
         );
     }
-    
+}
+const mapStateToProps = (state, ownProps) => {
+    const {id} =state.alterData
+    console.log(id);
+    return {
+       id
+    }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {
     return{
@@ -50,6 +70,6 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         },
     }
 } 
-const Content=connect( () => ({}),mapDispatchToProps)(ForceGraph)
+const Content=connect(mapStateToProps,mapDispatchToProps)(ForceGraph)
 export default Content;
  

@@ -6,7 +6,9 @@ const Canvas = () => {
     
     return (
         <div>
-            <Card bordered={true} style={{ background: '#ECECEC', margin: "25px 10px 10px 10px"  }} size={"small"} className="canvas" >
+            <Card bordered={true}
+                style={{ margin: "20px" }}
+                size={"small"} className="canvas" >
                 {/* {data.nodes[0].id} */}
                 <ForceGraph/>
             </Card>

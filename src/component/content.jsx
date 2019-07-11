@@ -8,9 +8,9 @@ class Content extends Component {
   state = {}
   render() {
     return (
-      <div>
-        <Row>
-          <Col span={4} >
+      <div   >
+        <Row style={{borderWidth:1,borderStyle:"solid",width:"1760px",height:"990px"}}>
+          <Col span={6} >
             <Row className="left-side-row"><ControlPanel /></Row>        
             <Row className="left-side-row"><AutoComplete/></Row>
             <Row className="left-side-row"><PageRank/></Row>

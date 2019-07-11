@@ -1,25 +1,26 @@
 import React from 'react'
 import { Card, List, } from 'antd';
 import { connect } from 'react-redux';
-const PageRank = () => {
-    const listItem = ['aaa', 'bbb', 'ccc'];
+const PageRank = ({pageRank}) => {
+    const listItem = pageRank;
     return ( 
         <div>
-            <Card title="Page Rank" bordered={true} style={{ width: 250 }} size={"small"} >
-                <List dataSource={listItem} renderItem={(item, index) => (<List.Item>{index},{item}</List.Item>)} size="small">
+            <Card title="Page Rank" bordered={true} style={{ width: 300, }} size={"small"} >
+                <List dataSource={listItem} renderItem={(item, index) => (<List.Item>{item[0]}</List.Item>)} size="small"style={{overflow:"auto",maxHeight:"400px"}}>
                 </List>
             </Card></div>
      );
 }
 const mapStateToProps = (state, ownProps) => {
-    const pageRank = state.addPagerRank.pageRank;
+    const pageRank = state.addPageRank.pageRank;
+    // const pageRank = [1]
     console.log(pageRank);
     return {
         pageRank
     }
 } 
-const Connects = connect(
+const C = connect(
     mapStateToProps
 )(PageRank)
  
-export default Connects;
+export default C;

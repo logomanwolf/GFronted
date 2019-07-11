@@ -1,39 +1,73 @@
 import React from 'react';
-import { Card, Button } from 'antd';
+import { Card, Button,Form,Input,Icon } from 'antd';
 import createAction from '../actions';
 import { connect } from 'react-redux'
-import { getPageRank } from '../settings/settings.js'
-const ControlPanel = ({ addPagerRank }) => {
+import { getPageRank,getCommunityDetect } from '../settings/settings.js'
+const ControlPanel = ({ addPageRank,addCommunityDetect }) => {
     const handleAddPagerRank = () => {
-        fetch(getPageRank,{
-            method: "GET",
+        fetch(getPageRank, {
+            method: "POST",
             mode: "cors",
-            headers: {'Accept': 'application/json,text/plain,*/*','Content-Type': 'application/x-www-form-urlencoded',}   
+            // headers: { 'Accept': 'application/json,text/plain,*/*' }   ,
         }).then(r => {
-        console.log(r.body);
-        return r.json();
-      })
-      .then(response => {
-        console.log("get data finished!");
-        console.log(response);
-          addPagerRank(response);
-      });
+            return r.json();
+        })
+            .then(response => {
+                console.log("get data finished!");
+                // console.log(response);
+                addPageRank(response);
+            });
     }
+    const handleShortestPath = () => {
+        
+    }
+    const handleCommunityDetect= () => {
+        fetch(getCommunityDetect, {
+            method: "POST",
+            mode: "cors",
+            // headers: { 'Accept': 'application/json,text/plain,*/*' }   ,
+        }).then(r => {
+            return r.json();
+        })
+            .then(response => {
+                console.log("get data finished!");
+                addCommunityDetect(response);
+                // console.log(response);
+                // addPageRank(response);
+            });
+    }
+
     return (
         <div>
-            <Card title="Control Panel" bordered={true} style={{ width: 250 }} size={"small"} >
-                <Button.Group size="small">
-                    <Button style={{marginBlockStart: 5}} >社团检测</Button><br/>
-                    <Button style={{marginBlockStart:5}} onClick={handleAddPagerRank}>节点排序</Button><br />
-                    <Button style={{marginBlockStart:5}}>最短路径</Button><br/>
+            <Card title="Control Panel" bordered={true}size={"small"} >
+                <Button.Group>
+                    <Button style={{ marginBlockStart: 8 }} onClick={handleCommunityDetect}>社团检测</Button><br/>
+                    <Button style={{marginBlockStart:8}} onClick={handleAddPagerRank}>节点排序</Button><br />
+                    <Button style={{marginBlockStart:8}}>最短路径</Button><br/>
                 </Button.Group>
-            </Card></div>
+                <Form layout="inline" onSubmit={handleShortestPath} style={{marginBlockStart:8}} >
+                    <Form.Item size="small">
+                        <Input placeholder="From" style={{width:70}} />
+                    </Form.Item>
+                    
+                    <Form.Item >
+                        <Input placeholder="To" style={{width:70}}/>
+                        </Form.Item>
+                    <Form.Item>
+                        <Button type="primary">submit</Button>
+                    </Form.Item>
+                </Form>
+            </Card>
+        </div>
     );
 }
 const mapDispatchToProps = (dispatch,ownProps) => {
     return{
-        addPagerRank:pageRank => {
-            dispatch(createAction("addPagerRank",pageRank));
+        addPageRank:pageRank => {
+            dispatch(createAction("addPageRank",pageRank));
+        },
+        addCommunityDetect:community=> {
+            dispatch(createAction("addCommunityDetect",community));
         },
     }
 } 

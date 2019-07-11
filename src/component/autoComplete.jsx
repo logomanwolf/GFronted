@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Input, AutoComplete, List, Avatar, Card,Typography } from 'antd';
 import { connect } from 'react-redux' 
+import createAction from '../actions';
 const dataSource = ["Anzelma", "Babet", "Bamatabois"];
+
 class autoComplete extends Component {
     state = { innerData: [] };    
     render() { 
         const { innerData } = this.state;
-        const { g } = this.props;
+        const { g ,alterData} = this.props;
         const searchNode = (g, value) => {
             let tempData = [];
             if (g.g.getNodeById(value) !== null) 
@@ -19,28 +21,16 @@ class autoComplete extends Component {
             }
             return tempData;
         }
-        const searchEdge = (g,value) => {
-            let tempData = [];
-            if (g.g.getEdgesByAttribute("source", value) !== null || g.g.getEdgesByAttribute("target", value) !== null) {
-                const a = g.g.getEdgesByAttribute("source", value).toArray();
-                const b = g.g.getEdgesByAttribute("target", value).toArray();
-                a.forEach(item => {
-                    tempData.push({ restWord: "-"+item.target, type:"edge",keyWord:value,kfirst:true});
-                })
-                b.forEach(item => {
-                    tempData.push({ restWord: item.source+"-", type:"edge",keyWord:value,kfirst:false});
-                })
-            }
-            return tempData;
-        }
         const onSearch = (value, event) => {
             // const data = [{ title: 'Ant Design Title 1', }, { title: 'Ant Design Title 2', }, { title: 'Ant Design Title 3', }, { title: 'Ant Design Title 4', },];
             //  
-            let tempData = [];
-            const innerData=tempData.concat(searchNode(g, value), searchEdge(g, value));
+            const innerData=searchNode(g, value);
             this.setState({ innerData: innerData });           
         }
-        return (<Card title="Search Bar" bordered={true} style={{ width: 260 }} size={"small"} >
+        const handleClickA = (value) => {
+            alterData(value);
+        }
+        return (<Card title="Search Bar" bordered={true} style={{ width: 300 }} size={"small"} >
             
         < AutoComplete style={
             { width: 230 }
@@ -65,11 +55,11 @@ class autoComplete extends Component {
                         itemLayout="horizontal"
                         dataSource={innerData}
                         renderItem={item => (
-                            <List.Item>
+                            <List.Item size="small">
                                 <List.Item.Meta
                                     avatar={<Avatar icon={item.type === "node" ? "dot-chart" : "line-chart"} />}
-                                    title={item.kfirst ? <div><Typography.Text mark>{item.keyWord}</Typography.Text><Typography.Text strong>{item.restWord}</Typography.Text></div>
-                                        : <div><Typography.Text strong>{item.restWord}</Typography.Text><Typography.Text mark>{item.keyWord}</Typography.Text></div>}
+                                    title={item.kfirst ? <a onClick={()=>{handleClickA(item.title)}} ><Typography.Text mark>{item.keyWord}</Typography.Text><Typography.Text strong>{item.restWord}</Typography.Text></a>
+                                        : <a><Typography.Text strong>{item.restWord}</Typography.Text><Typography.Text mark>{item.keyWord}</Typography.Text></a>}
                                     description={
                                         item.type === "node" ? <div><Typography.Text strong>group:</Typography.Text> {item.attr.group}</div> : null}
                                 // <p>group:{item.attr.group}</p><p>group:{item.attr.group}</p> 
@@ -89,11 +79,17 @@ const mapStateToProps = (state, ownProps) => {
     return {
        g
     }
-   
 }
+const mapDispatchToProps = (dispatch,ownProps) => {
+    return{
+        alterData:id => {
+            dispatch(createAction("alterData",id));
+        },
+    }
+} 
 
 const Connects = connect(
-    mapStateToProps
+    mapStateToProps,mapDispatchToProps
 )(autoComplete)
  
 export default Connects;

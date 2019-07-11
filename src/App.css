@@ -6,11 +6,9 @@
   font-size: 16px;
 }
 .left-side-row {
-  padding: 30px 10px 10px 50px;
+  padding: 20px;
   /* margin: 0px 0px 0px 0px */
 }
 .canvas {
-  width: 1300px;
-  height: 800px;
-  
+  width:1425px;
 }
