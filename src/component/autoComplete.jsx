@@ -30,7 +30,7 @@ class autoComplete extends Component {
         const handleClickA = (value) => {
             alterData(value);
         }
-        return (<Card title="Search Bar" bordered={true} style={{ width: 300 }} size={"small"} >
+        return (<Card title="Search Bar" bordered={true} size={"small"} >
             
         < AutoComplete style={
             { width: 230 }

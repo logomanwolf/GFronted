@@ -7,7 +7,7 @@ const Canvas = () => {
     return (
         <div>
             <Card bordered={true}
-                style={{ margin: "20px" }}
+                style={{ marginTop: "20px",marginRight: "20px" }}
                 size={"small"} className="canvas" >
                 {/* {data.nodes[0].id} */}
                 <ForceGraph/>

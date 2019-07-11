@@ -51,7 +51,7 @@ class ForceGraph extends Component {
   }
     render() { 
         return (
-            <canvas ref={this.canvas} width="1400px" height="920px"  />
+            <canvas ref={this.canvas} width="1200px" height="920px"  />
                 
         );
     }

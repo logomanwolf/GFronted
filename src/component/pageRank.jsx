@@ -5,7 +5,7 @@ const PageRank = ({pageRank}) => {
     const listItem = pageRank;
     return ( 
         <div>
-            <Card title="Page Rank" bordered={true} style={{ width: 300, }} size={"small"} >
+            <Card title="Page Rank" bordered={true} size={"small"} >
                 <List dataSource={listItem} renderItem={(item, index) => (<List.Item>{item[0]}</List.Item>)} size="small"style={{overflow:"auto",maxHeight:"400px"}}>
                 </List>
             </Card></div>

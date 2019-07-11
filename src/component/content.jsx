@@ -8,7 +8,7 @@ class Content extends Component {
   state = {}
   render() {
     return (
-      <div   >
+      <Col span={24} >
         <Row style={{borderWidth:1,borderStyle:"solid",width:"1760px",height:"990px"}}>
           <Col span={6} >
             <Row className="left-side-row"><ControlPanel /></Row>        
@@ -19,7 +19,7 @@ class Content extends Component {
             <Canvas />
           </Col>
         </Row>
-      </div>
+      </Col>
 
 
     );
