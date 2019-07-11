@@ -43,12 +43,8 @@ class ForceGraph extends Component {
             this.g.getNodeById(id).style({ fill: '#FFC125' });
             this.force.data(this.g.data());
             this.g.draw();
-            // this.force.start()
-            // this.force.onTick(() => {
-            //     this.g.draw()
-            // });
         }
-  }
+    }
     render() { 
         return (
             <canvas ref={this.canvas} width="1380px" height="1000px"  />

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, List, } from 'antd';
 import { connect } from 'react-redux';
 class PageRank extends Component {
-    state = { key: 'tab1' }
+    state = { key: 'tab2' }
     onTabChange = (key, type) => {
         console.log(key, type);
         this.setState({ [type]: key });
