@@ -39,7 +39,7 @@ const ControlPanel = ({ addPageRank,addCommunityDetect }) => {
 
     return (
         <div>
-            <Card title="Control Panel" bordered={true}size={"small"} type="inner" >
+            <Card title="Control Panel" bordered={true} size={"small"} type="inner" >
                 <Button.Group>
                     <Button style={{ marginBlockStart: 8 }} onClick={handleCommunityDetect}>社团检测</Button><br/>
                     <Button style={{marginBlockStart:8}} onClick={handleAddPagerRank}>节点排序</Button><br />

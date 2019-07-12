@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 class ForceGraph extends Component {
     state = {}
     g = {}
-    force={}
+    force = {}
+    lastId=undefined
     // G=require('../utils/G.js')
     constructor(){
         super();
@@ -40,7 +41,10 @@ class ForceGraph extends Component {
         const { id } = newProps;
         if (id !== undefined && id !== null) {
             console.log(id)
+            if(this.lastId!==undefined)
+            this.g.getNodeById(this.lastId).style({fill: '#000000' });
             this.g.getNodeById(id).style({ fill: '#FFC125' });
+            this.lastId = id;
             this.force.data(this.g.data());
             this.g.draw();
         }

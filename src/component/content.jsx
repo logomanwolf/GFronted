@@ -11,9 +11,9 @@ class Content extends Component {
       <Col span={24} >
         <Row style={{borderWidth:1,borderStyle:"solid",width:"1920px",height:"1080px"}}>
           <Col span={6} >
-            <Row className="left-side-row"><ControlPanel /></Row>        
-            <Row className="left-side-row"><AutoComplete/></Row>
-            <Row className="left-side-row"><PageRank/></Row>
+            <Row className="left-side-row" align="middle"><ControlPanel /></Row>        
+            <Row className="left-side-row"align="middle"><AutoComplete/></Row>
+            <Row className="left-side-row" align="middle"><PageRank/></Row>
           </Col>
           <Col span={18}>
             <Canvas />

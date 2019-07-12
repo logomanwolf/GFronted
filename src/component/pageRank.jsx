@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Card, List, } from 'antd';
+import { Card, List } from 'antd';
 import { connect } from 'react-redux';
+import pic from './img/barchart.PNG'
 class PageRank extends Component {
     state = { key: 'tab2' }
     onTabChange = (key, type) => {
@@ -10,11 +11,16 @@ class PageRank extends Component {
     render() { 
         const listItem = this.props.pageRank;
         const contentList = {
-            tab1: <p>content1</p>,
-            tab2: <Card title="Page Rank" bordered={true} size={"small"} type="inner">
-            <List dataSource={listItem} renderItem={(item, index) => (<List.Item>{item[0]}</List.Item>)} size="small"style={{overflow:"auto",maxHeight:"400px"}}>
-            </List>
-        </Card>,
+            tab1: <Card
+                cover={<img alt="example" src={pic}/>}
+                style={{overflow:"auto"}} 
+            >
+                <Card.Meta title="Europe Street beat" style={{ textAlign: "center", padding: 0 }} />
+            </Card>
+            , tab2: <Card title="Page Rank" bordered={true} size={"small"} type="inner">
+                <List dataSource={listItem} renderItem={(item, index) => (<List.Item>{item[0]}</List.Item>)} size="small" style={{ overflow: "auto", height: "250px" }}>
+                </List>
+            </Card>,
             tab3: <p>content3</p>,
           };
         return ( 
@@ -35,10 +41,10 @@ class PageRank extends Component {
                     onTabChange={key => {
                         this.onTabChange(key, 'key');
                     }}
-            >
+                >
                 {contentList[this.state.key]}
-      </Card>
-        </div>
+                </Card>
+            </div>
         
          );
     }
