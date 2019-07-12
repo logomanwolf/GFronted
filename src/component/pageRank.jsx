@@ -3,7 +3,7 @@ import { Card, List ,Collapse,Avatar } from 'antd';
 import { connect } from 'react-redux';
 import pic from './img/barchart.PNG'
 class PageRank extends Component {
-    state = { key: 'tab2' }
+    state = { key: 'tab1' }
     onTabChange = (key, type) => {
         console.log(key, type);
         this.setState({ [type]: key });
@@ -11,19 +11,21 @@ class PageRank extends Component {
     render() { 
         const listItem = this.props.pageRank;
         const contentList = {
-            tab1: <Card
+            tab1:
+                <Card
                 cover={<img alt="example" src={pic}/>}
                 style={{overflow:"auto"}} 
             >
                 <Card.Meta title="Europe Street beat" style={{ textAlign: "center", padding: 0,border:0 }} />
             </Card>
-            , tab2: <Card title="Page Rank" bordered={true} size={"small"} type="inner">
-                <List dataSource={listItem} renderItem={(item, index) => (<List.Item>{item[0]}</List.Item>)} size="small" style={{ overflow: "auto", height: "250px" }}>
-                </List>
-            </Card>,
+            , tab2:
+                <Card title="Page Rank" bordered={false} size={"small"} type="inner" >
+                    <List dataSource={listItem} renderItem={(item, index) => (<List.Item>{item[0]}</List.Item>)} size="small" style={{ overflow: "auto", height: "250px" }}>
+                    </List>
+                </Card>,
             tab3:
-                <Card bordered={true} size={"small"} type="inner">
-                    <Collapse defaultActiveKey={['1']} onChange="">
+                
+                <Collapse defaultActiveKey={['1']} onChange="">
                     <Collapse.Panel header="This is panel header 1" key="1">
                     <List.Item>
                             <List.Item.Meta
@@ -40,21 +42,20 @@ class PageRank extends Component {
                         <p></p>
                     </Collapse.Panel>
                 </Collapse>
-            </Card>,
+           
           };
         return ( 
             <div>
-            
                 <Card style={{ width: '100%' }} size="small" tabList={[
                     {
                         key: 'tab1',
-                        tab: 'statistic panel',
+                        tab: 'Statistic Panel',
                     }, {
                         key: 'tab2',
-                        tab: 'list panel',
+                        tab: 'List Panel',
                     }, {
                         key: 'tab3',
-                        tab: 'detail panel',
+                        tab: 'Detail Panel',
                     },]}
                     activeTabKey={this.state.key}
                     onTabChange={key => {

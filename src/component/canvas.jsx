@@ -12,8 +12,7 @@ const Canvas = () => {
                 size={"small"} >
                 {/* {data.nodes[0].id} */}
                 <Col span={20}>
-                    <ForceGraph />
-                    
+                    <ForceGraph />    
                 </Col>
                 <Col span={4}><Card className="heatmap" cover={
                     <img alt="example" src={pic} />

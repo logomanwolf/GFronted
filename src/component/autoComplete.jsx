@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
-import { Input, AutoComplete, List, Avatar, Card,Typography } from 'antd';
+import { Input, AutoComplete, List, Avatar, Card,Typography,Tag ,Row,Col } from 'antd';
 import { connect } from 'react-redux' 
 import createAction from '../actions';
 const dataSource = ["Anzelma", "Babet", "Bamatabois"];
-
+const tagsFromServer = ['Movies', 'Books','Musics'];
 class autoComplete extends Component {
-    state = { innerData: [] };    
+    state = { innerData: [], selectedTags: [], };    
+    handleTagChange(tag, checked) {
+        const { selectedTags } = this.state;
+        const nextSelectedTags = checked ? [...selectedTags, tag] : selectedTags.filter(t => t !== tag);
+        console.log('You are interested in: ', nextSelectedTags);
+        this.setState({ selectedTags: nextSelectedTags });
+      }
     render() { 
-        const { innerData } = this.state;
+        const { innerData,selectedTags  } = this.state;
         const { g ,alterData} = this.props;
         const searchNode = (g, value) => {
             let tempData = [];
@@ -30,24 +36,19 @@ class autoComplete extends Component {
         const handleClickA = (value) => {
             alterData(value);
         }
-        return (<Card title="Search Bar" bordered={true} size={"small"} >
-            
-        < AutoComplete style={
-            { width: 230 }
-        }
-            dataSource={
-                dataSource
-            }
-            placeholder="try to type `b`"
-            filterOption={
-                (inputValue, option) =>
-                    option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-            } >
-                < Input.Search onSearch={onSearch} allowClear={true}
-                    // onBlur={() => {
-                    // this.setState({ innerData: [] })
-                    // }}
-                /></AutoComplete >
+        return (
+            <Card title="Search Bar" bordered={true} size={"small"} style={{ height: "120px", overflow: "auto" }}>
+                <Row>
+                    <Col span={12}>
+                        < AutoComplete  dataSource={dataSource} placeholder="try to type `b`" filterOption={(inputValue, option) =>option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1} >
+                            < Input.Search onSearch={onSearch} allowClear={true} />
+                        </AutoComplete >
+                    </Col>
+                    <Col span={12}>
+                        <h6 style={{ display: "inline" ,lineHeight:"32px" }}>Categories:</h6>{tagsFromServer.map(tag => (
+                            <Tag.CheckableTag style={{display:"inline",margin:"0 0 0 6px", padding:"0px"}} key={tag} checked={selectedTags.indexOf(tag) > -1} onChange={checked => this.handleTagChange(tag, checked)}>{tag}</Tag.CheckableTag>))}
+                    </Col>
+                </Row>
             {
                 innerData.length !== 0 ?
                     <List
