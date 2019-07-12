@@ -17,3 +17,9 @@
   right:80px; 
   top:80px;
 }
+.wedget{
+  z-index: 110;
+  position: absolute;
+  right:100px; 
+  top:80px;
+}
