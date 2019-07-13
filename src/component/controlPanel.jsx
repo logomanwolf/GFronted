@@ -124,7 +124,8 @@ class ControlPanel extends Component {
                                     <Radio value={2}>hirarchy</Radio>
                                 </Radio.Group>
                             </Col>
-                        </Row>  
+                            </Row>
+                            
                     </Card>
                 </Row>
             </Card>

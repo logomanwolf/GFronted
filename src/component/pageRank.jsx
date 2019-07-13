@@ -46,7 +46,7 @@ class PageRank extends Component {
           };
         return ( 
             <div>
-                <Card style={{ width: '100%' }} size="small" tabList={[
+                <Card style={{ width: '100%' ,height:"405px"}} size="small" tabList={[
                     {
                         key: 'tab1',
                         tab: 'Statistic Panel',
