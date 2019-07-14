@@ -11,17 +11,19 @@
 }
 .heatmap{
   z-index: 100;
-  background: #1DA57A;
-  height:200;
+  height:300px;
+  width:300px;
   position: absolute;
-  right:30px; 
-  top:30px;
+  right:90px; 
+  top:20px;
 }
-.wedget{
-  z-index: 110;
+#wedget{
+  z-index: 100;
+  height:300px;
+  width:300px;
   position: absolute;
-  right:100px; 
-  top:80px;
+  right:-20px; 
+  top:690px;   
 }
 .defaultButton{
   margin-top:10px

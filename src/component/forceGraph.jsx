@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import data from '../data/data';
 import createAction from '../actions';
 import { connect } from 'react-redux'
+import colorMap from '../settings/colorMap';
 class ForceGraph extends Component {
     state = {}
     g = {}
@@ -38,7 +39,7 @@ class ForceGraph extends Component {
         
     }
     componentWillReceiveProps(newProps) {
-        const { id } = newProps;
+        const { id, community } = newProps;
         if (id !== undefined && id !== null) {
             console.log(id)
             if(this.lastId!==undefined)
@@ -46,6 +47,13 @@ class ForceGraph extends Component {
             this.g.getNodeById(id).style({ fill: '#FFC125' });
             this.lastId = id;
             this.force.data(this.g.data());
+            this.g.draw();
+        }
+        if (community !== undefined) {
+            for(var key in community){
+                this.g.getNodeById(key).attrs["group"]=community[key]   ;
+                this.g.getNodeById(key).style({ fill: colorMap[community[key]] });
+            }
             this.g.draw();
         }
     }
@@ -56,10 +64,11 @@ class ForceGraph extends Component {
     }
 }
 const mapStateToProps = (state, ownProps) => {
-    const {id} =state.alterData
+    const { id } = state.alterData
+    const {community}=state.addCommunityDetect
     console.log(id);
     return {
-       id
+       id,community
     }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {

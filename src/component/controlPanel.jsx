@@ -58,7 +58,7 @@ class ControlPanel extends Component {
             console.log('click', e);
           }
         return ( 
-<div>
+        <div>
             <Card title="Control Panel" bordered={true} size={"small"} type="inner" >
                 <Row>
                     <Card
@@ -121,7 +121,7 @@ class ControlPanel extends Component {
                             <Col span={12}>
                                 <Radio.Group onChange={e => { console.log('radio checked', e.target.value);this.setState({ value: e.target.value,}); }} value={this.state.value}>
                                     <Radio value={1}>node-link</Radio>
-                                    <Radio value={2}>hirarchy</Radio>
+                                    <Radio value={2}>hierarchy</Radio>
                                 </Radio.Group>
                             </Col>
                             </Row>
