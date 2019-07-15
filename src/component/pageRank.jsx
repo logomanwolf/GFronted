@@ -14,7 +14,9 @@ class PageRank extends Component {
             tab1:
                 <Card
                 cover={<img alt="example" src={pic}/>}
-                style={{overflow:"auto"}} 
+                    style={{ overflow: "auto" }
+                    }
+                    size="small"
             >
                 <Card.Meta title="Europe Street beat" style={{ textAlign: "center", padding: 0,border:0 }} />
             </Card>
@@ -25,7 +27,7 @@ class PageRank extends Component {
                 </Card>,
             tab3:
                 
-                <Collapse defaultActiveKey={['1']} onChange="">
+                <Collapse defaultActiveKey={['1']} onChange=""  >
                     <Collapse.Panel header="This is panel header 1" key="1">
                     <List.Item>
                             <List.Item.Meta

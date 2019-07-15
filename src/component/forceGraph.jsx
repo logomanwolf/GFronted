@@ -24,7 +24,7 @@ class ForceGraph extends Component {
             container: canvas,
             data: data
         });
-        console.log(this.g)
+        
          // eslint-disable-next-line
         this.force = new d3Force({
             width: canvas.width,
@@ -36,26 +36,50 @@ class ForceGraph extends Component {
         this.force.onTick(() => {
             this.g.draw()
         });
+        this.force.onEnd(() => {
+            console.log("draw finish");
+            this.g.initSearchIndice();
+            this.g.initInteraction();
+            this.g.on('mouseOver', el => {
+                const oldStyle = el.style();
+                // const oldR=oldStyle.r
+                const newStyle={...oldStyle,r:12,fill:"red"}
+                el.style(newStyle);
+                this.g.draw()
+            })
+            // var content = JSON.stringify(this.g.nodes().toArray());
+            // var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+            // eslint-disable-next-line
+            // saveAs(blob, "save.json");
+        });
         
     }
     componentWillReceiveProps(newProps) {
-        const { id, community } = newProps;
+        const { id, community,addColorMap } = newProps;
+        this.g.nodes().toArray().forEach(
+            (item) => {
+                this.g.getNodeById(item.id).style({fill: '#000000' });
+                }
+        )
         if (id !== undefined && id !== null) {
             console.log(id)
             if(this.lastId!==undefined)
             this.g.getNodeById(this.lastId).style({fill: '#000000' });
             this.g.getNodeById(id).style({ fill: '#FFC125' });
             this.lastId = id;
-            this.force.data(this.g.data());
-            this.g.draw();
+            // this.force.data(this.g.data());
         }
         if (community !== undefined) {
-            for(var key in community){
-                this.g.getNodeById(key).attrs["group"]=community[key]   ;
-                this.g.getNodeById(key).style({ fill: colorMap[community[key]] });
+            let color = {};
+                for (var key in community) {
+                    this.g.getNodeById(key).attrs["group"] = community[key];
+                    this.g.getNodeById(key).style({ fill: colorMap[community[key]] });
+                    color[community[key]] = colorMap[community[key]];
             }
-            this.g.draw();
+            addColorMap(color)
         }
+        this.g.refresh();
+        
     }
     render() { 
         return (
@@ -65,7 +89,8 @@ class ForceGraph extends Component {
 }
 const mapStateToProps = (state, ownProps) => {
     const { id } = state.alterData
-    const {community}=state.addCommunityDetect
+    const { community } = state.addCommunityDetect
+    // const {rollback}=state.rollback
     console.log(id);
     return {
        id,community
@@ -76,6 +101,9 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         addG:g => {
             dispatch(createAction("addG",g));
         },
+        addColorMap: colorMap => {
+            dispatch(createAction("addColorMap",colorMap))
+        }
     }
 } 
 const Content=connect(mapStateToProps,mapDispatchToProps)(ForceGraph)

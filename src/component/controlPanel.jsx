@@ -26,20 +26,25 @@ class ControlPanel extends Component {
         const handleShortestPath = () => {
             
         }
-        const handleCommunityDetect= () => {
-            fetch(getCommunityDetect, {
-                method: "POST",
-                mode: "cors",
-                // headers: { 'Accept': 'application/json,text/plain,*/*' }   ,
-            }).then(r => {
-                return r.json();
-            })
-                .then(response => {
-                    console.log("get data finished!");
-                    addCommunityDetect(response);
-                    // console.log(response);
-                    // addPageRank(response);
-                });
+        const handleCommunityDetect = (checked) => {
+            if (checked === true) {
+                fetch(getCommunityDetect, {
+                    method: "POST",
+                    mode: "cors",
+                    // headers: { 'Accept': 'application/json,text/plain,*/*' }   ,
+                }).then(r => {
+                    return r.json();
+                })
+                    .then(response => {
+                        console.log("get data finished!");
+                        addCommunityDetect(response);
+                        // console.log(response);
+                        // addPageRank(response);
+                    });
+            }
+            else {
+                addCommunityDetect({})
+            }
         }
         const menu = (
             <Menu onClick={handleMenuClick}>
@@ -74,15 +79,15 @@ class ControlPanel extends Component {
                             </Row>
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text strong >Community Detect</Typography.Text></Col>
-                                <Col><Switch defaultChecked onChange={handleCommunityDetect} /></Col>
+                                <Col><Switch  onChange={(checked)=>handleCommunityDetect(checked)} /></Col>
                             </Row>
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text strong >Page Rank</Typography.Text></Col>
-                                <Col><Switch defaultChecked onChange={handleAddPagerRank} /></Col>
+                                <Col><Switch  onChange={handleAddPagerRank} /></Col>
                             </Row>
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text strong >Shortest Path</Typography.Text></Col>
-                                <Col><Switch defaultChecked onChange={(checked) => { console.log(`switch to ${checked}`); }} /></Col>
+                                <Col><Switch  onChange={(checked) => { console.log(`switch to ${checked}`); }} /></Col>
                             </Row>
                             {/* <Button onClick={handleCommunityDetect} className="defaultButton">Community Detect</Button>
                             <Button onClick={handleAddPagerRank} className="defaultButton">Page Rank</Button>
@@ -142,7 +147,7 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         },
         addCommunityDetect:community=> {
             dispatch(createAction("addCommunityDetect",community));
-        },
+        }
     }
 } 
 const Content=connect( () => ({}),mapDispatchToProps)(ControlPanel)
