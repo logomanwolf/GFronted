@@ -16,7 +16,7 @@ class PageRank extends Component {
                 cover={<img alt="example" src={pic}/>}
                     style={{ overflow: "auto" }
                     }
-                    size="small"
+                    size="small" 
             >
                 <Card.Meta title="Europe Street beat" style={{ textAlign: "center", padding: 0,border:0 }} />
             </Card>
@@ -63,6 +63,7 @@ class PageRank extends Component {
                     onTabChange={key => {
                         this.onTabChange(key, 'key');
                     }}
+                    type="inner"
                 >
                 {contentList[this.state.key]}
                 </Card>

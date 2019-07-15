@@ -10,7 +10,7 @@ const Canvas = ({ colorMap }) => {
         <div>               
             <Card bordered={true}
                 style={{ margin:"20px 20px 20px 0px " }}
-                size={"small"} >
+                size={"small"}   >
                 {/* {data.nodes[0].id} */}
                                
                 <Col span={1}>                    
@@ -19,7 +19,7 @@ const Canvas = ({ colorMap }) => {
                 
                 <Col span={4}>
                 {colorMap!==undefined ? <Card id="wedget" cover={
-                    <div>Clustery: {Object.values(colorMap).map(item => <Tag color={item} style={{height:"16px",background:{item}, borderRadius:"0px"}}></Tag> ) } </div>
+                    <div>community: {Object.values(colorMap).map(item => <Tag color={item} style={{height:"16px",background:{item}, borderRadius:"0px"}}></Tag> ) } </div>
                 } bodyStyle={{ padding: 0 }} size="small" bordered={false}>
                 </Card> : null  }
                 </Col>

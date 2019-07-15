@@ -8,7 +8,7 @@ class ControlPanel extends Component {
         value: 1,
       };
     render() { 
-        const { addPageRank, addCommunityDetect } = this.props;
+        const { addPageRank, addCommunityDetect,shortestPath } = this.props;
         const handleAddPagerRank = () => {
             fetch(getPageRank, {
                 method: "POST",
@@ -23,11 +23,11 @@ class ControlPanel extends Component {
                     addPageRank(response);
                 });
         }
-        const handleShortestPath = () => {
-            
+        const handleShortestPath = (checked) => {
+                shortestPath(checked);
         }
         const handleCommunityDetect = (checked) => {
-            if (checked === true) {
+            if (checked) {
                 fetch(getCommunityDetect, {
                     method: "POST",
                     mode: "cors",
@@ -74,7 +74,7 @@ class ControlPanel extends Component {
                         <Row >
                             <Row>
                                 <Col span={6}><Dropdown.Button placement="bottomLeft" overlay={filemenu} icon={<Icon type="down" />}>Open</Dropdown.Button><br /></Col>
-                                <Col span={18}><div style={{ height: "32px", display: "table-cell", verticalAlign: "middle", fontSize: "110%", paddingLeft: "30px" }} >Filename: businessData</div>
+                                <Col span={18}><div style={{ height: "32px", display: "table-cell", verticalAlign: "middle", fontSize: "110%", paddingLeft: "30px" }} > BusinessData</div>
                                     <Divider style={{ margin: "0px 0px 0px 10px", width: "90%",minWidth:"50%" }} /></Col>
                             </Row>
                             <Row className="defaultText">
@@ -87,7 +87,7 @@ class ControlPanel extends Component {
                             </Row>
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text strong >Shortest Path</Typography.Text></Col>
-                                <Col><Switch  onChange={(checked) => { console.log(`switch to ${checked}`); }} /></Col>
+                                <Col><Switch  onChange={(checked) => handleShortestPath(checked) } /></Col>
                             </Row>
                             {/* <Button onClick={handleCommunityDetect} className="defaultButton">Community Detect</Button>
                             <Button onClick={handleAddPagerRank} className="defaultButton">Page Rank</Button>
@@ -123,8 +123,8 @@ class ControlPanel extends Component {
                         </Row>
                         <Row className="defaultText">
                             <Col span={10} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>Layout</Typography.Text></Col>
-                            <Col span={12}>
-                                <Radio.Group onChange={e => { console.log('radio checked', e.target.value);this.setState({ value: e.target.value,}); }} value={this.state.value}>
+                            <Col span={14}>
+                                <Radio.Group size="small" onChange={e => { console.log('radio checked', e.target.value);this.setState({ value: e.target.value,}); }} value={this.state.value}>
                                     <Radio value={1}>node-link</Radio>
                                     <Radio value={2}>hierarchy</Radio>
                                 </Radio.Group>
@@ -147,6 +147,9 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         },
         addCommunityDetect:community=> {
             dispatch(createAction("addCommunityDetect",community));
+        },
+        shortestPath: shortestPath => {
+            dispatch(createAction("shortestPath",shortestPath));
         }
     }
 } 
