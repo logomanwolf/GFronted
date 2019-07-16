@@ -17,9 +17,9 @@ class autoComplete extends Component {
         const { g ,alterData} = this.props;
         const searchNode = (g, value) => {
             let tempData = [];
-            if (g.g.getNodeById(value) !== null) 
+            if (g.getNodeById(value) !== null) 
             {
-                const node = g.g.getNodeById(value);
+                const node = g.getNodeById(value);
                 tempData.push({
                     title: node.id, attr: node.attr(), type:
                 "node",keyWord:value,kfirst:true, restWord: ""});
@@ -75,7 +75,7 @@ class autoComplete extends Component {
 }
  // 3、定义mapStateToProps，第一个参数state 接收我们的Redux Store. 第二个参数ownProps 接收组件传递的Props。需要注意的是，该函数必须返回一个纯对象，这个对象将会与展示组件Props 合并!
 const mapStateToProps = (state, ownProps) => {
-    const g =state.addG
+    const {g} =state.addG
     console.log(g);
     return {
        g

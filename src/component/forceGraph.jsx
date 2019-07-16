@@ -33,8 +33,7 @@ class ForceGraph extends Component {
         this.force = new d3Force({
             width: canvas.width,
             height: canvas.height
-        });
-        addG(this.g.data());   
+        });   
         this.force.data(this.g.data());
         this.force.start()
         this.force.onTick(() => {
@@ -44,6 +43,7 @@ class ForceGraph extends Component {
             console.log("draw finish");
             this.g.initSearchIndice();
             this.g.initInteraction();
+            addG(this.g.data());
             // var content = JSON.stringify(this.g.nodes().toArray());
             // var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
             // eslint-disable-next-line
@@ -60,7 +60,7 @@ class ForceGraph extends Component {
         )
         this.g.edges().toArray().forEach(
             item => {
-                this.g.getEdgeById(item.id).style({fill:'#000000',lineWidth:1})
+                this.g.getEdgeById(item.id).style({fill:'#E0E0E0',lineWidth:1})
             }
         )
     }
@@ -74,7 +74,8 @@ class ForceGraph extends Component {
                 const lastOldStyle = this.g.getNodeById(this.lastId).style();
                 this.g.getNodeById(this.lastId).style({...lastOldStyle, fill: '#000000' });
             }
-            const oldStyle= this.g.getNodeById(id).style();
+            const oldStyle = this.g.getNodeById(id).style();
+            this.g.panToNode(id);
             this.g.getNodeById(id).style({ ...oldStyle,fill: '#FFC125' });
             this.lastId = id;
             // this.force.data(this.g.data());
@@ -113,13 +114,13 @@ class ForceGraph extends Component {
                         console.log(response);  
                         response.forEach(item => {
                             item.forEach(n => {
-                                this.g.getNodeById(n).style({ r: 10, fill: 'red' });
+                                this.g.getNodeById(n).style({ fill: '#607D8B' });
                             });
                             for (let i = 0; i < item.length - 1; i++) {
                                 console.log(item[i] + '->' + item[i + 1]);
                                 const data = this.g.getEdgesByAttribute('source', item[i]).getEdgesByAttribute('target', item[i + 1]).toArray()
                                     .concat(this.g.getEdgesByAttribute('source', item[i+1]).getEdgesByAttribute('target', item[i]).toArray())
-                                    data[0].style({ lineWidth: 3, fill: "red" });
+                                    data[0].style({  fill: "#ccc" });
                             }
                         });
                         this.g.refresh();
@@ -132,7 +133,7 @@ class ForceGraph extends Component {
                     this.endId = undefined;
                 }
                 const oldStyle = this.g.getNodeById(el.id).style();
-                this.g.getNodeById(el.id).style({...oldStyle, r: 10, fill: 'red' });
+                this.g.getNodeById(el.id).style({...oldStyle, fill: 'red' });
                 this.g.refresh();
             });
         }

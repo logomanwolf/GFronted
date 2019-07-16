@@ -5,6 +5,7 @@ import pic2 from './img/colorMap.jpeg'
 import { connect } from 'react-redux';
 // import  data from "../data/data";
 import ForceGraph from './forceGraph'
+import MiniMap from './MiniMap/MiniMap';
 const Canvas = ({ colorMap }) => {
     return (
         <div>               
@@ -25,7 +26,7 @@ const Canvas = ({ colorMap }) => {
                 </Col>
                 <Col span={15}></Col>
                 <Col span={4}><Card className="heatmap" cover={
-                    <img alt="example" src={pic1} />
+                    <MiniMap></MiniMap>
                 } bodyStyle={{ padding: 0 }} size="small" extra={<a href="#"><Icon type="close" /></a>}
                 ></Card>
                 </Col>
