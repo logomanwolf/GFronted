@@ -8,6 +8,7 @@ class MiniMap extends Component{
 	constructor(props){
 		super(props);
 		this.graph = {};
+		this.stamp = new Date();
 		this.nodes = [];
 		this.svgWidth = 0;
 		this.svgHeight = 0;
@@ -81,28 +82,28 @@ class MiniMap extends Component{
 	calContour(){
 		let xCoor=[],yCoor=[]
 		for(let i=0;i<this.nodes.length;i++){
-			xCoor[i]=this.nodes[i].x
-			yCoor[i]=this.nodes[i].y
+			xCoor[i]=this.nodes[i].attrs['x']
+			yCoor[i]=this.nodes[i].attrs['y']
 		}
 		// console.log(xCoor)
 		var xMax=Math.max.apply(null,xCoor)
 		var yMax=Math.max.apply(null,yCoor)
 		console.log(xMax,yMax)
 		for(let i=0;i<this.nodes.length;i++){
-			this.nodes[i].x=this.nodes[i].x*this.svgWidth*0.8/xMax
-			this.nodes[i].y=(this.nodes[i].y+0.15*yMax)*this.svgHeight*0.8/yMax
+			this.nodes[i].x=this.nodes[i].attrs.x*this.svgWidth*0.8/xMax
+			this.nodes[i].y=(this.nodes[i].attrs.y+0.15*yMax)*this.svgHeight*0.8/yMax
 		}
 	}
 
 	shouldComponentUpdate(nextProps) {
         if (
-            nextProps.graph != undefined &&
-            nextProps.graph.stamp != undefined &&
-            this.graph.stamp != nextProps.graph.stamp &&
-            nextProps.graph.layouted
+            nextProps.graph !== undefined &&
+            nextProps.stamp !== undefined &&
+			this.stamp !== nextProps.stamp
+			// &&nextProps.graph.layouted
         ) {
 			this.graph = nextProps.graph
-			this.nodes = this.graph.nodes
+			this.nodes = this.graph.nodes().toArray();
 			console.log("minimap should update", nextProps, this)
             return true
         } else {
@@ -132,7 +133,8 @@ class MiniMap extends Component{
 }
 
 const mapStateToProps = state => ({
-    graph: 	state.addG.g
+	graph: state.addG.g,
+	stamp:state.addG.stamp
 })
 
 export default connect(mapStateToProps)(MiniMap)

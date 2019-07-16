@@ -43,7 +43,7 @@ class ForceGraph extends Component {
             console.log("draw finish");
             this.g.initSearchIndice();
             this.g.initInteraction();
-            addG(this.g.data());
+            addG({g: this.g ,stamp:new Date()});
             // var content = JSON.stringify(this.g.nodes().toArray());
             // var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
             // eslint-disable-next-line

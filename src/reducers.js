@@ -28,7 +28,8 @@ const updateNodeMap=(state = {}, action) => {
 const addG=(state = {}, action) => {
     if (action.type === "addG" ) {
         return Object.assign({},state, {
-            'g': action.content
+            'g': action.content.g,
+            'stamp':action.content.stamp
         });
     }
     return state;
