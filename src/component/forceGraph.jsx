@@ -44,13 +44,6 @@ class ForceGraph extends Component {
             console.log("draw finish");
             this.g.initSearchIndice();
             this.g.initInteraction();
-            this.g.on('mouseOver', el => {
-                const oldStyle = el.style();
-                // const oldR=oldStyle.r
-                const newStyle={...oldStyle,r:12,fill:"blue"}
-                el.style(newStyle);
-                this.g.draw()
-            })
             // var content = JSON.stringify(this.g.nodes().toArray());
             // var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
             // eslint-disable-next-line
@@ -58,34 +51,47 @@ class ForceGraph extends Component {
         });
         
     }
-    getPaths() {
-        
+    initNodes() {
+        this.g.nodes().toArray().forEach(
+            (item) => {
+                const oldStyle = this.g.getNodeById(item.id).style();
+                this.g.getNodeById(item.id).style({...oldStyle,fill: '#000000' });
+                }
+        )
+        this.g.edges().toArray().forEach(
+            item => {
+                this.g.getEdgeById(item.id).style({fill:'#000000',lineWidth:1})
+            }
+        )
     }
     componentWillReceiveProps(newProps) {
         const { id, community,addColorMap,addG,shortestPath } = newProps;
-        this.g.nodes().toArray().forEach(
-            (item) => {
-                this.g.getNodeById(item.id).style({fill: '#000000' });
-                }
-        )
+        this.initNodes();        
+        //点击查找会找到指定的id，并在主视区中显示
         if (id !== undefined && id !== null) {
             console.log(id)
-            if(this.lastId!==undefined)
-            this.g.getNodeById(this.lastId).style({fill: '#000000' });
-            this.g.getNodeById(id).style({ fill: '#FFC125' });
+            if (this.lastId !== undefined) {
+                const lastOldStyle = this.g.getNodeById(this.lastId).style();
+                this.g.getNodeById(this.lastId).style({...lastOldStyle, fill: '#000000' });
+            }
+            const oldStyle= this.g.getNodeById(id).style();
+            this.g.getNodeById(id).style({ ...oldStyle,fill: '#FFC125' });
             this.lastId = id;
             // this.force.data(this.g.data());
         }
+        //点击社团检测开关，可以在主视图中看到用不同的颜色编码社团
         if (community !== undefined) {
             let color = {};
                 for (var key in community) {
                     this.g.getNodeById(key).attrs["group"] = community[key];
-                    this.g.getNodeById(key).style({ fill: colorMap[community[key]] });
+                    const oldStyle=this.g.getNodeById(key).style()
+                    this.g.getNodeById(key).style({ ...oldStyle,fill: colorMap[community[key]] });
                     color[community[key]] = colorMap[community[key]];
             }
             addColorMap(color)
             addG(this.g.data());
         }
+        //先打开最短路径开关，然后再点击起点和终点，显示轨迹
         if (shortestPath === true ) {
             this.g.on('click', el => {
                 if (this.startId === undefined)
@@ -104,26 +110,38 @@ class ForceGraph extends Component {
                         return r.json();
                     }).then(response => {
                         console.log("get shortest path!");
-                        // console.log(response);
-                        response.forEach(item => { item.forEach(n => { this.g.getNodeById(n).style({ r: 10, fill: 'red' }); }) });
+                        console.log(response);  
+                        response.forEach(item => {
+                            item.forEach(n => {
+                                this.g.getNodeById(n).style({ r: 10, fill: 'red' });
+                            });
+                            for (let i = 0; i < item.length - 1; i++) {
+                                console.log(item[i] + '->' + item[i + 1]);
+                                const data = this.g.getEdgesByAttribute('source', item[i]).getEdgesByAttribute('target', item[i + 1]).toArray()
+                                    .concat(this.g.getEdgesByAttribute('source', item[i+1]).getEdgesByAttribute('target', item[i]).toArray())
+                                    data[0].style({ lineWidth: 3, fill: "red" });
+                            }
+                        });
                         this.g.refresh();
+                        // this.initNodes()
                     });
                 }
                 else {
+                    this.initNodes()
                     this.startId = el.id;
-                    this.g.getNodeById(this.endId).style({ r: 10, fill: '#000000' });
                     this.endId = undefined;
                 }
-                this.g.getNodeById(el.id).style({ r: 10, fill: 'red' });
+                const oldStyle = this.g.getNodeById(el.id).style();
+                this.g.getNodeById(el.id).style({...oldStyle, r: 10, fill: 'red' });
                 this.g.refresh();
             });
         }
         else if (shortestPath === false) {
             this.startId = undefined;
             this.endId = undefined;
+            this.g.on('click', el => { });
         }
         this.g.refresh();
-        
     }
     render() { 
         return (
