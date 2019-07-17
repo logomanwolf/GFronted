@@ -28,28 +28,11 @@ class ForceGraph extends Component {
             container: canvas,
             data: data
         });
-        
-         // eslint-disable-next-line
-        this.force = new d3Force({
-            width: canvas.width,
-            height: canvas.height
-        });   
-        this.force.data(this.g.data());
-        this.force.start()
-        this.force.onTick(() => {
-            this.g.draw()
-        });
-        this.force.onEnd(() => {
-            console.log("draw finish");
-            this.g.initSearchIndice();
+        this.g.initSearchIndice();
             this.g.initInteraction();
             addG({g: this.g ,stamp:new Date()});
-            // var content = JSON.stringify(this.g.nodes().toArray());
-            // var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-            // eslint-disable-next-line
-            // saveAs(blob, "save.json");
-        });
-        
+         // eslint-disable-next-line
+        this.g.draw();
     }
     initNodes() {
         this.g.nodes().toArray().forEach(
