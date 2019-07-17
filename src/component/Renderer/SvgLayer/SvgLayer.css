@@ -1,0 +1,43 @@
+.svglayer-wrapper svg {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+circle {
+    fill-opacity: 0.3;
+}
+
+circle.unchosen {
+    fill:#000000;
+}
+
+circle.chosen {
+    fill-opacity: 0.8;
+    fill: rgb(64,169,255);
+}
+
+circle.possible {
+    fill-opacity: 0.3;
+    fill:rgb(64,169,255);
+}
+
+.lasso path {
+    fill-opacity: 0.6;
+    stroke: rgb(64,169,255);
+    stroke-width:2px;
+}
+
+.lasso .drawn {
+    fill-opacity:.05 ;
+}
+
+.lasso .loop_close {
+    fill:none;
+    stroke-dasharray: 4,4;
+}
+
+.lasso .origin {
+    fill:#3399FF;
+    fill-opacity:.5;
+}

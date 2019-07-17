@@ -1,16 +1,19 @@
 .minimap-wrapper {
     /* position: absolute; */
     /* width: 30%; */
-    /* height: 30%; */
+    height: 250px; 
     /* left: 30px; */
     /* bottom: 30px; */
+    margin-right: 30px;
+    margin-top: 30px;
     -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
     background-color: #ffffff;
 }
 
 #contour-svg {
+    /* height: 240px; */
     width: 95%;
     height: 95%;
-    margin-top: 5px;
+    /* margin-top: 5px; */
 }

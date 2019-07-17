@@ -24,11 +24,9 @@ const Canvas = ({ colorMap }) => {
                 } bodyStyle={{ padding: 0 }} size="small" bordered={false}>
                 </Card> : null  }
                 </Col>
-                <Col span={15}></Col>
-                <Col span={4}><Card className="heatmap" cover={
-                    <MiniMap></MiniMap>
-                } bodyStyle={{ padding: 0 }} size="small" extra={<a href="#"><Icon type="close" /></a>}
-                ></Card>
+                <Col span={14}></Col>
+                <Col span={5} style={{height:"250px"}}>
+                    <MiniMap className="heatmap"></MiniMap>
                 </Col>
                 
             </Card>
