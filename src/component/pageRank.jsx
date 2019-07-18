@@ -2,14 +2,36 @@ import React, { Component } from 'react';
 import { Card, List ,Collapse,Avatar } from 'antd';
 import { connect } from 'react-redux';
 import pic from './img/barchart.PNG'
+import createAction from '../actions';
 class PageRank extends Component {
-    state = { key: 'tab1' }
+    state = { key: 'tab1',detailPanelKey:1,listContent:[]}
     onTabChange = (key, type) => {
         console.log(key, type);
         this.setState({ [type]: key });
-      };
+    };
+    componentWillReceiveProps(newProps) {
+        const { listContent } = this.state;
+        const { listPanelContent, g } = newProps;
+        if (listPanelContent!==undefined && g!==undefined  && listContent.indexOf(g.getNodeById(listPanelContent)) === -1) {
+            listContent.push(g.getNodeById(listPanelContent));
+            const key = 'tab3';
+            this.setState({ ...this.state, key });
+        }
+    }
+    shouldComponentUpdate(newProps, newState) {
+        if (newProps.pageRank !== this.props.pageRank || newProps.listPanelContent !== this.props.listPanelContent
+            || newState !== this.state)
+            return true;
+        else
+            return false;
+    }
+    // handleClickThenPanTo()
     render() { 
+        const {listContent} = this.state;
+        const alterData  = this.props.alterData;
         const listItem = this.props.pageRank;
+        const handleClickPageRank = item => alterData(item);
+
         const contentList = {
             tab1:
                 <Card
@@ -22,27 +44,29 @@ class PageRank extends Component {
             </Card>
             , tab2:
                 <Card title="Page Rank" bordered={false} size={"small"} type="inner" >
-                    <List dataSource={listItem} renderItem={(item, index) => (<List.Item>{item[0]}</List.Item>)} size="small" style={{ overflow: "auto", height: "250px" }}>
+                    <List dataSource={listItem} renderItem={(item, index) => (<List.Item                        
+                    ><a onClick={()=>handleClickPageRank(item[0])}>{item[0]}</a></List.Item>)} size="small" style={{ overflow: "auto", height: "250px" }}>
                     </List>
                 </Card>,
-            tab3:
-                
-                <Collapse defaultActiveKey={['1']} onChange=""  >
-                    <Collapse.Panel header="This is panel header 1" key="1">
-                    <List.Item>
-                            <List.Item.Meta
-                                avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                title={<a href="https://ant.design">1</a>}
-                                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                            />
-                        </List.Item>
-                    </Collapse.Panel>
-                    <Collapse.Panel header="This is panel header 2" key="2">
-                        <p></p>
-                    </Collapse.Panel>
-                    <Collapse.Panel header="This is panel header 3" key="3">
-                        <p></p>
-                    </Collapse.Panel>
+            tab3:               
+                <Collapse>
+                    {
+                        listContent !== undefined ?
+                        listContent.map((item,index) => {
+                            return (
+                                <Collapse.Panel header={item.id} key={index} >
+                                    <List.Item onClick={() => handleClickPageRank(item.id)} style={{ cursor:  "pointer" }}>
+                                    <List.Item.Meta
+                                        avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                        title={<a href="https://ant.design">{item.attrs.group}</a>}
+                                        description={item.attrs.x+','+item.attrs.y}
+                                    />
+                                    </List.Item>
+                                </Collapse.Panel>)
+                        })
+                     : null
+                    }
+                    
                 </Collapse>
            
           };
@@ -75,14 +99,23 @@ class PageRank extends Component {
  
 const mapStateToProps = (state, ownProps) => {
     const pageRank = state.addPageRank.pageRank;
+    const listPanelContent = state.updateListPanelContent.listPanelContent;
+    const g = state.addG.g;
     // const pageRank = [1]
-    console.log(pageRank);
+    // console.log(pageRank);
     return {
-        pageRank
+        pageRank,listPanelContent,g
+    }
+} 
+const mapDispatchToProps = (dispatch,ownProps) => {
+    return{
+        alterData:id => {
+            dispatch(createAction("alterData",id));
+        },
     }
 } 
 const C = connect(
-    mapStateToProps
+    mapStateToProps,mapDispatchToProps
 )(PageRank)
  
 export default C;

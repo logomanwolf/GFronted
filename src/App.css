@@ -8,6 +8,7 @@
 .left-side-row {
   padding: 20px 20px 0px 20px;
   /* margin: 0px 0px 0px 0px */
+  
 }
 .heatmap{
   z-index: 100;
@@ -16,6 +17,21 @@
   position: absolute;
   right:90px; 
   top:20px;
+  -webkit-transform: translateY(10px);
+  -moz-transform: translateY(10px);
+   -ms-transform: translateY(10px);
+    -o-transform: translateY(10px);
+       transform: translateY(10px);
+-webkit-transition: all .25s ease-out;
+  -moz-transition: all .25s ease-out;
+   -ms-transition: all .25s ease-out;
+    -o-transition: all .25s ease-out;
+       transition: all .25s ease-out;
+-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+  -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+   -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+       box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
 }
 #wedget{
   z-index: 100;
@@ -24,6 +40,7 @@
   position: absolute;
   left:-40px; 
   bottom:-990px;   
+  background-color:rgba(255, 255, 255, 0.5);
 }
 .defaultButton{
   margin-top:10px
@@ -46,3 +63,77 @@
   height: 1px;
   margin: 0px 0px 0px 20px;
 }
+.colorMap{
+  background-color:rgba(255, 255, 255, 0.5);
+}
+.clickRightMenu{
+  width: 180px;
+  background-color: #ececec;
+  border-radius: 5%;
+  /* font-family: "Gill Sans", Impact, sans-serif; */
+  font-family: '微软雅黑';
+  font-size: 14px;
+  position: absolute;
+  text-align: left;
+  padding: 1% 0 0 0;
+  border:1px solid #ccc;
+  display: none;
+  z-index: 100;
+  -webkit-transform: translateY(10px);
+     -moz-transform: translateY(10px);
+      -ms-transform: translateY(10px);
+       -o-transform: translateY(10px);
+          transform: translateY(10px);
+  -webkit-transition: all .25s ease-out;
+     -moz-transition: all .25s ease-out;
+      -ms-transition: all .25s ease-out;
+       -o-transition: all .25s ease-out;
+          transition: all .25s ease-out;
+  -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+     -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+      -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+       -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+          box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+  /* filter: drop-shadow(16px 1px 30px ) invert(0%); */
+} 
+
+
+.clickRightMenu li{
+  list-style: none;
+  line-height: 24px;
+  padding-left: 25px;
+  list-style: none;
+}
+.clickRightMenu li:hover{
+  background-color: #dcdcdc;
+  cursor: pointer;
+}
+.clicked{
+  display:none;
+}
+/* ul a{
+  font-family: '微软雅黑';
+  text-decoration: none;
+  color: #333;
+}
+ul a:hover{
+  color: #000;
+  text-decoration: none;
+}
+ul li{position: relative}
+ul li:hover{background: #c1c1c1;}
+ul.nav2{ left:99px; top:0; display: none }
+.clickRightMenu .li1:hover ul.nav2{display: block; background:  #dcdcdc;} 
+
+*{margin: 0;padding: 0;}
+	.qdxw{ margin:100px 100px;}
+    .qdxw ul a{font-family: '微软雅黑';font-size: 14px;color: #333;text-decoration: none;}
+    .qdxw ul a:hover{color: #000;text-decoration: none;}
+    .qdxw ul li{width: 100px;height: 35px;line-height: 35px;text-align: center;position: relative;}
+    .qdxw ul li:hover{background: #c1c1c1;}
+    .qdxw ul{width: 100px;height: auto;position: absolute;background: #DADADA;list-style: none;}
+ 
+    .qdxw ul.nav2{left: 99px;top: 0;display: none;}
+    .qdxw ul.nav3{left: 99px;top: 0;display: none;}
+    .qdxw .nav1 .li1:hover ul.nav2{display: block;background: #c1c1c1;}
+    .qdxw .nav2 .li2:hover ul.nav3{display: block;background: #c1c1c1;} */

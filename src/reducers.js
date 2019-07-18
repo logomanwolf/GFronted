@@ -58,6 +58,14 @@ const shortestPath = (state = {}, action) => {
     }
     return state;
 }
+const updateListPanelContent = (state = {}, action) => {
+    if (action.type === "updateListPanelContent") {
+        return Object.assign({},state, {
+            'listPanelContent': action.content
+        });
+    }
+    return state;
+}
 // combineReducers 合并Reducer
 const reducer = combineReducers({
     alterData,
@@ -66,7 +74,8 @@ const reducer = combineReducers({
     addPageRank,
     addCommunityDetect,
     addColorMap,
-    shortestPath
+    shortestPath,
+    updateListPanelContent
 });
 
 // 在这里，我们导出reducers， 并在store.js 文件导入获取该 最终达到reducer 对象

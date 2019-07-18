@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import colorMap from '../settings/colorMap';
 import { getShortestPath } from '../settings/settings'
 import URLSearchParams from 'url-search-params';
+import * as d3color from 'd3-color';
+import * as d3interpolate from 'd3-interpolate';
 class ForceGraph extends Component {
     state = {};
     g = {};
@@ -29,10 +31,30 @@ class ForceGraph extends Component {
             data: data
         });
         this.g.initSearchIndice();
-            this.g.initInteraction();
-            addG({g: this.g ,stamp:new Date()});
-         // eslint-disable-next-line
+        this.g.initInteraction();
+        var clickRightHtml = document.getElementById("clickRightMenu");
+        clickRightHtml.style.display = "none";//每次右键都要把之前显示的菜单隐藏哦
+        // canvas.oncontextmenu = function (event) {
+        //     var event = event || window.event;
+        //     clickRightHtml.style.display = "inline";
+        //     clickRightHtml.style.left = event.clientX - 500 + "px";
+        //     clickRightHtml.style.top = event.clientY - 30 + "px";
+        //     console.log(event.clientX, event.clientY)
+        //     return false;//屏蔽浏览器自带的右键菜单
+        // };
+
+        addG({ g: this.g, stamp: new Date() });
         this.g.draw();
+        this.g.on('click', el => {
+                clickRightHtml.style.display = "inline";
+                clickRightHtml.style.left = el.attrs.x + "px";
+                clickRightHtml.style.top = el.attrs.y + "px";
+                console.log("el.attrs.x:" + el.attrs.x + '  ' + 'el.attrs.y' + el.attrs.y + ' ');
+                clickRightHtml.style.zIndex = 100;
+                clickRightHtml.setAttribute('el',el.id);
+                // console.log(event.clientX, event.clientY)
+                // console.log(el.x, el.y);
+        })
     }
     initNodes() {
         this.g.nodes().toArray().forEach(
@@ -68,12 +90,21 @@ class ForceGraph extends Component {
             let color = {};
                 for (var key in community) {
                     this.g.getNodeById(key).attrs["group"] = community[key];
-                    const oldStyle=this.g.getNodeById(key).style()
-                    this.g.getNodeById(key).style({ ...oldStyle,fill: colorMap[community[key]] });
-                    color[community[key]] = colorMap[community[key]];
+                    const oldStyle = this.g.getNodeById(key).style()
+                    if (community[key] < colorMap.length) {
+                        this.g.getNodeById(key).style({ ...oldStyle, fill: colorMap[community[key]] });
+                        color[community[key]] = colorMap[community[key]];
+                    }
+                    else {
+                        const dealColor = d3interpolate.interpolateRgb(colorMap[community[key] % colorMap.length], colorMap[(community[key] + 1) % colorMap.length])(0.5);
+                        color[community[key]] = dealColor;
+                        this.g.getNodeById(key).style({...oldStyle,fill: dealColor  })
+                    }
+                    
             }
             addColorMap(color)
-            addG(this.g.data());
+            
+            addG({g:this.g,stamp:new Date()});
         }
         //先打开最短路径开关，然后再点击起点和终点，显示轨迹
         if (shortestPath === true ) {
@@ -133,7 +164,7 @@ class ForceGraph extends Component {
         );
     }
 }
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state, ownProps) => {  
     const { id } = state.alterData;
     const { community } = state.addCommunityDetect;
     const { shortestPath } = state.shortestPath;
