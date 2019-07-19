@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import data from '../data/data';
+import nodes_4000  from '../data/data';
+import nodes_62 from '../data/data1';
 import createAction from '../actions';
 import { connect } from 'react-redux'
 import colorMap from '../settings/colorMap';
@@ -28,7 +29,7 @@ class ForceGraph extends Component {
          // eslint-disable-next-line
         this.g = new G({
             container: canvas,
-            data: data
+            data: nodes_4000
         });
         this.g.initSearchIndice();
         this.g.initInteraction();
@@ -69,8 +70,16 @@ class ForceGraph extends Component {
             }
         )
     }
+    drawGraph(data) {
+        this.g.data(data);
+        this.g.draw();
+    }
+    dataMap = {
+        "nodes_4000": nodes_4000,
+        "nodes_62":nodes_62
+    }
     componentWillReceiveProps(newProps) {
-        const { id, community,addColorMap,addG,shortestPath } = newProps;
+        const { id, community,addColorMap,addG,shortestPath,filename } = newProps;
         this.initNodes();        
         //点击查找会找到指定的id，并在主视区中显示
         if (id !== undefined && id !== null) {
@@ -156,6 +165,11 @@ class ForceGraph extends Component {
             this.endId = undefined;
             this.g.on('click', el => { });
         }
+        if (filename !== this.props.filename) {
+            this.g.data(this.dataMap[filename]);
+            addG(this.g);
+            // this.g.draw();
+        }
         this.g.refresh();
     }
     render() { 
@@ -163,15 +177,21 @@ class ForceGraph extends Component {
             <canvas ref={this.canvas} width="1380px" height="1000px"  />
         );
     }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.filename !== this.props.filename) {
+            this.g.draw();
+        }
+    }
 }
 const mapStateToProps = (state, ownProps) => {  
     const { id } = state.alterData;
     const { community } = state.addCommunityDetect;
     const { shortestPath } = state.shortestPath;
+    const { filename } = state.getFile;
     // const {rollback}=state.rollback
     console.log(id);
     return {
-       id,community,shortestPath
+        id, community, shortestPath, filename
     }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {

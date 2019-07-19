@@ -8,7 +8,7 @@ class ControlPanel extends Component {
         value: 1,
       };
     render() { 
-        const { addPageRank, addCommunityDetect,shortestPath } = this.props;
+        const { addPageRank, addCommunityDetect,shortestPath,getFile } = this.props;
         const handleAddPagerRank = () => {
             fetch(getPageRank, {
                 method: "POST",
@@ -53,14 +53,14 @@ class ControlPanel extends Component {
               <Menu.Item key="3">attributes</Menu.Item>
             </Menu>
         );
+        const menuContent = ["nodes_62", "nodes_4000"];
         const filemenu = (
             <Menu onClick={handleMenuClick}>
-              <Menu.Item key="1">bank</Menu.Item>
-              <Menu.Item key="2">train trajectory</Menu.Item>
+                {menuContent.map((item,i)=><Menu.Item key={i}>{item}</Menu.Item>)}
             </Menu>
         )
-          function handleMenuClick(e) {
-            console.log('click', e);
+          function handleMenuClick({key}) {
+              getFile(menuContent[parseInt(key)]);
           }
         return ( 
         <div>
@@ -77,6 +77,10 @@ class ControlPanel extends Component {
                                 <Col span={18}><div style={{ height: "32px", display: "table-cell", verticalAlign: "middle", fontSize: "110%", paddingLeft: "30px" }} > BusinessData</div>
                                     <Divider style={{ margin: "0px 0px 0px 10px", width: "90%",minWidth:"50%" }} /></Col>
                             </Row>
+                            <Row className="defaultText">
+                                <Col span={9}><Typography.Text strong >Nodes:</Typography.Text><Typography.Text></Typography.Text></Col>
+                                <Col span={9}><Typography.Text strong >Edges:</Typography.Text><Typography.Text></Typography.Text></Col>
+                            </Row>    
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text strong >Community Detect</Typography.Text></Col>
                                 <Col><Switch  onChange={(checked)=>handleCommunityDetect(checked)} /></Col>
@@ -124,9 +128,9 @@ class ControlPanel extends Component {
                         <Row className="defaultText">
                             <Col span={10} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>Layout</Typography.Text></Col>
                             <Col span={14}>
-                                <Radio.Group size="small" onChange={e => { console.log('radio checked', e.target.value);this.setState({ value: e.target.value,}); }} value={this.state.value}>
-                                    <Radio value={1}>node-link</Radio>
-                                    <Radio value={2}>hierarchy</Radio>
+                                <Radio.Group  onChange={e => { console.log('radio checked', e.target.value);this.setState({ value: e.target.value,}); }} value={this.state.value} >
+                                    <Radio value={1} style={{height:"32px",lineHeight:2}}>node-link</Radio>
+                                    <Radio value={2} style={{height:"32px",lineHeight:2}}>hierarchy</Radio>
                                 </Radio.Group>
                             </Col>
                             </Row>
@@ -150,6 +154,9 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         },
         shortestPath: shortestPath => {
             dispatch(createAction("shortestPath",shortestPath));
+        },
+        getFile: filename => {
+            dispatch(createAction("getFile", filename));
         }
     }
 } 

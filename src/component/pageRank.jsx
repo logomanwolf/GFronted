@@ -45,7 +45,7 @@ class PageRank extends Component {
             , tab2:
                 <Card title="Page Rank" bordered={false} size={"small"} type="inner" >
                     <List dataSource={listItem} renderItem={(item, index) => (<List.Item                        
-                    ><a onClick={()=>handleClickPageRank(item[0])}>{item[0]}</a></List.Item>)} size="small" style={{ overflow: "auto", height: "250px" }}>
+                    ><a onClick={()=>handleClickPageRank(item[0])}>{item[0]}</a></List.Item>)} size="small" style={{ overflow: "auto", height: "230px" }}>
                     </List>
                 </Card>,
             tab3:               
@@ -72,7 +72,7 @@ class PageRank extends Component {
           };
         return ( 
             <div>
-                <Card style={{ width: '100%' ,height:"405px"}} size="small" tabList={[
+                <Card style={{ width: '100%' ,height:"378px"}} size="small" tabList={[
                     {
                         key: 'tab1',
                         tab: 'Statistic Panel',

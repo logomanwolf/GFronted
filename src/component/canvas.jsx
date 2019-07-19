@@ -27,12 +27,14 @@ const Canvas = ({ colorMap, updateListPanelContent }) => {
                                
                 <Col span={1}>
                 <ul className="clickRightMenu" id="clickRightMenu">
-                        <li className="li1">Add To Panel&nbsp; </li>
+                        
                         <li className="li1" onClick={ handleSeeDetails } >See details
                             {/* <ul className="nav2">
                                 <li className="li2">1</li>
                             </ul> */}
                         </li>
+                        <li className="li1">Add As A Source </li>
+                        <li className="li1">Add As A Target </li>
                 </ul>
                 <ForceGraph />                                        
                 </Col>
