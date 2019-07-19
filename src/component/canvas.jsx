@@ -18,6 +18,9 @@ const Canvas = ({ colorMap, updateListPanelContent }) => {
         updateListPanelContent(el);
         displayed();
     }
+    const handleAddSource = () => {
+        
+    }
     return (
         <div>               
             <Card bordered={true}

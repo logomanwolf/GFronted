@@ -6,6 +6,7 @@ import { getPageRank, getCommunityDetect } from '../settings/settings.js'
 class ControlPanel extends Component {
     state = {
         value: 1,
+        filestatus:{}
       };
     render() { 
         const { addPageRank, addCommunityDetect,shortestPath,getFile } = this.props;
@@ -46,6 +47,10 @@ class ControlPanel extends Component {
                 addCommunityDetect({})
             }
         }
+        const handleMenuClick=({key})=> {
+            getFile(menuContent[parseInt(key)]);
+            this.setState({...this.state,filestatus:{filename:menuContent[parseInt(key)],nodesNum:menuContentMap[menuContent[parseInt(key)]].nodesNum,edgesBum:menuContentMap[menuContent[parseInt(key)]].edgesBum}})
+        }
         const menu = (
             <Menu onClick={handleMenuClick}>
               <Menu.Item key="1">cluster</Menu.Item>
@@ -54,14 +59,13 @@ class ControlPanel extends Component {
             </Menu>
         );
         const menuContent = ["nodes_62", "nodes_4000"];
+        const menuContentMap={nodes_62:{nodesNum:77,edgesBum:254},nodes_4000:{nodesNum:4720,edgesBum:13722}}
         const filemenu = (
             <Menu onClick={handleMenuClick}>
                 {menuContent.map((item,i)=><Menu.Item key={i}>{item}</Menu.Item>)}
             </Menu>
         )
-          function handleMenuClick({key}) {
-              getFile(menuContent[parseInt(key)]);
-          }
+
         return ( 
         <div>
             <Card title="Control Panel" bordered={true} size={"small"} type="inner" >
@@ -74,12 +78,12 @@ class ControlPanel extends Component {
                         <Row >
                             <Row>
                                 <Col span={6}><Dropdown.Button placement="bottomLeft" overlay={filemenu} icon={<Icon type="down" />}>Open</Dropdown.Button><br /></Col>
-                                <Col span={18}><div style={{ height: "32px", display: "table-cell", verticalAlign: "middle", fontSize: "110%", paddingLeft: "30px" }} > BusinessData</div>
+                                <Col span={18}><div style={{ height: "32px", display: "table-cell", verticalAlign: "middle", fontSize: "110%", paddingLeft: "30px" }} > {this.state.filestatus.filename}</div>
                                     <Divider style={{ margin: "0px 0px 0px 10px", width: "90%",minWidth:"50%" }} /></Col>
                             </Row>
                             <Row className="defaultText">
-                                <Col span={9}><Typography.Text strong >Nodes:</Typography.Text><Typography.Text></Typography.Text></Col>
-                                <Col span={9}><Typography.Text strong >Edges:</Typography.Text><Typography.Text></Typography.Text></Col>
+                                    <Col span={9}><Typography.Text strong >Nodes:</Typography.Text><Typography.Text>{this.state.filestatus.nodesNum}</Typography.Text></Col>
+                                <Col span={9}><Typography.Text strong >Edges:</Typography.Text><Typography.Text>{this.state.filestatus.edgesBum}</Typography.Text></Col>
                             </Row>    
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text strong >Community Detect</Typography.Text></Col>
