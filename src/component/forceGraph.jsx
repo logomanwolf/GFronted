@@ -92,7 +92,8 @@ class ForceGraph extends Component {
                 console.log(item[i] + '->' + item[i + 1]);
                 const data = this.g.getEdgesByAttribute('source', item[i]).getEdgesByAttribute('target', item[i + 1]).toArray()
                     .concat(this.g.getEdgesByAttribute('source', item[i+1]).getEdgesByAttribute('target', item[i]).toArray())
-                    data[0].style({  fill: "#ccc" });
+                // data[0].style({ fill: "#ccc" });
+                data[0].style({ fill: "#e19d54" });
             }
         });
     }
@@ -158,7 +159,7 @@ class ForceGraph extends Component {
                     this.g.data(this.dataMap["nodes_4000"]);
                 else
                     this.g.data(this.dataMap[filename]);
-                this.g.draw()
+                this.g.draw();
             }
         }
         if (target !== this.props.target) {
