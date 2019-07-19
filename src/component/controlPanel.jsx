@@ -5,11 +5,11 @@ import { connect } from 'react-redux'
 import { getPageRank, getCommunityDetect } from '../settings/settings.js'
 class ControlPanel extends Component {
     state = {
-        value: 1,
+        value: 2,
         filestatus:{}
       };
     render() { 
-        const { addPageRank, addCommunityDetect,shortestPath,getFile } = this.props;
+        const { addPageRank, addCommunityDetect,getFile,updateLayout } = this.props;
         const handleAddPagerRank = () => {
             fetch(getPageRank, {
                 method: "POST",
@@ -24,9 +24,7 @@ class ControlPanel extends Component {
                     addPageRank(response);
                 });
         }
-        const handleShortestPath = (checked) => {
-                shortestPath(checked);
-        }
+        
         const handleCommunityDetect = (checked) => {
             if (checked) {
                 fetch(getCommunityDetect, {
@@ -51,6 +49,15 @@ class ControlPanel extends Component {
             getFile(menuContent[parseInt(key)]);
             this.setState({...this.state,filestatus:{filename:menuContent[parseInt(key)],nodesNum:menuContentMap[menuContent[parseInt(key)]].nodesNum,edgesBum:menuContentMap[menuContent[parseInt(key)]].edgesBum}})
         }
+        const layoutMap = {
+            1: "node-link",
+            2:"hierarchy"
+        }
+        const handleLayoutChange = e => {
+            console.log('radio checked', e.target.value);
+            this.setState({ value: e.target.value, });
+            updateLayout(layoutMap[e.target.value]);
+        };
         const menu = (
             <Menu onClick={handleMenuClick}>
               <Menu.Item key="1">cluster</Menu.Item>
@@ -82,8 +89,8 @@ class ControlPanel extends Component {
                                     <Divider style={{ margin: "0px 0px 0px 10px", width: "90%",minWidth:"50%" }} /></Col>
                             </Row>
                             <Row className="defaultText">
-                                    <Col span={9}><Typography.Text strong >Nodes:</Typography.Text><Typography.Text>{this.state.filestatus.nodesNum}</Typography.Text></Col>
-                                <Col span={9}><Typography.Text strong >Edges:</Typography.Text><Typography.Text>{this.state.filestatus.edgesBum}</Typography.Text></Col>
+                                    <Col span={9}><Typography.Text strong >Nodes:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.nodesNum}</Typography.Text></Col>
+                                <Col span={9}><Typography.Text strong >Edges:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.edgesBum}</Typography.Text></Col>
                             </Row>    
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text strong >Community Detect</Typography.Text></Col>
@@ -92,10 +99,6 @@ class ControlPanel extends Component {
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text strong >Page Rank</Typography.Text></Col>
                                 <Col><Switch  onChange={handleAddPagerRank} /></Col>
-                            </Row>
-                            <Row className="defaultText">
-                                <Col span={18}><Typography.Text strong >Shortest Path</Typography.Text></Col>
-                                <Col><Switch  onChange={(checked) => handleShortestPath(checked) } /></Col>
                             </Row>
                             {/* <Button onClick={handleCommunityDetect} className="defaultButton">Community Detect</Button>
                             <Button onClick={handleAddPagerRank} className="defaultButton">Page Rank</Button>
@@ -132,7 +135,7 @@ class ControlPanel extends Component {
                         <Row className="defaultText">
                             <Col span={10} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>Layout</Typography.Text></Col>
                             <Col span={14}>
-                                <Radio.Group  onChange={e => { console.log('radio checked', e.target.value);this.setState({ value: e.target.value,}); }} value={this.state.value} >
+                                <Radio.Group  onChange={e=>{handleLayoutChange(e)}} value={this.state.value} >
                                     <Radio value={1} style={{height:"32px",lineHeight:2}}>node-link</Radio>
                                     <Radio value={2} style={{height:"32px",lineHeight:2}}>hierarchy</Radio>
                                 </Radio.Group>
@@ -156,11 +159,11 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         addCommunityDetect:community=> {
             dispatch(createAction("addCommunityDetect",community));
         },
-        shortestPath: shortestPath => {
-            dispatch(createAction("shortestPath",shortestPath));
-        },
         getFile: filename => {
             dispatch(createAction("getFile", filename));
+        },
+        updateLayout:layout=> {
+            dispatch(createAction("updateLayout", layout));
         }
     }
 } 

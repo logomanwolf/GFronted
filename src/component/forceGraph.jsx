@@ -8,6 +8,7 @@ import { getShortestPath } from '../settings/settings'
 import URLSearchParams from 'url-search-params';
 import * as d3color from 'd3-color';
 import * as d3interpolate from 'd3-interpolate';
+// import * as d3Force from 'd3-force';
 class ForceGraph extends Component {
     state = {};
     g = {};
@@ -15,16 +16,29 @@ class ForceGraph extends Component {
     lastId = undefined;
     startId = undefined;
     endId = undefined;
+    curClickNode=undefined
     // G=require('../utils/G.js')
     constructor(){
         super();
         this.canvas = React.createRef();
         this.state={}
     }
+    
     componentDidMount() {
         // const {d3Force,G}=require('../utils/G')
         const canvas = this.canvas.current;
-        const { addG } = this.props;
+        const { addG, updateCurClickNode } = this.props;
+        const handleNodeClick = el => {
+            var clickRightHtml = document.getElementById("clickRightMenu");
+            clickRightHtml.style.display = "inline";
+            clickRightHtml.style.left = el.attrs.x + "px";
+            clickRightHtml.style.top = el.attrs.y + "px";
+            console.log("el.attrs.x:" + el.attrs.x + '  ' + 'el.attrs.y' + el.attrs.y + ' ');
+            clickRightHtml.style.zIndex = 100;
+            clickRightHtml.setAttribute('el', el.id);
+            this.curClickNode = el;
+            updateCurClickNode(el);
+        }
         var gl = canvas.getContext('webgl2');
          // eslint-disable-next-line
         this.g = new G({
@@ -35,6 +49,7 @@ class ForceGraph extends Component {
         this.g.initInteraction();
         var clickRightHtml = document.getElementById("clickRightMenu");
         clickRightHtml.style.display = "none";//每次右键都要把之前显示的菜单隐藏哦
+        
         // canvas.oncontextmenu = function (event) {
         //     var event = event || window.event;
         //     clickRightHtml.style.display = "inline";
@@ -47,14 +62,7 @@ class ForceGraph extends Component {
         addG({ g: this.g, stamp: new Date() });
         this.g.draw();
         this.g.on('click', el => {
-                clickRightHtml.style.display = "inline";
-                clickRightHtml.style.left = el.attrs.x + "px";
-                clickRightHtml.style.top = el.attrs.y + "px";
-                console.log("el.attrs.x:" + el.attrs.x + '  ' + 'el.attrs.y' + el.attrs.y + ' ');
-                clickRightHtml.style.zIndex = 100;
-                clickRightHtml.setAttribute('el',el.id);
-                // console.log(event.clientX, event.clientY)
-                // console.log(el.x, el.y);
+            handleNodeClick(el);
         })
     }
     initNodes() {
@@ -70,16 +78,27 @@ class ForceGraph extends Component {
             }
         )
     }
-    drawGraph(data) {
-        this.g.data(data);
-        this.g.draw();
-    }
+
     dataMap = {
         "nodes_4000": nodes_4000,
         "nodes_62":nodes_62
     }
+    highlightPath = data => {
+        data.forEach(item => {
+            item.forEach(n => {
+                this.g.getNodeById(n).style({ fill: '#607D8B' });
+            });
+            for (let i = 0; i < item.length - 1; i++) {
+                console.log(item[i] + '->' + item[i + 1]);
+                const data = this.g.getEdgesByAttribute('source', item[i]).getEdgesByAttribute('target', item[i + 1]).toArray()
+                    .concat(this.g.getEdgesByAttribute('source', item[i+1]).getEdgesByAttribute('target', item[i]).toArray())
+                    data[0].style({  fill: "#ccc" });
+            }
+        });
+    }
     componentWillReceiveProps(newProps) {
-        const { id, community,addColorMap,addG,shortestPath,filename } = newProps;
+        const { id, community, addColorMap, addG, shortestPath, filename,source,target,layout } = newProps;
+
         this.initNodes();        
         //点击查找会找到指定的id，并在主视区中显示
         if (id !== undefined && id !== null) {
@@ -108,62 +127,58 @@ class ForceGraph extends Component {
                         const dealColor = d3interpolate.interpolateRgb(colorMap[community[key] % colorMap.length], colorMap[(community[key] + 1) % colorMap.length])(0.5);
                         color[community[key]] = dealColor;
                         this.g.getNodeById(key).style({...oldStyle,fill: dealColor  })
-                    }
-                    
+                    }                    
             }
             addColorMap(color)
             
             addG({g:this.g,stamp:new Date()});
         }
-        //先打开最短路径开关，然后再点击起点和终点，显示轨迹
-        if (shortestPath === true ) {
-            this.g.on('click', el => {
-                if (this.startId === undefined)
-                    this.startId = el.id;
-                else if (this.endId === undefined) {
-                    this.endId = el.id;
-                    const searchParams = new URLSearchParams();
-                    searchParams.set("start", this.startId);
-                    searchParams.set("end", this.endId);
-                    fetch(getShortestPath, {
-                        method: "POST",
-                        mode: "cors",
-                        body: searchParams
-                        // headers: { 'Accept': 'application/json,text/plain,*/*' }   ,
-                    }).then(r => {
-                        return r.json();
-                    }).then(response => {
-                        console.log("get shortest path!");
-                        console.log(response);  
-                        response.forEach(item => {
-                            item.forEach(n => {
-                                this.g.getNodeById(n).style({ fill: '#607D8B' });
-                            });
-                            for (let i = 0; i < item.length - 1; i++) {
-                                console.log(item[i] + '->' + item[i + 1]);
-                                const data = this.g.getEdgesByAttribute('source', item[i]).getEdgesByAttribute('target', item[i + 1]).toArray()
-                                    .concat(this.g.getEdgesByAttribute('source', item[i+1]).getEdgesByAttribute('target', item[i]).toArray())
-                                    data[0].style({  fill: "#ccc" });
-                            }
-                        });
-                        this.g.refresh();
-                        // this.initNodes()
-                    });
-                }
-                else {
-                    this.initNodes()
-                    this.startId = el.id;
-                    this.endId = undefined;
-                }
-                const oldStyle = this.g.getNodeById(el.id).style();
-                this.g.getNodeById(el.id).style({...oldStyle, fill: 'red' });
-                this.g.refresh();
-            });
+        if (source !== this.props.source) {
+            this.g.getNodeById(source.id).style({ fill: "#607D8B" })
         }
-        else if (shortestPath === false) {
-            this.startId = undefined;
-            this.endId = undefined;
-            this.g.on('click', el => { });
+        if (layout !== this.props.layout) {
+            if (layout === "node-link") {
+            // eslint-disable-next-line    
+            const force = new d3Force({
+                width: this.canvas.current.width,
+                height: this.canvas.current.height,
+            }); 
+            force.data(this.g.data());
+            force.start();
+            force.onEnd(() => {
+                console.log("draw finish");
+                this.g.draw()
+                this.g.initSearchIndice();
+                this.g.initInteraction();
+            });
+            
+            }
+            else {
+                if (filename === undefined)
+                    this.g.data(this.dataMap["nodes_4000"]);
+                else
+                    this.g.data(this.dataMap[filename]);
+                this.g.draw()
+            }
+        }
+        if (target !== this.props.target) {
+            const searchParams = new URLSearchParams();
+            searchParams.set("start", source.id);
+            searchParams.set("end", target.id);
+            fetch(getShortestPath, {
+                method: "POST",
+                mode: "cors",
+                body: searchParams
+                // headers: { 'Accept': 'application/json,text/plain,*/*' }   ,
+            }).then(r => {
+                return r.json();
+            }).then(response => {
+                console.log("get shortest path!");
+                console.log(response);  
+                this.highlightPath(response);
+                this.g.refresh();
+                // this.initNodes()
+            });
         }
         if (filename !== this.props.filename) {
             this.g.data(this.dataMap[filename]);
@@ -188,10 +203,13 @@ const mapStateToProps = (state, ownProps) => {
     const { community } = state.addCommunityDetect;
     const { shortestPath } = state.shortestPath;
     const { filename } = state.getFile;
+    const { source } = state.updateSource;
+    const { target } = state.updateTarget;
+    const {layout}= state.updateLayout;
     // const {rollback}=state.rollback
     console.log(id);
     return {
-        id, community, shortestPath, filename
+        id, community, shortestPath, filename,source,target,layout
     }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {
@@ -201,6 +219,9 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         },
         addColorMap: colorMap => {
             dispatch(createAction("addColorMap",colorMap))
+        },
+        updateCurClickNode: curClickNode => {
+            dispatch(createAction("updateCurClickNode",curClickNode))
         }
     }
 } 

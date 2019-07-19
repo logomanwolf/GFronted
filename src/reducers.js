@@ -66,6 +66,7 @@ const updateListPanelContent = (state = {}, action) => {
     }
     return state;
 }
+//conrtolPanel->forceMap
 const getFile = (state = {}, action) => {
     if (action.type === "getFile") {
         return Object.assign({},state, {
@@ -75,6 +76,40 @@ const getFile = (state = {}, action) => {
     return state;
 }
 
+//更改当前点击的节点
+//forcePanel->canvas
+const updateCurClickNode = (state = {}, action) => {
+    if (action.type === "updateCurClickNode") {
+        return Object.assign({},state, {
+            'curClickNode': action.content
+        });
+    }
+    return state;
+}
+const updateSource = (state = {}, action) => {
+    if (action.type === "updateSource") {
+        return Object.assign({},state, {
+            'source': action.content
+        });
+    }
+    return state;
+}
+const updateTarget = (state = {}, action) => {
+    if (action.type === "updateTarget") {
+        return Object.assign({},state, {
+            'target': action.content
+        });
+    }
+    return state;
+}
+const updateLayout=(state = {}, action) => {
+    if (action.type === "updateLayout") {
+        return Object.assign({},state, {
+            'layout': action.content
+        });
+    }
+    return state;
+}
 // combineReducers 合并Reducer
 const reducer = combineReducers({
     alterData,
@@ -85,7 +120,11 @@ const reducer = combineReducers({
     addColorMap,
     shortestPath,
     updateListPanelContent,
-    getFile
+    getFile,
+    updateCurClickNode,
+    updateSource,
+    updateTarget,
+    updateLayout
 });
 
 

@@ -8,8 +8,7 @@ import ForceGraph from './forceGraph'
 import MiniMap from './MiniMap/MiniMap';
 import $ from 'jquery'
 import createAction from '../actions';
-import { NONAME } from 'dns';
-const Canvas = ({ colorMap, updateListPanelContent }) => {
+const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSource,target,updateTarget}) => {
     const displayed = () => {
         document.getElementById("clickRightMenu").style.display = "none";
     }
@@ -19,7 +18,14 @@ const Canvas = ({ colorMap, updateListPanelContent }) => {
         displayed();
     }
     const handleAddSource = () => {
-        
+        displayed();
+        if(source !== curClickNode)
+        updateSource(curClickNode);
+    }
+    const handleAddTarget = () => {
+        displayed();
+        if (source !== undefined && target !== curClickNode)
+        updateTarget(curClickNode);
     }
     return (
         <div>               
@@ -36,8 +42,8 @@ const Canvas = ({ colorMap, updateListPanelContent }) => {
                                 <li className="li2">1</li>
                             </ul> */}
                         </li>
-                        <li className="li1">Add As A Source </li>
-                        <li className="li1">Add As A Target </li>
+                        <li className="li1" onClick={handleAddSource}>Add As A Source </li>
+                        <li className="li1" onClick={handleAddTarget}>Add As A Target </li>
                 </ul>
                 <ForceGraph />                                        
                 </Col>
@@ -59,17 +65,26 @@ const Canvas = ({ colorMap, updateListPanelContent }) => {
     );
 }
 const mapStateToProps = (state, ownProps) => {
-    const { colorMap } = state.addColorMap
+    const { colorMap } = state.addColorMap;
+    const { curClickNode } = state.updateCurClickNode;
+    const { source } = state.updateSource;
+    const { target } = state.updateTarget;
     // const {rollback}=state.rollback
     console.log(colorMap);
     return {
-        colorMap
+        colorMap,curClickNode,source,target
     }
 } 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         updateListPanelContent: listPanelContent => {
             dispatch(createAction("updateListPanelContent", listPanelContent));
+        },
+        updateSource: source => {
+            dispatch(createAction("updateSource", source));
+        },
+        updateTarget:target => {
+            dispatch(createAction("updateTarget", target));
         }
     }
 }    
