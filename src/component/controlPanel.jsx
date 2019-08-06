@@ -75,7 +75,7 @@ class ControlPanel extends Component {
 
         return ( 
         <div>
-            <Card title="Control Panel" bordered={true} size={"small"} type="inner" >
+            <Card title="Control Panel" bordered={true} size={"small"} type="inner" headStyle={{backgroundColor:"#e8e8e8"}} >
                 <Row>
                     <Card
                 style={{overflow:"auto"}} bordered={false} size="small"
@@ -120,9 +120,7 @@ class ControlPanel extends Component {
                     </Card>
                 </Row>
                 <Row>
-                    <Card 
-                style={{overflow:"auto"}} bordered={false} size="small"
-                >
+                    <Card style={{overflow:"auto"}} bordered={false} size="small" >
                         <Row><Card.Meta title="Encoding"></Card.Meta></Row>
                         <Row className="defaultText">
                             <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>Color</Typography.Text></Col>

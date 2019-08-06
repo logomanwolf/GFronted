@@ -72,7 +72,7 @@ class PageRank extends Component {
           };
         return ( 
             <div>
-                <Card style={{ width: '100%' ,height:"378px"}} size="small" tabList={[
+                <Card style={{ width: '100%' ,height:"418px"}} size="small" tabList={[
                     {
                         key: 'tab1',
                         tab: 'Statistic Panel',
@@ -87,7 +87,7 @@ class PageRank extends Component {
                     onTabChange={key => {
                         this.onTabChange(key, 'key');
                     }}
-                    type="inner"
+                    headStyle={{lineHeight:"10px",fontSize:"4px"}}
                 >
                 {contentList[this.state.key]}
                 </Card>

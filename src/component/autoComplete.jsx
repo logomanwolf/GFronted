@@ -37,7 +37,7 @@ class autoComplete extends Component {
             alterData(value);
         }
         return (
-            <Card title="Search Bar" bordered={true} size={"small"} style={{ height: "130px", overflow: "auto" }}  type="inner">
+            <Card title="Search Bar" bordered={true} size={"small"} style={{ height: "130px", overflow: "auto" }}  type="inner" headStyle={{backgroundColor:"#e8e8e8"}}>
                 <Row>
                     <Col span={12}>
                         < AutoComplete  dataSource={dataSource} placeholder="try to type `b`" filterOption={(inputValue, option) =>option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1} >
