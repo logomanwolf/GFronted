@@ -50,8 +50,8 @@ const addColorMap = (state = {}, action) => {
     }
     return state;
 }
-const shortestPath = (state = {}, action) => {
-    if (action.type === "shortestPath" ) {
+const updateShortestPath = (state = {}, action) => {
+    if (action.type === "updateShortestPath" ) {
         return Object.assign({},state, {
             'shortestPath': action.content
         });
@@ -118,7 +118,7 @@ const reducer = combineReducers({
     addPageRank,
     addCommunityDetect,
     addColorMap,
-    shortestPath,
+    updateShortestPath,
     updateListPanelContent,
     getFile,
     updateCurClickNode,

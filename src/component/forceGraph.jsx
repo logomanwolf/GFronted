@@ -33,8 +33,8 @@ class ForceGraph extends Component {
             clickRightHtml.style.display = "inline";
             clickRightHtml.style.left = el.attrs.x + "px";
             clickRightHtml.style.top = el.attrs.y + "px";
-            console.log("el.attrs.x:" + el.attrs.x + '  ' + 'el.attrs.y' + el.attrs.y + ' ');
-            clickRightHtml.style.zIndex = 100;
+            console.log("el.attrs.x:" + el.attrs.x + '  ' + 'el.attrs.y:' + el.attrs.y + ' ');
+            clickRightHtml.style.zIndex = 200;
             clickRightHtml.setAttribute('el', el.id);
             this.curClickNode = el;
             updateCurClickNode(el);
@@ -83,6 +83,7 @@ class ForceGraph extends Component {
         "nodes_4000": nodes_4000,
         "nodes_62":nodes_62
     }
+    //highlight the shortestPath
     highlightPath = data => {
         data.forEach(item => {
             item.forEach(n => {
@@ -98,7 +99,7 @@ class ForceGraph extends Component {
         });
     }
     componentWillReceiveProps(newProps) {
-        const { id, community, addColorMap, addG, shortestPath, filename,source,target,layout } = newProps;
+        const { id, community, addColorMap, addG, filename,source,target,layout,updateShortestPath } = newProps;
 
         this.initNodes();        
         //点击查找会找到指定的id，并在主视区中显示
@@ -177,6 +178,7 @@ class ForceGraph extends Component {
                 console.log("get shortest path!");
                 console.log(response);  
                 this.highlightPath(response);
+                updateShortestPath(response);
                 this.g.refresh();
                 // this.initNodes()
             });
@@ -202,7 +204,6 @@ class ForceGraph extends Component {
 const mapStateToProps = (state, ownProps) => {  
     const { id } = state.alterData;
     const { community } = state.addCommunityDetect;
-    const { shortestPath } = state.shortestPath;
     const { filename } = state.getFile;
     const { source } = state.updateSource;
     const { target } = state.updateTarget;
@@ -210,7 +211,7 @@ const mapStateToProps = (state, ownProps) => {
     // const {rollback}=state.rollback
     console.log(id);
     return {
-        id, community, shortestPath, filename,source,target,layout
+        id, community,  filename,source,target,layout
     }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {
@@ -223,6 +224,9 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         },
         updateCurClickNode: curClickNode => {
             dispatch(createAction("updateCurClickNode",curClickNode))
+        },
+        updateShortestPath: shortestPath => {
+            dispatch(createAction("updateShortestPath",shortestPath))
         }
     }
 } 
