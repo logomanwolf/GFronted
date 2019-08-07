@@ -37,7 +37,7 @@ class ControlPanel extends Component {
                     .then(response => {
                         console.log("get data finished!");
                         addCommunityDetect(response);
-                        // console.log(response);
+                        console.log(response);
                         // addPageRank(response);
                     });
             }
