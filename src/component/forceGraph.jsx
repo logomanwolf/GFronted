@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import nodes_4000  from '../data/data';
 import nodes_62 from '../data/data1';
 import createAction from '../actions';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import colorMap from '../settings/colorMap';
 import { getShortestPath } from '../settings/settings'
 import URLSearchParams from 'url-search-params';
 import * as d3color from 'd3-color';
 import * as d3interpolate from 'd3-interpolate';
+import * as d3 from 'd3';
+import _ from 'lodash' 
 // import * as d3Force from 'd3-force';
 class ForceGraph extends Component {
     state = {};
@@ -28,12 +30,12 @@ class ForceGraph extends Component {
         // const {d3Force,G}=require('../utils/G')
         const canvas = this.canvas.current;
         const { addG, updateCurClickNode } = this.props;
-        const handleNodeClick = el => {
+        const handleNodeClick = (el,e) => {
             var clickRightHtml = document.getElementById("clickRightMenu");
             clickRightHtml.style.display = "inline";
-            clickRightHtml.style.left = el.attrs.x + "px";
-            clickRightHtml.style.top = el.attrs.y + "px";
-            console.log("el.attrs.x:" + el.attrs.x + '  ' + 'el.attrs.y:' + el.attrs.y + ' ');
+            clickRightHtml.style.left = e.clientX - 500 + "px";
+            clickRightHtml.style.top = e.clientY - 30 + "px";
+            // console.log("el.attrs.x:" + el.attrs.x + '  ' + 'el.attrs.y:' + el.attrs.y + ' ');
             clickRightHtml.style.zIndex = 200;
             clickRightHtml.setAttribute('el', el.id);
             this.curClickNode = el;
@@ -61,8 +63,8 @@ class ForceGraph extends Component {
 
         addG({ g: this.g, stamp: new Date() });
         this.g.draw();
-        this.g.on('click', el => {
-            handleNodeClick(el);
+        this.g.on('click', (el,e) => {
+            handleNodeClick(el,e);
         })
     }
     initNodes() {
@@ -126,13 +128,13 @@ class ForceGraph extends Component {
                         color[community[key]] = colorMap[community[key]];
                     }
                     else {
-                        const dealColor = d3interpolate.interpolateRgb(colorMap[community[key] % colorMap.length], colorMap[(community[key] + 1) % colorMap.length])(0.5);
+                        const dealColor = d3.color(d3interpolate.interpolateRgb(colorMap[community[key] % colorMap.length], colorMap[(community[key] + 1) % colorMap.length])(0.5)).hex();
                         color[community[key]] = dealColor;
                         this.g.getNodeById(key).style({...oldStyle,fill: dealColor  })
                     }                    
             }
+
             addColorMap(color)
-            
             addG({g:this.g,stamp:new Date()});
         }
         if (source !== this.props.source) {

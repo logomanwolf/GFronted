@@ -109,7 +109,7 @@
   cursor: pointer;
 }
 .clicked{
-  display:none;
+  display:none; 
 }
 /* ul a{
   font-family: '微软雅黑';

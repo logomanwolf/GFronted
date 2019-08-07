@@ -47113,7 +47113,7 @@ module.exports = function(module) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.nodeStyle = { r: 10, fill: '#000' };
-exports.edgeStyle = { lineWidth: 2, fill: '#000' };
+exports.edgeStyle = { lineWidth: 2, fill: '#E0E0E0' };
 exports.strokeStyle = { stroke: '#ffb6c1', strokeWidth: 0 };
 
 

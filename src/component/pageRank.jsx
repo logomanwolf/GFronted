@@ -35,6 +35,7 @@ class PageRank extends Component {
         const contentList = {
             tab1:
                 <Card
+                // cover={<img alt="example" src={pic}/>}
                 cover={<img alt="example" src={pic}/>}
                     style={{ overflow: "auto" }
                     }
