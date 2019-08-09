@@ -12,5 +12,6 @@
 #contour-svg {
     width: 95%;
     height: 95%;
-    margin-top: 5px;
+    margin-top: 10px;
+    margin-left: 5px
 }

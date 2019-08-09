@@ -90,21 +90,19 @@ class MiniMap extends Component{
 		var yMax=Math.max.apply(null,yCoor)
 		console.log(xMax,yMax)
 		for(let i=0;i<this.nodes.length;i++){
-			this.nodes[i].x=this.nodes[i].attrs.x*this.svgWidth*0.8/xMax
-			this.nodes[i].y=(this.nodes[i].attrs.y+0.15*yMax)*this.svgHeight*0.8/yMax
+			this.nodes[i].x=this.nodes[i].attrs.x*this.svgWidth/xMax*0.8
+			this.nodes[i].y=this.nodes[i].attrs.y*this.svgHeight/yMax*0.8
 		}
 	}
 
 	shouldComponentUpdate(nextProps) {
-        if (
-            nextProps.graph !== undefined
-			// &&nextProps.graph.layouted
-        ) {
+        if (nextProps.graph !== undefined && this.graph!==nextProps.graph) {
 			this.graph = nextProps.graph
 			this.nodes = this.graph.nodes().toArray();
 			console.log("minimap should update", nextProps, this)
             return true
-        } else {
+		}
+		else {
             console.log("minimap shouldn't update", nextProps, this)
             return false
         }
@@ -117,13 +115,14 @@ class MiniMap extends Component{
 		// ,document.getElementById("svg").height.baseVal.value)
 		this.svgWidth = document.getElementById("contour-svg").width.baseVal.value
 		this.svgHeight = document.getElementById("contour-svg").height.baseVal.value
+		// this.svgHeight = 250
 		this.calContour()
 		this.drawContour()
     }
 
 	render(){
 		return(
-			<div className="minimap-wrapper" id="minimap-wrapper">
+			<div className="minimap-wrapper" id="minimap-wrapper" style={{height:280}}>
 				<svg id="contour-svg"></svg>
 			</div>
 		)	
@@ -133,6 +132,6 @@ class MiniMap extends Component{
 const mapStateToProps = state => ({
 	graph: state.addG.g,
 })
-
-export default connect(mapStateToProps)(MiniMap)
+const mapDispatchToProps = () => {} 
+export default connect(mapStateToProps,mapDispatchToProps)(MiniMap)
 

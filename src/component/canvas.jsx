@@ -57,8 +57,11 @@ const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSo
                 <Col span={15}></Col>
                 <Col span={4}><Card className="heatmap"
                     // cover={<MiniMap></MiniMap>}
-                    bodyStyle={{ padding: 0 }} size="small" extra={<a href="#"><Icon type="close" /></a>}
-                ></Card>
+                    bodyStyle={{ padding: 0,height:250 }} size="small"
+                    // extra={<a href="#"><Icon type="close" /></a>}
+                >
+                    <MiniMap/>
+                </Card>
                 </Col>
             </Card>
         </div>

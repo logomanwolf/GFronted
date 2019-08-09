@@ -38,10 +38,8 @@ class PageRank extends Component {
                 <Card
                 // cover={<img alt="example" src={pic}/>}
                 cover={<BarChart/>}
-                    style={{ overflow: "auto" }}
-                    size="small" 
-            >
-                <Card.Meta title="Europe Street beat" style={{ textAlign: "center", padding: 0,border:0 }} />
+                    style={{ overflow: "auto",maxHeight:"340px" }}
+                    size="small" >
             </Card>
             , tab2:
                 <Card title="Page Rank" bordered={false} size={"small"} type="inner" >

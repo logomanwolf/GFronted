@@ -38,8 +38,9 @@ class SliderChart extends Component {
             return null;
         else
             return (
-                <div>
+                
                     <Chart
+                        height={350}
                     data={this.group(community)}
                         forceFit
                 >
@@ -47,7 +48,7 @@ class SliderChart extends Component {
                     <Axis />
                     <Geom type="interval" position="x*y" color="#e50000" />
                 </Chart>
-                </div>
+                
             );
     }
 }

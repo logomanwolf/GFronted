@@ -27,11 +27,13 @@ class ControlPanel extends Component {
         
         const handleCommunityDetect = (checked) => {
             if (checked) {
-                fetch(getCommunityDetect, {
-                    method: "POST",
-                    mode: "cors",
-                    // headers: { 'Accept': 'application/json,text/plain,*/*' }   ,
-                }).then(r => {
+                fetch(getCommunityDetect
+                    // ,{
+                    // method: "POST",
+                    // mode: "cors",
+                    // // headers: { 'Accept': 'application/json,text/plain,*/*' }   ,
+                    // }
+                ).then(r => {
                     return r.json();
                 })
                     .then(response => {
