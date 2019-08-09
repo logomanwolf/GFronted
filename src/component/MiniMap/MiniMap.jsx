@@ -8,7 +8,7 @@ class MiniMap extends Component{
 	constructor(props){
 		super(props);
 		this.graph = {};
-		this.stamp = new Date();
+		// this.stamp = new Date();
 		this.nodes = [];
 		this.svgWidth = 0;
 		this.svgHeight = 0;
@@ -97,9 +97,7 @@ class MiniMap extends Component{
 
 	shouldComponentUpdate(nextProps) {
         if (
-            nextProps.graph !== undefined &&
-            nextProps.stamp !== undefined &&
-			this.stamp !== nextProps.stamp
+            nextProps.graph !== undefined
 			// &&nextProps.graph.layouted
         ) {
 			this.graph = nextProps.graph
@@ -134,7 +132,6 @@ class MiniMap extends Component{
 
 const mapStateToProps = state => ({
 	graph: state.addG.g,
-	stamp:state.addG.stamp
 })
 
 export default connect(mapStateToProps)(MiniMap)

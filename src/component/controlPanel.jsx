@@ -51,7 +51,7 @@ class ControlPanel extends Component {
         }
         const layoutMap = {
             1: "node-link",
-            2:"hierarchy"
+            2: "hierarchy"
         }
         const handleLayoutChange = e => {
             console.log('radio checked', e.target.value);

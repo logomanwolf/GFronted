@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import nodes_4000  from '../data/data';
 import nodes_62 from '../data/data1';
+import nodes_4000_nodelink from '../data/data4000_nodelink'
+import lesmis_nodelink from '../data/lesmis_linknode'
 import createAction from '../actions';
 import { connect } from 'react-redux';
 import colorMap from '../settings/colorMap';
@@ -61,7 +63,7 @@ class ForceGraph extends Component {
         //     return false;//屏蔽浏览器自带的右键菜单
         // };
 
-        addG({ g: this.g, stamp: new Date() });
+        addG( this.g);
         this.g.draw();
         this.g.on('click', (el,e) => {
             handleNodeClick(el,e);
@@ -83,7 +85,9 @@ class ForceGraph extends Component {
 
     dataMap = {
         "nodes_4000": nodes_4000,
-        "nodes_62":nodes_62
+        "nodes_62": nodes_62,
+        'nodes_4000_nodelink': nodes_4000_nodelink,
+        'lesmis_nodelink':lesmis_nodelink
     }
     //highlight the shortestPath
     highlightPath = data => {
@@ -135,7 +139,7 @@ class ForceGraph extends Component {
             }
 
             addColorMap(color)
-            addG({g:this.g,stamp:new Date()});
+            addG(this.g);
         }
         if (source !== this.props.source) {
             this.g.getNodeById(source.id).style({ fill: "#607D8B" })
@@ -143,27 +147,18 @@ class ForceGraph extends Component {
         if (layout !== this.props.layout) {
             if (layout === "node-link") {
             // eslint-disable-next-line    
-            const force = new d3Force({
-                width: this.canvas.current.width,
-                height: this.canvas.current.height,
-            }); 
-            force.data(this.g.data());
-            force.start();
-            force.onEnd(() => {
-                console.log("draw finish");
-                this.g.draw()
-                this.g.initSearchIndice();
-                this.g.initInteraction();
-            });
-            
+                if (filename === undefined || filename==='nodes_4000')    
+                    this.g.data(this.dataMap['nodes_4000_nodelink'])
+                else if(filename==='nodes_62')
+                    this.g.data(this.dataMap['lesmis_nodelink'])
             }
             else {
                 if (filename === undefined)
                     this.g.data(this.dataMap["nodes_4000"]);
                 else
                     this.g.data(this.dataMap[filename]);
-                this.g.draw();
             }
+            this.g.draw();
         }
         if (target !== this.props.target) {
             const searchParams = new URLSearchParams();

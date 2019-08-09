@@ -15,8 +15,6 @@ import {
   Facet,
   Util
 } from "bizcharts";
-import DataSet from "@antv/data-set";
-import Brush from "@antv/g2-brush";
 
 class SliderChart extends Component {
     group(data) {
@@ -36,19 +34,21 @@ class SliderChart extends Component {
     }
     render() {
         const { community } = this.props;
-        const data = this.group(community);
-      return (
-        <div>
-          <Chart
-            data={data}
-            forceFit
-          >
-            <Tooltip />
-            <Axis />
-            <Geom type="interval" position="x*y" color="#e50000" />
-          </Chart>
-        </div>
-      );
+        if (community === undefined || community === {})
+            return null;
+        else
+            return (
+                <div>
+                    <Chart
+                    data={this.group(community)}
+                        forceFit
+                >
+                    <Tooltip />
+                    <Axis />
+                    <Geom type="interval" position="x*y" color="#e50000" />
+                </Chart>
+                </div>
+            );
     }
 }
 

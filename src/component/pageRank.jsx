@@ -3,6 +3,7 @@ import { Card, List ,Collapse,Avatar } from 'antd';
 import { connect } from 'react-redux';
 import pic from './img/barchart.PNG'
 import createAction from '../actions';
+import BarChart from './barchart'
 class PageRank extends Component {
     state = { key: 'tab1',detailPanelKey:1,listContent:[]}
     onTabChange = (key, type) => {
@@ -36,9 +37,8 @@ class PageRank extends Component {
             tab1:
                 <Card
                 // cover={<img alt="example" src={pic}/>}
-                cover={<img alt="example" src={pic}/>}
-                    style={{ overflow: "auto" }
-                    }
+                cover={<BarChart/>}
+                    style={{ overflow: "auto" }}
                     size="small" 
             >
                 <Card.Meta title="Europe Street beat" style={{ textAlign: "center", padding: 0,border:0 }} />

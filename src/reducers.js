@@ -28,8 +28,8 @@ const updateNodeMap=(state = {}, action) => {
 const addG=(state = {}, action) => {
     if (action.type === "addG" ) {
         return Object.assign({},state, {
-            'g': action.content.g,
-            'stamp':action.content.stamp
+            'g': action.content,
+            // 'stamp':action.content.stamp
         });
     }
     return state;
@@ -67,6 +67,7 @@ const updateListPanelContent = (state = {}, action) => {
     return state;
 }
 //conrtolPanel->forceMap
+//改变文件名
 const getFile = (state = {}, action) => {
     if (action.type === "getFile") {
         return Object.assign({},state, {
