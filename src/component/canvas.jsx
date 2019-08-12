@@ -8,6 +8,7 @@ import ForceGraph from './forceGraph'
 import MiniMap from './MiniMap/MiniMap';
 import $ from 'jquery'
 import createAction from '../actions';
+import { canvas_background ,card_background} from '../settings/settings'
 const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSource,target,updateTarget}) => {
     const displayed = () => {
         document.getElementById("clickRightMenu").style.display = "none";
@@ -29,8 +30,8 @@ const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSo
     }
     return (
         <div>               
-            <Card bordered={true}
-                style={{ margin:"20px 20px 20px 0px " }}
+            <Card bordered={false}
+                style={{ margin:"20px 20px 20px 0px ",backgroundColor:canvas_background }}
                 size={"small"}   >
                 {/* {data.nodes[0].id} */}
                                
@@ -55,13 +56,14 @@ const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSo
                 </Card> : null  }
                 </Col>
                 <Col span={15}></Col>
-                <Col span={4}><Card className="heatmap"
+                <Col span={4}>
+                    {/* <Card className="heatmap"
                     // cover={<MiniMap></MiniMap>}
                     bodyStyle={{ padding: 0,height:250 }} size="small"
                     // extra={<a href="#"><Icon type="close" /></a>}
                 >
-                    {/* <MiniMap/> */}
-                </Card>
+                    <MiniMap/>
+                </Card> */}
                 </Col>
             </Card>
         </div>

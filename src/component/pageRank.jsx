@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import pic from './img/barchart.PNG'
 import createAction from '../actions';
 import BarChart from './barchart'
+import {card_background,canvas_background,important_font,plain_text} from '../settings/settings'                                                                                              
 class PageRank extends Component {
     state = { key: 'tab1',detailPanelKey:1,listContent:[]}
     onTabChange = (key, type) => {
@@ -71,7 +72,7 @@ class PageRank extends Component {
           };
         return ( 
             <div>
-                <Card style={{ width: '100%' ,height:"418px"}} size="small" tabList={[
+                <Card style={{ width: '100%' ,height:"418px",backgroundColor:card_background}} size="small" tabList={[
                     {
                         key: 'tab1',
                         tab: 'Statistic Panel',
@@ -86,7 +87,7 @@ class PageRank extends Component {
                     onTabChange={key => {
                         this.onTabChange(key, 'key');
                     }}
-                    headStyle={{lineHeight:"10px",fontSize:"4px"}}
+                    headStyle={{ lineHeight: "10px", fontSize: "4px" }}
                 >
                 {contentList[this.state.key]}
                 </Card>

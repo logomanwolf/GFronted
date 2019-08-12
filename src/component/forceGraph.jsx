@@ -6,7 +6,7 @@ import lesmis_nodelink from '../data/lesmis_linknode'
 import createAction from '../actions';
 import { connect } from 'react-redux';
 import colorMap from '../settings/colorMap';
-import { getShortestPath } from '../settings/settings'
+import { getShortestPath,node_color,edge_color,canvas_background } from '../settings/settings'
 import URLSearchParams from 'url-search-params';
 import * as d3color from 'd3-color';
 import * as d3interpolate from 'd3-interpolate';
@@ -74,12 +74,12 @@ class ForceGraph extends Component {
         this.g.nodes().toArray().forEach(
             (item) => {
                 const oldStyle = this.g.getNodeById(item.id).style();
-                this.g.getNodeById(item.id).style({...oldStyle,fill: '#000000' });
+                this.g.getNodeById(item.id).style({...oldStyle,fill: node_color });
                 }
         )
         this.g.edges().toArray().forEach(
             item => {
-                this.g.getEdgeById(item.id).style({fill:'#E0E0E0',lineWidth:1})
+                this.g.getEdgeById(item.id).style({fill:edge_color,lineWidth:1})
             }
         )
     }
@@ -114,7 +114,7 @@ class ForceGraph extends Component {
             console.log(id)
             if (this.lastId !== undefined) {
                 const lastOldStyle = this.g.getNodeById(this.lastId).style();
-                this.g.getNodeById(this.lastId).style({...lastOldStyle, fill: '#000000' });
+                this.g.getNodeById(this.lastId).style({...lastOldStyle, fill: node_color });
             }
             const oldStyle = this.g.getNodeById(id).style();
             this.g.panToNode(id);
@@ -190,7 +190,7 @@ class ForceGraph extends Component {
     }
     render() { 
         return (
-            <canvas ref={this.canvas} width="1380px" height="1000px" />
+            <canvas ref={this.canvas} width="1380px" height="1000px" style={{backgroundColor:canvas_background}} />
         );
     }
     componentDidUpdate(prevProps, prevState, snapshot) {

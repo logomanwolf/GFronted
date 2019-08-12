@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, Button,Radio ,Divider,Icon,Row,Col,Typography,Switch,Menu, Dropdown  } from 'antd';
 import createAction from '../actions';
 import { connect } from 'react-redux'
-import { getPageRank, getCommunityDetect } from '../settings/settings.js'
+import { getPageRank, getCommunityDetect, card_background ,important_font,plain_text} from '../settings/settings.js'
 class ControlPanel extends Component {
     state = {
         value: 2,
@@ -77,14 +77,13 @@ class ControlPanel extends Component {
 
         return ( 
         <div>
-            <Card title="Control Panel" bordered={true} size={"small"} type="inner" headStyle={{backgroundColor:"#e8e8e8"}} >
+            <Card title="Control Panel" bordered={false} size={"small"} type="inner" headStyle={{color:important_font,backgroundColor:card_background}} style={{backgroundColor:card_background}} >
                 <Row>
-                    <Card
-                style={{overflow:"auto"}} bordered={false} size="small"
+                    <Card style={{overflow:"auto",backgroundColor:card_background,color:important_font}} bordered={false} size="small" headStyle={{color:important_font}} bodyStyle={{backgroundColor:card_background}}
                 >
                         <Row>
-                            <Card.Meta title="Analysis" size="small" style={{ marginBottom: "10px" }} bordered={false}></Card.Meta></Row>
-                        <Row >
+                            <Card.Meta title="Analysis" size="small"  style={{ marginBottom: "10px",color:important_font}} bordered={false}></Card.Meta></Row>
+                        <Row>
                             <Row>
                                 <Col span={6}><Dropdown.Button placement="bottomLeft" overlay={filemenu} icon={<Icon type="down" />}>Open</Dropdown.Button><br /></Col>
                                 <Col span={18}><div style={{ height: "32px", display: "table-cell", verticalAlign: "middle", fontSize: "110%", paddingLeft: "30px" }} > {this.state.filestatus.filename}</div>
@@ -122,8 +121,8 @@ class ControlPanel extends Component {
                     </Card>
                 </Row>
                 <Row>
-                    <Card style={{overflow:"auto"}} bordered={false} size="small" >
-                        <Row><Card.Meta title="Encoding"></Card.Meta></Row>
+                    <Card style={{overflow:"auto",backgroundColor:card_background}} bordered={false} size="small" bodyStyle={{backgroundColor:card_background,color:important_font}} >
+                            <Row><Card.Meta title={<p> fff</p>}/></Row>
                         <Row className="defaultText">
                             <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>Color</Typography.Text></Col>
                             <Col span={10}><Dropdown overlay={menu}><Button block> <Icon type="down" /></Button></Dropdown><br/></Col>

@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { Input, AutoComplete, List, Avatar, Card,Typography,Tag ,Row,Col } from 'antd';
 import { connect } from 'react-redux' 
 import createAction from '../actions';
+import {card_background,canvas_background,important_font,plain_text} from '../settings/settings'
 const dataSource = ["Anzelma", "Babet", "Bamatabois"];
-const tagsFromServer = ['Movies', 'Books','Musics'];
+const tagsFromServer = ['Movies', 'Books', 'Musics'];
+
 class autoComplete extends Component {
     state = { innerData: [], selectedTags: [], };    
     handleTagChange(tag, checked) {
@@ -37,7 +39,7 @@ class autoComplete extends Component {
             alterData(value);
         }
         return (
-            <Card title="Search Panel" bordered={true} size={"small"} style={{ height: "130px", overflow: "auto" }}  type="inner" headStyle={{backgroundColor:"#e8e8e8"}}>
+            <Card title="Search Panel" bordered={false} size={"small"} style={{ height: "130px", overflow: "auto",backgroundColor:card_background }}  type="inner" headStyle={{backgroundColor:"#e8e8e8"}} >
                 <Row>
                     <Col span={12}>
                         < AutoComplete  dataSource={dataSource} placeholder="try to type `b`" filterOption={(inputValue, option) =>option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1} >

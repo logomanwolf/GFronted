@@ -10,6 +10,9 @@
   /* margin: 0px 0px 0px 0px */
   
 }
+.ant-card-meta .ant-card-meta-detail .ant-card-meta-title{
+  color: #E0E0E0;
+}
 .heatmap{
   z-index: 100;
   height:300px;

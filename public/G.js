@@ -47112,7 +47112,7 @@ module.exports = function(module) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nodeStyle = { r: 10, fill: '#000' };
+exports.nodeStyle = { r: 10, fill: '#FFFFFF' };
 exports.edgeStyle = { lineWidth: 2, fill: '#E0E0E0' };
 exports.strokeStyle = { stroke: '#ffb6c1', strokeWidth: 0 };
 
@@ -48045,7 +48045,7 @@ class BatchDrawer {
         this.numLines = 0;
         this.maxLines = 10000;
         this.maxDots = 10000;
-        this.clearColor = { r: 1, g: 1, b: 1, a: 1 };
+        this.clearColor = { r: 0, g: 0, b: 0, a: 1 };
         this.currNumLines = 0;
         this.currNumDots = 0;
         this.pixelOrigin = { x: 0, y: 0 };
