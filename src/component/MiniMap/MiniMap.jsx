@@ -90,8 +90,8 @@ class MiniMap extends Component{
 		var yMax=Math.max.apply(null,yCoor)
 		console.log(xMax,yMax)
 		for(let i=0;i<this.nodes.length;i++){
-			this.nodes[i].x=this.nodes[i].attrs.x*this.svgWidth/xMax*0.8
-			this.nodes[i].y=this.nodes[i].attrs.y*this.svgHeight/yMax*0.8
+			this.nodes[i].x=this.nodes[i].attrs.x*this.svgWidth/xMax*0.8+20
+			this.nodes[i].y=this.nodes[i].attrs.y*this.svgHeight/yMax*0.8+10
 		}
 	}
 
