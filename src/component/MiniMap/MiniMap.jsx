@@ -12,10 +12,13 @@ class MiniMap extends Component{
 		this.nodes = [];
 		this.svgWidth = 0;
 		this.svgHeight = 0;
+		this.canvasWidth = 1380;
+		this.canvasHeight = 1000;
 		this.state = {
 			svgStyle: {width: '100%',height:'100%'}
 		}
-    }
+	}
+
 
     drawContour() {
 		console.log("drawContour")
@@ -40,7 +43,31 @@ class MiniMap extends Component{
 			}
 			return result;
 		}
-		
+		const x = d3.scaleLinear().domain([0, d3.max(this.nodes, (d) => d.x)]).range([0,this.canvasWidth ]).nice();
+		const y = d3.scaleLinear().domain([0, d3.max(this.nodes, (d) => d.y)]).range([this.canvasHeight, 0]).nice();
+		const drawPoint=(scaleX, scaleY, point, k) =>{
+			// context.beginPath();
+			// context.fillStyle = pointColor;
+			// const px = scaleX(point[0]);
+			// const py = scaleY(point[1]);
+			// context.arc(px, py, 1.2 * k, 0, 2 * Math.PI, true);
+			// context.fill();
+			
+			
+		}
+		const drawCanvas = (transform) => {
+			const scaleX = transform.rescaleX(x);
+			const scaleY = transform.rescaleY(y);
+			// gxAxis.call(xAxis.scale(scaleX));
+    		// gyAxis.call(yAxis.scale(scaleY));
+   	 		// context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+			// this.nodes().forEach(point => {
+			// 	this.graph.getElementById('') = scaleX(point.x);
+			// 	point.y = scaleY(point.y);
+			// 	return point;
+			// });
+		}
+
 		let colorBlue = d3.scalePow().domain(ticks(0, d3.max(contourMapData.map(d => d.value)), 4)).range(["#ffffff", "#b3cddd", "#7ab2d2", "#5288ab"])
 
 		var data = contourMapData.map(d => {
@@ -54,7 +81,12 @@ class MiniMap extends Component{
 		
 		let contourMap = contourG.selectAll("path.contour")
 			.data(data, (d, i) => i)
+		let zoomed = () => {
+			contourG.select('rect').attr('transform', d3.event.transform);
 
+			// contourG.selectAll('path.contour')
+		}
+		let zoom = d3.zoom().scaleExtent([0.5, 10]).on('zoom', zoomed);
 		contourMap.enter()
 		.append("path")
 		.classed('contour', true)
@@ -69,14 +101,16 @@ class MiniMap extends Component{
 		
 		contourG.select("rect").remove()
 		
+		
 		contourG.append('rect')
-			.attr('x',0)
-			.attr('y',0)
-			.attr('width',this.svgWidth)
-			.attr('height',this.svgHeight)
-			.attr('stroke','#999')
-			.attr('stroke-width',2)
-			.attr('fill-opacity',0)
+			.attr('x', 0)
+			.attr('y', 0)
+			.attr('width', this.svgWidth)
+			.attr('height', this.svgHeight)
+			.attr('stroke', '#999')
+			.attr('stroke-width', 2)
+			.attr('fill-opacity', 0)
+			.call(zoom);
     }
 	
 	calContour(){
@@ -91,10 +125,11 @@ class MiniMap extends Component{
 		console.log(xMax,yMax)
 		for(let i=0;i<this.nodes.length;i++){
 			this.nodes[i].x=this.nodes[i].attrs.x*this.svgWidth/xMax*0.8+20
-			this.nodes[i].y=this.nodes[i].attrs.y*this.svgHeight/yMax*0.8+10
+			this.nodes[i].y = this.nodes[i].attrs.y * this.svgHeight / yMax * 0.8 + 10
+			this.nodes[i].id = this.nodes[i].id;
 		}
 	}
-
+	
 	shouldComponentUpdate(nextProps) {
         if (nextProps.graph !== undefined && this.graph!==nextProps.graph) {
 			this.graph = nextProps.graph

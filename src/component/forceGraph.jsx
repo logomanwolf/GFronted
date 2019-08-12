@@ -49,8 +49,7 @@ class ForceGraph extends Component {
             container: canvas,
             data: nodes_4000
         });
-        this.g.initSearchIndice();
-        this.g.initInteraction();
+
         var clickRightHtml = document.getElementById("clickRightMenu");
         clickRightHtml.style.display = "none";//每次右键都要把之前显示的菜单隐藏哦
         
@@ -65,6 +64,8 @@ class ForceGraph extends Component {
 
         addG( this.g);
         this.g.draw();
+        this.g.initSearchIndice();
+        this.g.initInteraction();
         this.g.on('click', (el,e) => {
             handleNodeClick(el,e);
         })

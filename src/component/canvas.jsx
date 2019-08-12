@@ -60,7 +60,7 @@ const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSo
                     bodyStyle={{ padding: 0,height:250 }} size="small"
                     // extra={<a href="#"><Icon type="close" /></a>}
                 >
-                    <MiniMap/>
+                    {/* <MiniMap/> */}
                 </Card>
                 </Col>
             </Card>
