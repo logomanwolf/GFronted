@@ -43,6 +43,56 @@ class ForceGraph extends Component {
             this.curClickNode = el;
             updateCurClickNode(el);
         }
+        const handleNodeHover = (el, e) => {
+            if (el.attrs.hovered === undefined) {
+                el.attrs.hovered = true;
+                let oldStyle = el.style();
+                fadeNodesAndEdges();
+                el.style({ ...oldStyle });
+                this.g.draw();
+            }
+        }
+        const fadeColor = color => {
+            let oldcolor = d3.color(color);
+            let backgroundColor = d3.color('#000000');
+            oldcolor.opacity = 0.5;
+            let newR = oldcolor.r * oldcolor.opacity + backgroundColor.r * (1 - oldcolor.opacity);
+            let newG = oldcolor.g * oldcolor.opacity + backgroundColor.g * (1 - oldcolor.opacity);
+            let newB = oldcolor.b * oldcolor.opacity + backgroundColor.b * (1 - oldcolor.opacity);
+            let newColor = oldcolor;
+            newColor.r = newR;
+            newColor.g = newG;
+            newColor.b = newB;
+            return newColor.hex();
+        }
+        //将所有的的nodes和edges淡去
+        const fadeNodesAndEdges = () => {
+            let nodes = this.g.nodes().toArray();
+            nodes.forEach(node => {
+                let oldNodeStyle = node.style();
+                node.attrs.oldStyle = oldNodeStyle;
+                node.style({ ...oldNodeStyle, fill: fadeColor(oldNodeStyle.fill) });
+            })
+            let edges = this.g.edges().toArray();
+            edges.forEach(edge => {
+                let oldEdgeStyle = edge.style();
+                edge.attrs.oldStyle = oldEdgeStyle;
+                edge.style({ ...oldEdgeStyle, fill: fadeColor(oldEdgeStyle.fill) });
+            })
+        }
+        //将所有的nodes和edges变回来
+        const fadeNodeAndEdgesBack = () => {
+            let nodes = this.g.nodes().toArray();
+            nodes.forEach(node => {
+                let oldNodeStyle = node.attrs.oldStyle;
+                node.style({ ...oldNodeStyle });
+            })
+            let edges = this.g.edges().toArray();
+            edges.forEach(edge => {
+                let oldEdgeStyle = edge.attrs.oldStyle;
+                edge.style({ ...oldEdgeStyle});
+            })
+        }
         var gl = canvas.getContext('webgl2');
          // eslint-disable-next-line
         this.g = new G({
@@ -62,12 +112,15 @@ class ForceGraph extends Component {
         //     return false;//屏蔽浏览器自带的右键菜单
         // };
 
-        addG( this.g);
+        addG(this.g);
         this.g.draw();
         this.g.initSearchIndice();
         this.g.initInteraction();
         this.g.on('click', (el,e) => {
             handleNodeClick(el,e);
+        })
+        this.g.on('mouseOver', (el, e) => {
+            handleNodeHover(el, e);
         })
     }
     initNodes() {
@@ -94,16 +147,38 @@ class ForceGraph extends Component {
     highlightPath = data => {
         data.forEach(item => {
             item.forEach(n => {
-                this.g.getNodeById(n).style({ fill: '#607D8B' });
+                this.g.getNodeById(n).style({ fill: '#FF0000' });
             });
             for (let i = 0; i < item.length - 1; i++) {
-                console.log(item[i] + '->' + item[i + 1]);
+                // console.log(item[i] + '->' + item[i + 1]);
                 const data = this.g.getEdgesByAttribute('source', item[i]).getEdgesByAttribute('target', item[i + 1]).toArray()
                     .concat(this.g.getEdgesByAttribute('source', item[i+1]).getEdgesByAttribute('target', item[i]).toArray())
                 // data[0].style({ fill: "#ccc" });
                 data[0].style({ fill: "#e19d54" });
             }
         });
+    }
+    motion = (collection1, collection2) => {
+        let nodes = _.cloneDeep(collection1.nodes);
+        let nodes2 = _.cloneDeep(collection2.nodes);
+        let links = collection1.links.slice();
+        let count = 5;
+        let montionInterval = 5;
+        nodes.forEach((item,i) => {
+            item.motionUnitX = (nodes2[i].x - item.x) / count;
+            item.motionUnitY = (nodes2[i].y - item.y) / count;
+        })
+        var intervalId=setInterval((g) => {
+            if (count<=1)
+                clearInterval(intervalId);
+            nodes.forEach((item, i) => {
+                item.x += item.motionUnitX;
+                item.y += item.motionUnitY;
+            })
+            g.data({nodes,links});
+            g.draw()
+            count--;
+        }, montionInterval, this.g);
     }
     componentWillReceiveProps(newProps) {
         const { id, community, addColorMap, addG, filename,source,target,layout,updateShortestPath } = newProps;
@@ -114,11 +189,11 @@ class ForceGraph extends Component {
             console.log(id)
             if (this.lastId !== undefined) {
                 const lastOldStyle = this.g.getNodeById(this.lastId).style();
-                this.g.getNodeById(this.lastId).style({...lastOldStyle, fill: node_color });
+                this.g.getNodeById(this.lastId).style({ ...lastOldStyle, fill: node_color });
             }
             const oldStyle = this.g.getNodeById(id).style();
             this.g.panToNode(id);
-            this.g.getNodeById(id).style({ ...oldStyle,fill: '#FFC125' });
+            this.g.getNodeById(id).style({ ...oldStyle,fill: '#FF0000' });
             this.lastId = id;
             // this.force.data(this.g.data());
         }
@@ -146,18 +221,25 @@ class ForceGraph extends Component {
             this.g.getNodeById(source.id).style({ fill: "#607D8B" })
         }
         if (layout !== this.props.layout) {
+            //toDo:定义一个动画函数
             if (layout === "node-link") {
             // eslint-disable-next-line    
-                if (filename === undefined || filename==='nodes_4000')    
-                    this.g.data(this.dataMap['nodes_4000_nodelink'])
-                else if(filename==='nodes_62')
-                    this.g.data(this.dataMap['lesmis_nodelink'])
+                if (filename === undefined || filename === 'nodes_4000') {
+                    this.motion(this.dataMap["nodes_4000"], this.dataMap['nodes_4000_nodelink']);
+                    // this.g.data(this.dataMap['nodes_4000_nodelink'])
+                }   
+                else if (filename === 'nodes_62')
+                    this.motion(this.dataMap["nodes_62"], this.dataMap['lesmis_nodelink']);
+                    // this.g.data(this.dataMap['lesmis_nodelink'])
             }
             else {
-                if (filename === undefined)
-                    this.g.data(this.dataMap["nodes_4000"]);
-                else
-                    this.g.data(this.dataMap[filename]);
+                if (filename === undefined || filename === 'nodes_4000'){
+                    this.motion(this.dataMap["nodes_4000_nodelink"], this.dataMap['nodes_4000']);
+                    // this.g.data(this.dataMap["nodes_4000"]);
+                }
+                else if (filename === 'nodes_62')
+                    this.motion(this.dataMap["lesmis_nodelink"], this.dataMap[filename]);
+                    // this.g.data(this.dataMap[filename]);
             }
             this.g.draw();
         }

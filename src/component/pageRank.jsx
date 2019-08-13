@@ -39,7 +39,7 @@ class PageRank extends Component {
                 <Card
                 // cover={<img alt="example" src={pic}/>}
                 cover={<BarChart/>}
-                    style={{ overflow: "auto",maxHeight:"340px" }}
+                    style={{ overflow: "auto",maxHeight:"340px",backgroundColor:card_background,marginLeft:0 }}
                     size="small" >
             </Card>
             , tab2:

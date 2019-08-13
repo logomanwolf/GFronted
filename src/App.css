@@ -1,3 +1,8 @@
+@canvas_background: #121212;
+@important_font :#E0E0E0;
+@plain_text: #A0A0A0;
+@card_background: rgba(0,0,0,0.1   );
+@inner_card_background :"rgba(255,255,255,0.1)";
 
 .certain-category-icon {
   color: #6e6e6e;
@@ -12,6 +17,75 @@
 }
 .ant-card-meta .ant-card-meta-detail .ant-card-meta-title{
   color: #E0E0E0;
+}
+
+.ant-typography strong{
+  color:#E0E0E0;
+}
+div.ant-btn-group.ant-dropdown-button  button.ant-btn.ant-btn-default,button.ant-btn.ant-dropdown-trigger.ant-btn-block{
+  background-color: #121212;
+  color: #E0E0E0;
+}
+div.ant-card-head{
+  /* background-color: rgba(255, 255, 255, 0.1); */
+  color: #E0E0E0;
+  border: 0px;
+}
+input.ant-select-auto-complete.ant-select .ant-input{
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #E0E0E0;
+}
+div.ant-card-bordered{
+border: 0cm;
+}
+span.ant-radio + *{
+  color:#A0A0A0;
+}
+button.ant-switch{
+  background-color: #121212
+}
+button.ant-switch-checked{
+  background-color: #1890ff
+}
+button.ant-btn{
+  border: 0ch;
+  background-color: #121212
+}
+.ant-select-auto-complete.ant-select input.ant-input{
+  background-color: #121212;
+  color: #E0E0E0;
+  border: 0ch
+}
+div.ant-select-search__field__wrap{
+  background-color: black;
+}
+span.ant-typography{
+  color:#A0A0A0
+}
+i.ant-input-search-icon{
+  color:#E0E0E0;
+}
+.ant-col.ant-col-12>h6{
+  color: #E0E0E0;
+}
+div.ant-tag.ant-tag-checkable{
+  color: #A0A0A0;
+}
+div.ant-card.ant-card-small.ant-card-type-inner{
+  background-color: rgba(255, 255, 255, 0.1);
+}
+div.ant-card.ant-card-small.ant-card-type-inner div.ant-card-head{
+  background-color: rgba(255, 255, 255, 0);
+}
+div.ant-tag.ant-tag-checkable.ant-tag-checkable-checked{
+  color: white;
+}
+div.ant-card-head div.ant-tabs-bar{
+  border: 0ch;
+  color: #A0A0A0;
+}
+div.ant-collapse.ant-collapse-icon-position-left{
+  border: 0ch
 }
 .heatmap{
   z-index: 100;

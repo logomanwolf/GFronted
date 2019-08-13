@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, Button,Radio ,Divider,Icon,Row,Col,Typography,Switch,Menu, Dropdown  } from 'antd';
 import createAction from '../actions';
 import { connect } from 'react-redux'
-import { getPageRank, getCommunityDetect, card_background ,important_font,plain_text} from '../settings/settings.js'
+import { getPageRank, getCommunityDetect, card_background ,important_font,plain_text,inner_card_background,dividar_color} from '../settings/settings.js'
 class ControlPanel extends Component {
     state = {
         value: 2,
@@ -79,22 +79,22 @@ class ControlPanel extends Component {
         <div>
             <Card title="Control Panel" bordered={false} size={"small"} type="inner" headStyle={{color:important_font,backgroundColor:card_background}} style={{backgroundColor:card_background}} >
                 <Row>
-                    <Card style={{overflow:"auto",backgroundColor:card_background,color:important_font}} bordered={false} size="small" headStyle={{color:important_font}} bodyStyle={{backgroundColor:card_background}}
+                    <Card style={{overflow:"auto",backgroundColor:card_background}} bordered={false} size="small" headStyle={{color:important_font}} 
                 >
                         <Row>
-                            <Card.Meta title="Analysis" size="small"  style={{ marginBottom: "10px",color:important_font}} bordered={false}></Card.Meta></Row>
+                            <Card.Meta title="Analysis" size="small"  style={{ marginBottom: "10px"}} bordered={false}></Card.Meta></Row>
                         <Row>
                             <Row>
                                 <Col span={6}><Dropdown.Button placement="bottomLeft" overlay={filemenu} icon={<Icon type="down" />}>Open</Dropdown.Button><br /></Col>
-                                <Col span={18}><div style={{ height: "32px", display: "table-cell", verticalAlign: "middle", fontSize: "110%", paddingLeft: "30px" }} > {this.state.filestatus.filename}</div>
-                                    <Divider style={{ margin: "0px 0px 0px 10px", width: "90%",minWidth:"50%" }} /></Col>
+                                <Col span={18}><div style={{ height: "32px", display: "table-cell", verticalAlign: "middle", fontSize: "110%", paddingLeft: "30px",color:plain_text }} > {this.state.filestatus.filename}</div>
+                                    <Divider style={{ margin: "0px 0px 0px 10px", width: "90%",minWidth:"50%",backgroundColor:dividar_color }} /></Col>
                             </Row>
                             <Row className="defaultText">
-                                    <Col span={9}><Typography.Text strong >Nodes:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.nodesNum}</Typography.Text></Col>
+                                    <Col span={9} ><Typography.Text strong >Nodes:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.nodesNum}</Typography.Text></Col>
                                 <Col span={9}><Typography.Text strong >Edges:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.edgesBum}</Typography.Text></Col>
                             </Row>    
                             <Row className="defaultText">
-                                <Col span={18}><Typography.Text strong >Community Detect</Typography.Text></Col>
+                                <Col span={18}><Typography.Text  strong >Community Detect</Typography.Text></Col>
                                 <Col><Switch  onChange={(checked)=>handleCommunityDetect(checked)} /></Col>
                             </Row>
                             <Row className="defaultText">
@@ -121,8 +121,8 @@ class ControlPanel extends Component {
                     </Card>
                 </Row>
                 <Row>
-                    <Card style={{overflow:"auto",backgroundColor:card_background}} bordered={false} size="small" bodyStyle={{backgroundColor:card_background,color:important_font}} >
-                            <Row><Card.Meta title={<p> fff</p>}/></Row>
+                    <Card style={{overflow:"auto",backgroundColor:card_background}} bordered={false} size="small" bodyStyle={{color:important_font}} >
+                            <Row><Card.Meta title="Encoding"/></Row>
                         <Row className="defaultText">
                             <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>Color</Typography.Text></Col>
                             <Col span={10}><Dropdown overlay={menu}><Button block> <Icon type="down" /></Button></Dropdown><br/></Col>
