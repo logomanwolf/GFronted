@@ -94,11 +94,11 @@ class ControlPanel extends Component {
                                 <Col span={9}><Typography.Text strong >Edges:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.edgesBum}</Typography.Text></Col>
                             </Row>    
                             <Row className="defaultText">
-                                <Col span={18}><Typography.Text  strong >Community Detect</Typography.Text></Col>
+                                <Col span={18}><Typography.Text  strong >Community Detection</Typography.Text></Col>
                                 <Col><Switch  onChange={(checked)=>handleCommunityDetect(checked)} /></Col>
                             </Row>
                             <Row className="defaultText">
-                                <Col span={18}><Typography.Text strong >Page Rank</Typography.Text></Col>
+                                <Col span={18}><Typography.Text strong >Pagerank</Typography.Text></Col>
                                 <Col><Switch  onChange={handleAddPagerRank} /></Col>
                             </Row>
                             {/* <Button onClick={handleCommunityDetect} className="defaultButton">Community Detect</Button>

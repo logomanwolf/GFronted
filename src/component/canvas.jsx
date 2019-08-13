@@ -51,7 +51,7 @@ const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSo
                 
                 <Col span={4}>
                 {colorMap!==undefined && Object.values(colorMap).length>0? <Card id="wedget" cover={
-                    <div >community: {Object.values(colorMap).map(item => <Tag color={item} style={{height:"16px",background:{item}, borderRadius:"0px"}}></Tag> ) } </div>
+                    <div >community: {Object.values(colorMap).map(item => <Tag onClick={()=>{alert(this)}} color={item} style={{height:"16px",background:{item}, borderRadius:"0px"}}></Tag> ) } </div>
                 } bodyStyle={{ padding: 0 }} size="small" bordered={false}>
                 </Card> : null  }
                 </Col>

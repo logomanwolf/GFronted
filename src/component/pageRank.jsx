@@ -75,13 +75,13 @@ class PageRank extends Component {
                 <Card style={{ width: '100%' ,height:"418px",backgroundColor:card_background}} size="small" tabList={[
                     {
                         key: 'tab1',
-                        tab: 'Statistic Panel',
+                        tab: 'Statistic',
                     }, {
                         key: 'tab2',
-                        tab: 'List Panel',
+                        tab: 'List',
                     }, {
                         key: 'tab3',
-                        tab: 'Detail Panel',
+                        tab: 'Detail',
                     },]}
                     activeTabKey={this.state.key}
                     onTabChange={key => {

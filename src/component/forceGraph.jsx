@@ -39,6 +39,7 @@ class ForceGraph extends Component {
             clickRightHtml.style.top = e.clientY - 30 + "px";
             // console.log("el.attrs.x:" + el.attrs.x + '  ' + 'el.attrs.y:' + el.attrs.y + ' ');
             clickRightHtml.style.zIndex = 200;
+            //this is for Detail Panel
             clickRightHtml.setAttribute('el', el.id);
             this.curClickNode = el;
             updateCurClickNode(el);
@@ -49,7 +50,14 @@ class ForceGraph extends Component {
                 let oldStyle = el.style();
                 fadeNodesAndEdges();
                 el.style({ ...oldStyle });
-                this.g.draw();
+                this.g.refresh();
+            }
+        }
+        const handleNodeOut = (el, e) => {
+            if (el.attrs.hovered === true) {
+                el.attrs.hovered = undefined;
+                fadeNodeAndEdgesBack();
+                this.g.refresh();
             }
         }
         const fadeColor = color => {
@@ -70,13 +78,13 @@ class ForceGraph extends Component {
             let nodes = this.g.nodes().toArray();
             nodes.forEach(node => {
                 let oldNodeStyle = node.style();
-                node.attrs.oldStyle = oldNodeStyle;
+                node.oldStyle = oldNodeStyle;
                 node.style({ ...oldNodeStyle, fill: fadeColor(oldNodeStyle.fill) });
             })
             let edges = this.g.edges().toArray();
-            edges.forEach(edge => {
+                edges.forEach(edge => {
                 let oldEdgeStyle = edge.style();
-                edge.attrs.oldStyle = oldEdgeStyle;
+                edge.oldStyle = oldEdgeStyle;
                 edge.style({ ...oldEdgeStyle, fill: fadeColor(oldEdgeStyle.fill) });
             })
         }
@@ -84,12 +92,12 @@ class ForceGraph extends Component {
         const fadeNodeAndEdgesBack = () => {
             let nodes = this.g.nodes().toArray();
             nodes.forEach(node => {
-                let oldNodeStyle = node.attrs.oldStyle;
+                let oldNodeStyle = node.oldStyle;
                 node.style({ ...oldNodeStyle });
             })
             let edges = this.g.edges().toArray();
             edges.forEach(edge => {
-                let oldEdgeStyle = edge.attrs.oldStyle;
+                let oldEdgeStyle = edge.oldStyle;
                 edge.style({ ...oldEdgeStyle});
             })
         }
@@ -121,6 +129,9 @@ class ForceGraph extends Component {
         })
         this.g.on('mouseOver', (el, e) => {
             handleNodeHover(el, e);
+        })
+        this.g.on('mouseOut', (el, e) => {
+            handleNodeOut(el, e);
         })
     }
     initNodes() {
