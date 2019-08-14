@@ -39,14 +39,17 @@ class SliderChart extends Component {
         else
             return (
                 
-                    <Chart
+                <Chart
+                    theme= "dark"
                         height={350}
                     data={this.group(community)}
-                        forceFit
+                    forceFit
+                    style={{ paddingLeft: "0px" }}
+                    padding={["5%", "5%", "10%" ,"13%"]}
                 >
                     <Tooltip />
                     <Axis />
-                    <Geom type="interval" position="x*y" color="#e50000" />
+                    <Geom type="interval" position="x*y" color="#1d8eff" />
                 </Chart>
                 
             );

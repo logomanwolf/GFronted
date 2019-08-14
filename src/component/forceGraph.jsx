@@ -51,7 +51,8 @@ class ForceGraph extends Component {
                 fadeNodesAndEdges();
                 el.style({ ...oldStyle });
                 this.g.refresh();
-            }
+                enlargeEffect(el);
+            }   
         }
         const handleNodeOut = (el, e) => {
             if (el.attrs.hovered === true) {
@@ -100,6 +101,29 @@ class ForceGraph extends Component {
                 let oldEdgeStyle = edge.oldStyle;
                 edge.style({ ...oldEdgeStyle});
             })
+        }
+        const enlargeEffect = (node) => {
+            const oldStyle = node.style();
+            const oldR = oldStyle.r;
+            const mediaR = oldR * 1.5;
+            const newR = oldR * 1.2;
+            node.style({r:mediaR})
+            // nodeSizeMotion(node, mediaR);
+            // nodeSizeMotion(node, newR);
+        }
+        const nodeSizeMotion = (node, newR)=>{
+            let count = 5;
+            let montionInterval = 100;
+            const oldStyle = node.style();
+            node.motionUnitR = (newR-node.style().r) / count;
+            let intervalId=setInterval((g) => {
+                if (count<=1)
+                    clearInterval(intervalId);
+                node.style({ ...oldStyle, r: node.r + node.motionUnitR });
+                g.draw();
+                console.log(node);
+                count--;
+            }, montionInterval, this.g);
         }
         var gl = canvas.getContext('webgl2');
          // eslint-disable-next-line
@@ -179,7 +203,7 @@ class ForceGraph extends Component {
             item.motionUnitX = (nodes2[i].x - item.x) / count;
             item.motionUnitY = (nodes2[i].y - item.y) / count;
         })
-        var intervalId=setInterval((g) => {
+        let intervalId=setInterval((g) => {
             if (count<=1)
                 clearInterval(intervalId);
             nodes.forEach((item, i) => {

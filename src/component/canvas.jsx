@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Row, Col, Icon,Popover,Button,Tag,List } from 'antd';
+import { Card, Row, Col, Icon,Popover,Button,Tag,List  } from 'antd';
 import pic1 from './img/minimap.PNG'
 import pic2 from './img/colorMap.jpeg'
 import { connect } from 'react-redux';
@@ -8,7 +8,7 @@ import ForceGraph from './forceGraph'
 import MiniMap from './MiniMap/MiniMap';
 import $ from 'jquery'
 import createAction from '../actions';
-import { canvas_background ,card_background} from '../settings/settings'
+import { canvas_background ,important_font,plain_text,card_background} from '../settings/settings'
 const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSource,target,updateTarget}) => {
     const displayed = () => {
         document.getElementById("clickRightMenu").style.display = "none";
@@ -27,6 +27,13 @@ const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSo
         displayed();
         if (source !== undefined && target !== curClickNode)
         updateTarget(curClickNode);
+    }
+    const handleTagClick = (e, item) => {
+        // document.getElementsByClassName('tag').forEach(item => {
+        //     item.style.borderRadius = 0;
+        // })
+        e.target.style.borderWidth = "2px";
+        e.target.style.borderColor = "#1826FF";
     }
     return (
         <div>               
@@ -51,8 +58,11 @@ const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSo
                 
                 <Col span={4}>
                 {colorMap!==undefined && Object.values(colorMap).length>0? <Card id="wedget" cover={
-                    <div >community: {Object.values(colorMap).map(item => <Tag onClick={()=>{alert(this)}} color={item} style={{height:"16px",background:{item}, borderRadius:"0px"}}></Tag> ) } </div>
-                } bodyStyle={{ padding: 0 }} size="small" bordered={false}>
+                        <div style={{padding:"0px 0px 10px 10px"}}><div style={{ margin: "5px 0px 0px 0px", color: important_font }}>Community:</div> {Object.values(colorMap).map((item, i) =>
+                            <Tag key={i} className="tag" color={item} style={{backgroundColor:item}} onClick={(e) => {
+                                handleTagClick(e, item)
+                            }}>{i}</Tag>)} </div>
+                } bodyStyle={{ padding:0}} size="small" bordered={false}>
                 </Card> : null  }
                 </Col>
                 <Col span={15}></Col>

@@ -85,7 +85,8 @@ div.ant-card-head div.ant-tabs-bar{
   color: #A0A0A0;
 }
 div.ant-collapse.ant-collapse-icon-position-left{
-  border: 0ch
+  border: 0ch;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 .heatmap{
   z-index: 100;
@@ -117,8 +118,26 @@ div.ant-collapse.ant-collapse-icon-position-left{
   position: absolute;
   left:-40px; 
   bottom:-990px;   
-  background-color:rgba(255, 255, 255, 0.5);
+  background-color:rgba(255,255,255,0.1);
+  
 }
+#wedget .ant-card-small > .ant-card-body{
+  padding:0;
+  /* color:#E0E0E0 */
+}
+div.tag{
+  height: 20px;
+  width: 20px;
+   
+  /* line-height: 100%; */
+  border-radius: 20px; 
+  /* padding: 2.5px 2.5px 0 0; */
+  text-align: center;
+  margin:2.5px 5px 2.5px 0px;
+  padding:0;
+  box-sizing: content-box
+}
+
 .defaultButton{
   margin-top:10px
 }
