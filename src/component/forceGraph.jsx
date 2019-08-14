@@ -12,6 +12,7 @@ import * as d3color from 'd3-color';
 import * as d3interpolate from 'd3-interpolate';
 import * as d3 from 'd3';
 import _ from 'lodash' 
+
 // import * as d3Force from 'd3-force';
 class ForceGraph extends Component {
     state = {};
@@ -50,8 +51,8 @@ class ForceGraph extends Component {
                 let oldStyle = el.style();
                 fadeNodesAndEdges();
                 el.style({ ...oldStyle });
-                this.g.refresh();
                 enlargeEffect(el);
+                this.g.refresh();
             }   
         }
         const handleNodeOut = (el, e) => {
@@ -105,25 +106,29 @@ class ForceGraph extends Component {
         const enlargeEffect = (node) => {
             const oldStyle = node.style();
             const oldR = oldStyle.r;
-            const mediaR = oldR * 1.5;
-            const newR = oldR * 1.2;
-            node.style({r:mediaR})
-            // nodeSizeMotion(node, mediaR);
-            // nodeSizeMotion(node, newR);
+            const mediaR = oldR * 2.2;
+            const newR = oldR * 1.8;
+            const motionInternal = 1;
+            // node.style({r:13.4})
+            nodeSizeMotion(node, mediaR,motionInternal*5).then((result)=>nodeSizeMotion(result, newR,motionInternal));
         }
-        const nodeSizeMotion = (node, newR)=>{
+        const nodeSizeMotion = (node, newR, motionInternal)=>{
             let count = 5;
-            let montionInterval = 100;
+            // let montionInterval = 2;
             const oldStyle = node.style();
-            node.motionUnitR = (newR-node.style().r) / count;
-            let intervalId=setInterval((g) => {
-                if (count<=1)
-                    clearInterval(intervalId);
-                node.style({ ...oldStyle, r: node.r + node.motionUnitR });
-                g.draw();
-                console.log(node);
-                count--;
-            }, montionInterval, this.g);
+            node.motionUnitR = (newR - node.style().r) / count;
+            console.log(node.motionUnitR);
+            return new Promise((resolve, reject) => {
+                let intervalId=setInterval((g) => {
+                    if (count <= 1) {
+                        clearInterval(intervalId);
+                        resolve(node);
+                    }
+                    node.style({ ...oldStyle, r: node.style().r + node.motionUnitR });
+                    g.refresh();
+                    count--;
+                }, motionInternal, this.g);
+            })
         }
         var gl = canvas.getContext('webgl2');
          // eslint-disable-next-line
