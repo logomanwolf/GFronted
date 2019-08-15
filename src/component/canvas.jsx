@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Row, Col, Icon,Popover,Button,Tag,List  } from 'antd';
 import pic1 from './img/minimap.PNG'
 import pic2 from './img/colorMap.jpeg'
+import * as d3 from 'd3';
 import { connect } from 'react-redux';
 // import  data from "../data/data";
 import ForceGraph from './forceGraph'
@@ -9,7 +10,7 @@ import MiniMap from './MiniMap/MiniMap';
 import $ from 'jquery'
 import createAction from '../actions';
 import { canvas_background ,important_font,plain_text,card_background} from '../settings/settings'
-const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSource,target,updateTarget}) => {
+const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSource,target,updateTarget,g}) => {
     const displayed = () => {
         document.getElementById("clickRightMenu").style.display = "none";
     }
@@ -28,12 +29,75 @@ const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSo
         if (source !== undefined && target !== curClickNode)
         updateTarget(curClickNode);
     }
-    const handleTagClick = (e, item) => {
-        // document.getElementsByClassName('tag').forEach(item => {
-        //     item.style.borderRadius = 0;
-        // })
+    const handleTagClick = (e, tag) => {
+        fadeNodeAndEdgesBack(g);
+        const domEl = document.getElementsByClassName('tag');
+        for (let i = 0; i < domEl.length; i++){
+            let item = domEl[i];
+            item.style.borderWidth = 0;
+        }
         e.target.style.borderWidth = "2px";
         e.target.style.borderColor = "#1826FF";
+        fadeNodesAndEdges(g)
+        highLightCommunity(g, [tag]);
+        g.draw();
+    }
+    const highLightCommunity = (g,groupArray) => {
+        groupArray.forEach(group => {
+            let edges = g.edges().toArray();
+            edges.forEach(edge => {
+                let source = g.getNodeById(edge.source);
+                let target = g.getNodeById(edge.target);
+                if (source.attrs.group === group && target.attrs.group === group) {
+                    source.style({ ...source.oldStyle });
+                    target.style({ ...target.oldStyle });
+                    edge.style({ ...edge.oldStyle });
+                }
+            })
+        })
+    }
+    const fadeColor = color => {
+        let oldcolor = d3.color(color);
+        let backgroundColor = d3.color('#000000');
+        oldcolor.opacity = 0.2;
+        let newR = oldcolor.r * oldcolor.opacity + backgroundColor.r * (1 - oldcolor.opacity);
+        let newG = oldcolor.g * oldcolor.opacity + backgroundColor.g * (1 - oldcolor.opacity);
+        let newB = oldcolor.b * oldcolor.opacity + backgroundColor.b * (1 - oldcolor.opacity);
+        let newColor = oldcolor;
+        newColor.r = newR;
+        newColor.g = newG;
+        newColor.b = newB;
+        return newColor.hex();
+    }
+    //将所有的的nodes和edges淡去
+    const fadeNodesAndEdges = (g) => {
+        let nodes = g.nodes().toArray();
+        nodes.forEach(node => {
+            if(node.oldStyle===undefined)
+                node.oldStyle =node.style();
+            node.style({ ...node.oldStyle, fill: fadeColor(node.oldStyle.fill) });
+        })
+        let edges = g.edges().toArray();
+            edges.forEach(edge => {
+                if (edge.oldStyle === undefined)
+                    edge.oldStyle = edge.style();
+            edge.style({ ...edge.oldStyle, fill: fadeColor(edge.oldStyle.fill) });
+        })
+    }
+    //将所有的nodes和edges变回来
+    const fadeNodeAndEdgesBack = (g) => {
+        let nodes = g.nodes().toArray();
+        if (nodes[0].oldStyle === undefined)
+            return;
+        nodes.forEach(node => {
+            let oldNodeStyle = node.oldStyle;
+            node.style({ ...oldNodeStyle });
+        })
+        let edges = g.edges().toArray();
+        edges.forEach(edge => {
+            let oldEdgeStyle = edge.oldStyle;
+            edge.style({ ...oldEdgeStyle});
+        })
     }
     return (
         <div>               
@@ -58,9 +122,10 @@ const Canvas = ({ colorMap, updateListPanelContent, curClickNode,source,updateSo
                 
                 <Col span={4}>
                 {colorMap!==undefined && Object.values(colorMap).length>0? <Card id="wedget" cover={
-                        <div style={{padding:"0px 0px 10px 10px"}}><div style={{ margin: "5px 0px 0px 0px", color: important_font }}>Community:</div> {Object.values(colorMap).map((item, i) =>
+                        <div style={{ padding: "0px 0px 10px 10px" }}><div style={{ margin: "5px 0px 0px 0px", color: important_font }}>Community:</div> {
+                            Object.values(colorMap).map((item, i) =>
                             <Tag key={i} className="tag" color={item} style={{backgroundColor:item}} onClick={(e) => {
-                                handleTagClick(e, item)
+                                    handleTagClick(e,i)
                             }}>{i}</Tag>)} </div>
                 } bodyStyle={{ padding:0}} size="small" bordered={false}>
                 </Card> : null  }
@@ -84,10 +149,11 @@ const mapStateToProps = (state, ownProps) => {
     const { curClickNode } = state.updateCurClickNode;
     const { source } = state.updateSource;
     const { target } = state.updateTarget;
+    const { g } = state.addG;
     // const {rollback}=state.rollback
     console.log(colorMap);
     return {
-        colorMap,curClickNode,source,target
+        colorMap,curClickNode,source,target,g
     }
 } 
 const mapDispatchToProps = (dispatch, ownProps) => {

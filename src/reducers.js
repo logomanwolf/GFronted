@@ -111,6 +111,15 @@ const updateLayout=(state = {}, action) => {
     }
     return state;
 }
+
+const updatePeopleCluster=(state = {}, action) => {
+    if (action.type === "updatePeopleCluster") {
+        return Object.assign({},state, {
+            'peopleCluster': action.content
+        });
+    }
+    return state;
+}
 // combineReducers 合并Reducer
 const reducer = combineReducers({
     alterData,
@@ -125,7 +134,8 @@ const reducer = combineReducers({
     updateCurClickNode,
     updateSource,
     updateTarget,
-    updateLayout
+    updateLayout,
+    updatePeopleCluster
 });
 
 

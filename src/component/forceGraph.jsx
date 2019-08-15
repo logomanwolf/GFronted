@@ -47,11 +47,29 @@ class ForceGraph extends Component {
         }
         const handleNodeHover = (el, e) => {
             if (el.attrs.hovered === undefined) {
+                const neighbourEdges = this.g.getEdgesByAttribute("source", el.id).toArray().concat(this.g.getEdgesByAttribute("target", el.id).toArray());
+                let neighbourNodes = [];
                 el.attrs.hovered = true;
                 let oldStyle = el.style();
                 fadeNodesAndEdges();
                 el.style({ ...oldStyle });
-                enlargeEffect(el);
+                neighbourEdges.forEach(item => {
+                    if (item.source !== el.id) {
+                        let node = this.g.getNodeById(item.source);
+                        node.style({ ...oldStyle });
+                        neighbourNodes.push(node);
+                    }
+                    else if (item.target !== el.id) {
+                        let node = this.g.getNodeById(item.target);
+                        node.style({ ...oldStyle });
+                        neighbourNodes.push(node);
+                    }
+                    item.style({ ...item.oldStyle, lineWidth: 2 });
+                })
+                enlargeEffect(el, 2.2, 1.8);
+                neighbourNodes.forEach(item => {
+                    enlargeEffect(item, 0.8, 1);
+                })
                 this.g.refresh();
             }   
         }
@@ -65,7 +83,7 @@ class ForceGraph extends Component {
         const fadeColor = color => {
             let oldcolor = d3.color(color);
             let backgroundColor = d3.color('#000000');
-            oldcolor.opacity = 0.5;
+            oldcolor.opacity = 0.2;
             let newR = oldcolor.r * oldcolor.opacity + backgroundColor.r * (1 - oldcolor.opacity);
             let newG = oldcolor.g * oldcolor.opacity + backgroundColor.g * (1 - oldcolor.opacity);
             let newB = oldcolor.b * oldcolor.opacity + backgroundColor.b * (1 - oldcolor.opacity);
@@ -103,14 +121,14 @@ class ForceGraph extends Component {
                 edge.style({ ...oldEdgeStyle});
             })
         }
-        const enlargeEffect = (node) => {
+        const enlargeEffect = (node,increseR1,increseR2) => {
             const oldStyle = node.style();
             const oldR = oldStyle.r;
-            const mediaR = oldR * 2.2;
-            const newR = oldR * 1.8;
+            const mediaR = oldR*increseR1;
+            const newR = oldR*increseR2 ;
             const motionInternal = 1;
             // node.style({r:13.4})
-            nodeSizeMotion(node, mediaR,motionInternal*5).then((result)=>nodeSizeMotion(result, newR,motionInternal));
+            nodeSizeMotion(node, mediaR,motionInternal*5).then((result)=>nodeSizeMotion(result, newR,motionInternal*3));
         }
         const nodeSizeMotion = (node, newR, motionInternal)=>{
             let count = 5;
@@ -209,8 +227,11 @@ class ForceGraph extends Component {
             item.motionUnitY = (nodes2[i].y - item.y) / count;
         })
         let intervalId=setInterval((g) => {
-            if (count<=1)
+            if (count <= 1) {
+                g.initSearchIndice();
+                g.initInteraction();
                 clearInterval(intervalId);
+            }
             nodes.forEach((item, i) => {
                 item.x += item.motionUnitX;
                 item.y += item.motionUnitY;
@@ -308,6 +329,7 @@ class ForceGraph extends Component {
             addG(this.g);
             // this.g.draw();
         }
+        
         this.g.refresh();
     }
     render() { 
@@ -327,11 +349,12 @@ const mapStateToProps = (state, ownProps) => {
     const { filename } = state.getFile;
     const { source } = state.updateSource;
     const { target } = state.updateTarget;
-    const {layout}= state.updateLayout;
+    const { layout } = state.updateLayout;
+    const {peopleCluster}= state.updatePeopleCluster;
     // const {rollback}=state.rollback
     console.log(id);
     return {
-        id, community,  filename,source,target,layout
+        id, community,  filename,source,target,layout,peopleCluster
     }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {
