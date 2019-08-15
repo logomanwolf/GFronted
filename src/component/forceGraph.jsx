@@ -138,12 +138,13 @@ class ForceGraph extends Component {
             console.log(node.motionUnitR);
             return new Promise((resolve, reject) => {
                 let intervalId=setInterval((g) => {
-                    if (count <= 1) {
+                    if (count <= 0) {
                         clearInterval(intervalId);
                         resolve(node);
                     }
                     node.style({ ...oldStyle, r: node.style().r + node.motionUnitR });
                     g.refresh();
+                    
                     count--;
                 }, motionInternal, this.g);
             })
@@ -167,7 +168,7 @@ class ForceGraph extends Component {
         //     return false;//屏蔽浏览器自带的右键菜单
         // };
 
-        addG(this.g);
+        
         this.g.draw();
         this.g.initSearchIndice();
         this.g.initInteraction();
@@ -180,6 +181,7 @@ class ForceGraph extends Component {
         this.g.on('mouseOut', (el, e) => {
             handleNodeOut(el, e);
         })
+        addG(this.g);
     }
     initNodes() {
         this.g.nodes().toArray().forEach(
@@ -259,7 +261,7 @@ class ForceGraph extends Component {
             // this.force.data(this.g.data());
         }
         //点击社团检测开关，可以在主视图中看到用不同的颜色编码社团
-        if (community !== undefined) {
+        if (community !== undefined) {            
             let color = {};
                 for (var key in community) {
                     this.g.getNodeById(key).attrs["group"] = community[key];
@@ -276,7 +278,7 @@ class ForceGraph extends Component {
             }
 
             addColorMap(color)
-            addG(this.g);
+            // addG(this.g);
         }
         if (source !== this.props.source) {
             this.g.getNodeById(source.id).style({ fill: "#607D8B" })
@@ -326,11 +328,13 @@ class ForceGraph extends Component {
         }
         if (filename !== this.props.filename) {
             this.g.data(this.dataMap[filename]);
-            addG(this.g);
+            // addG(this.g);
             // this.g.draw();
         }
         
         this.g.refresh();
+        this.g.initSearchIndice();
+        this.g.initInteraction();
     }
     render() { 
         return (
@@ -350,11 +354,10 @@ const mapStateToProps = (state, ownProps) => {
     const { source } = state.updateSource;
     const { target } = state.updateTarget;
     const { layout } = state.updateLayout;
-    const {peopleCluster}= state.updatePeopleCluster;
     // const {rollback}=state.rollback
     console.log(id);
     return {
-        id, community,  filename,source,target,layout,peopleCluster
+        id, community,  filename,source,target,layout
     }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {

@@ -19,7 +19,6 @@ import {
 
 class SliderChart extends Component {
     group(data) {
-        // const { updatePeopleCluster } = this.props;
         const result = {};
         const array = Object.values(data);
         const biggest = Math.max.apply(Object.values(data))
@@ -29,7 +28,6 @@ class SliderChart extends Component {
             else
                 result[i] += 1;
         })
-        // updatePeopleCluster(result);
         const result2 = Object.values(result).map((item,i) => {
             return { x: i, y: item };
         })
@@ -66,11 +64,7 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {
-    // return{
-    //     updatePeopleCluster: peopleCluster => {
-    //         dispatch(createAction("updatePeopleCluster",peopleCluster))
-    //     }
-    // }
+
 } 
 const Content=connect(mapStateToProps,mapDispatchToProps)(SliderChart)
 export default Content;
