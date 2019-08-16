@@ -63,8 +63,6 @@ const mapStateToProps = (state, ownProps) => {
         community
     }
 }
-const mapDispatchToProps = (dispatch,ownProps) => {
-
-} 
-const Content=connect(mapStateToProps,mapDispatchToProps)(SliderChart)
+const mapDispatchToProps = () => {} 
+const Content=connect(mapStateToProps)(SliderChart)
 export default Content;

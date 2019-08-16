@@ -50,7 +50,8 @@ class ForceGraph extends Component {
                 const neighbourEdges = this.g.getEdgesByAttribute("source", el.id).toArray().concat(this.g.getEdgesByAttribute("target", el.id).toArray());
                 let neighbourNodes = [];
                 el.attrs.hovered = true;
-                let oldStyle = el.style();
+                // let oldStyle = el.style();
+                let oldStyle = el.oldStyle;
                 fadeNodesAndEdges();
                 el.style({ ...oldStyle });
                 neighbourEdges.forEach(item => {
@@ -70,14 +71,14 @@ class ForceGraph extends Component {
                 neighbourNodes.forEach(item => {
                     enlargeEffect(item, 0.8, 1);
                 })
-                this.g.refresh();
+                this.g.draw();
             }   
         }
         const handleNodeOut = (el, e) => {
             if (el.attrs.hovered === true) {
                 el.attrs.hovered = undefined;
                 fadeNodeAndEdgesBack();
-                this.g.refresh();
+                this.g.draw();
             }
         }
         const fadeColor = color => {
@@ -97,14 +98,14 @@ class ForceGraph extends Component {
         const fadeNodesAndEdges = () => {
             let nodes = this.g.nodes().toArray();
             nodes.forEach(node => {
-                let oldNodeStyle = node.style();
-                node.oldStyle = oldNodeStyle;
+                let oldNodeStyle = node.oldStyle;
+                // node.oldStyle = oldNodeStyle;
                 node.style({ ...oldNodeStyle, fill: fadeColor(oldNodeStyle.fill) });
             })
             let edges = this.g.edges().toArray();
                 edges.forEach(edge => {
-                let oldEdgeStyle = edge.style();
-                edge.oldStyle = oldEdgeStyle;
+                let oldEdgeStyle = edge.oldStyle;
+                // edge.oldStyle = oldEdgeStyle;
                 edge.style({ ...oldEdgeStyle, fill: fadeColor(oldEdgeStyle.fill) });
             })
         }
@@ -122,7 +123,7 @@ class ForceGraph extends Component {
             })
         }
         const enlargeEffect = (node,increseR1,increseR2) => {
-            const oldStyle = node.style();
+            const oldStyle = node.oldStyle;
             const oldR = oldStyle.r;
             const mediaR = oldR*increseR1;
             const newR = oldR*increseR2 ;
@@ -133,19 +134,18 @@ class ForceGraph extends Component {
         const nodeSizeMotion = (node, newR, motionInternal)=>{
             let count = 5;
             // let montionInterval = 2;
-            const oldStyle = node.style();
+            const oldStyle = node.nodeStyle;
             node.motionUnitR = (newR - node.style().r) / count;
             console.log(node.motionUnitR);
             return new Promise((resolve, reject) => {
                 let intervalId=setInterval((g) => {
-                    if (count <= 0) {
+                    node.style({ ...oldStyle, r: node.style().r + node.motionUnitR });
+                    g.refresh();                    
+                    count--;
+                    if (count < 1) {
                         clearInterval(intervalId);
                         resolve(node);
                     }
-                    node.style({ ...oldStyle, r: node.style().r + node.motionUnitR });
-                    g.refresh();
-                    
-                    count--;
                 }, motionInternal, this.g);
             })
         }
@@ -166,9 +166,7 @@ class ForceGraph extends Component {
         //     clickRightHtml.style.top = event.clientY - 30 + "px";
         //     console.log(event.clientX, event.clientY)
         //     return false;//屏蔽浏览器自带的右键菜单
-        // };
-
-        
+        // };        
         this.g.draw();
         this.g.initSearchIndice();
         this.g.initInteraction();
@@ -181,18 +179,28 @@ class ForceGraph extends Component {
         this.g.on('mouseOut', (el, e) => {
             handleNodeOut(el, e);
         })
+        this.g.nodes().toArray().forEach(item => {
+            item.oldStyle = { ...item.style() };
+        })
+        this.g.edges().forEach(
+            item=>
+            { item.oldStyle = { ...item.style() } }
+        )
         addG(this.g);
     }
     initNodes() {
         this.g.nodes().toArray().forEach(
             (item) => {
-                const oldStyle = this.g.getNodeById(item.id).style();
-                this.g.getNodeById(item.id).style({...oldStyle,fill: node_color });
+                // const oldStyle = this.g.getNodeById(item.id).oldStyle;
+                // this.g.getNodeById(item.id).style({...oldStyle,fill: node_color });
+                const oldStyle = item.oldStyle;
+                item.style({...oldStyle,fill: node_color });
                 }
         )
         this.g.edges().toArray().forEach(
             item => {
-                this.g.getEdgeById(item.id).style({fill:edge_color,lineWidth:1})
+                // this.g.getEdgeById(item.id).style({fill:edge_color,lineWidth:1})
+                item.style({fill:edge_color,lineWidth:1})
             }
         )
     }
@@ -224,16 +232,14 @@ class ForceGraph extends Component {
         let links = collection1.links.slice();
         let count = 5;
         let montionInterval = 5;
+        const oldNodes = this.g.nodes();
         nodes.forEach((item,i) => {
             item.motionUnitX = (nodes2[i].x - item.x) / count;
             item.motionUnitY = (nodes2[i].y - item.y) / count;
+            item.group = oldNodes.getNodeById(item.id).attrs.group;
+            item.oldStyle = _.cloneDeep(oldNodes.getNodeById(item.id).oldStyle);
         })
         let intervalId=setInterval((g) => {
-            if (count <= 1) {
-                g.initSearchIndice();
-                g.initInteraction();
-                clearInterval(intervalId);
-            }
             nodes.forEach((item, i) => {
                 item.x += item.motionUnitX;
                 item.y += item.motionUnitY;
@@ -241,11 +247,24 @@ class ForceGraph extends Component {
             g.data({nodes,links});
             g.draw()
             count--;
+            if (count < 1) {
+                g.nodes().forEach(item => {
+                    item.oldStyle = item.attrs.oldStyle;
+                    // item.group = item.attrs.group;
+                    item.style({ ...item.oldStyle });
+                })
+                g.edges().forEach(item => {
+                    item.oldStyle = item.style();
+                })
+                g.refresh();
+                g.initSearchIndice();
+                g.initInteraction();
+                clearInterval(intervalId);
+            }
         }, montionInterval, this.g);
     }
     componentWillReceiveProps(newProps) {
         const { id, community, addColorMap, addG, filename,source,target,layout,updateShortestPath } = newProps;
-
         this.initNodes();        
         //点击查找会找到指定的id，并在主视区中显示
         if (id !== undefined && id !== null) {
@@ -263,22 +282,36 @@ class ForceGraph extends Component {
         //点击社团检测开关，可以在主视图中看到用不同的颜色编码社团
         if (community !== undefined) {            
             let color = {};
-                for (var key in community) {
-                    this.g.getNodeById(key).attrs["group"] = community[key];
-                    const oldStyle = this.g.getNodeById(key).style()
-                    if (community[key] < colorMap.length) {
-                        this.g.getNodeById(key).style({ ...oldStyle, fill: colorMap[community[key]] });
-                        color[community[key]] = colorMap[community[key]];
-                    }
-                    else {
-                        const dealColor = d3.color(d3interpolate.interpolateRgb(colorMap[community[key] % colorMap.length], colorMap[(community[key] + 1) % colorMap.length])(0.5)).hex();
-                        color[community[key]] = dealColor;
-                        this.g.getNodeById(key).style({...oldStyle,fill: dealColor  })
-                    }                    
+            for (var key in community) {
+                this.g.getNodeById(key).attrs["group"] = community[key];
+                const oldStyle = this.g.getNodeById(key).style();
+                if (community[key] < colorMap.length) {
+                    this.g.getNodeById(key).style({ ...oldStyle, fill: colorMap[community[key]] });
+                    color[community[key]] = colorMap[community[key]];
+                }
+                else {
+                    const dealColor = d3.color(d3interpolate.interpolateRgb(colorMap[community[key] % colorMap.length], colorMap[(community[key] + 1) % colorMap.length])(0.5)).hex();
+                    color[community[key]] = dealColor;
+                    this.g.getNodeById(key).style({...oldStyle,fill: dealColor  })
+                }                    
             }
-
-            addColorMap(color)
+            addColorMap(color);
             // addG(this.g);
+        }
+        
+        if (community !== this.props.community) {
+            let nodes = this.g.nodes();
+            if(community===undefined)
+            nodes.forEach(
+                item => {
+                    item.oldStyle = { ...item.style(), fill: node_color };
+                })
+            else {
+                nodes.forEach(
+                    item => {
+                        item.oldStyle = { ...item.style()};
+                    })  
+            }
         }
         if (source !== this.props.source) {
             this.g.getNodeById(source.id).style({ fill: "#607D8B" })
@@ -322,19 +355,27 @@ class ForceGraph extends Component {
                 console.log(response);  
                 this.highlightPath(response);
                 updateShortestPath(response);
-                this.g.refresh();
+                this.g.draw();
                 // this.initNodes()
             });
         }
         if (filename !== this.props.filename) {
             this.g.data(this.dataMap[filename]);
+            this.insertOldStyle();
             // addG(this.g);
             // this.g.draw();
         }
-        
-        this.g.refresh();
+        this.g.draw();
         this.g.initSearchIndice();
         this.g.initInteraction();
+    }
+    insertOldStyle() {
+        this.g.nodes().toArray().forEach(item => {
+            item.oldStyle = item.style();
+        });
+        this.g.edges().toArray().forEach(item => {
+            item.oldStyle = item.style();
+        })
     }
     render() { 
         return (
