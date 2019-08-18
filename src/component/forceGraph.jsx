@@ -32,7 +32,7 @@ class ForceGraph extends Component {
     componentDidMount() {
         // const {d3Force,G}=require('../utils/G')
         const canvas = this.canvas.current;
-        const { addG, updateCurClickNode } = this.props;
+        const { addG, updateCurClickNode,cluster } = this.props;
         const handleNodeClick = (el,e) => {
             var clickRightHtml = document.getElementById("clickRightMenu");
             clickRightHtml.style.display = "inline";
@@ -76,8 +76,13 @@ class ForceGraph extends Component {
         }
         const handleNodeOut = (el, e) => {
             if (el.attrs.hovered === true) {
+                if (cluster !== undefined)
+                    cluster.forEach(com => {
+                        
+                    })
                 el.attrs.hovered = undefined;
-                fadeNodeAndEdgesBack();
+                // fadeNodeAndEdgesBack();
+                
                 this.g.draw();
             }
         }
@@ -395,10 +400,11 @@ const mapStateToProps = (state, ownProps) => {
     const { source } = state.updateSource;
     const { target } = state.updateTarget;
     const { layout } = state.updateLayout;
+    const { cluster } = state.chooseCluster;
     // const {rollback}=state.rollback
     console.log(id);
     return {
-        id, community,  filename,source,target,layout
+        id, community,  filename,source,target,layout,cluster
     }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {

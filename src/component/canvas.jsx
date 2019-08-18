@@ -11,7 +11,23 @@ import $ from 'jquery'
 import createAction from '../actions';
 import { canvas_background, important_font, plain_text, card_background } from '../settings/settings'
 class Canvas extends Component {
-    state = { tagChecked:false }
+    state = {innerCluster:{}}
+    findCommunity(g, group) {
+        let community = [];
+        let nodes = g.nodes().toArray();
+        nodes.forEach(node => {
+        if (node.group === group) {
+            community.push(node);
+        }
+        })
+        return community;
+    }
+    componentDidMount() {
+        const { colorMap} = this.props;
+        // const checkedArray =colorMap===undefined? undefined: Array(Object.keys(colorMap).length).fill(false);
+        const chosenCluster = {};
+        this.setState({chosenCluster});
+    }
     render() { 
         const { colorMap, updateListPanelContent, curClickNode, source, updateSource, target, updateTarget, g } = this.props;
         const displayed = () => {
@@ -33,29 +49,65 @@ class Canvas extends Component {
             updateTarget(curClickNode);
         }
         const handleTagClick = (e, tag) => {
-            fadeNodeAndEdgesBack(g);
-            const domEl = document.getElementsByClassName('tag');
-            for (let i = 0; i < domEl.length; i++){
-                let item = domEl[i];
-                item.style.borderWidth = 0;
+            const { checkedArray, innerCluster } = this.state;
+            const { g,colorMap,chooseCluster } = this.g.props;
+            if (checkedArray === undefined)
+                checkedArray = Array(Object.keys(colorMap).length).fill(false);
+            const checked = checkedArray[tag];
+            if (checked === true) {
+                checkedArray[tag] = false;
+                innerCluster[tag] = null;
+                fadeNodeAndEdgesBack(g);
             }
-            e.target.style.borderWidth = "2px";
-            e.target.style.borderColor = "#1826FF";
-            fadeNodesAndEdges(g)
-            highLightCommunity(g, [tag]);
+            else {
+                checkedArray[tag] = true;
+                innerCluster[tag] = this.findCommunity(g, tag);
+                //---------dom操作-------------
+                const domEl = document.getElementsByClassName('tag');
+                for (let i = 0; i < domEl.length; i++){
+                    let item = domEl[i];
+                    item.style.borderWidth = 0;
+                }
+                e.target.style.borderWidth = "2px";
+                e.target.style.borderColor = "#1826FF";
+                //---------dom操作-------------
+                fadeNodesAndEdges(g);
+                // let groups=[]
+                // checkedArray.forEach((checked, i) => {
+                //     if (checked)
+                //     groups.push(i);
+                // })
+            }
+            const communities = Object.values(innerCluster);
+            chooseCluster(communities);
+            highLightCommunity(g, communities);
+            this.setState({ checkedArray, innerCluster });
             g.draw();
         }
-        const highLightCommunity = (g,groupArray) => {
-            groupArray.forEach(group => {
-                let edges = g.edges().toArray();
-                edges.forEach(edge => {
-                    let source = g.getNodeById(edge.source);
-                    let target = g.getNodeById(edge.target);
-                    if (source.attrs.group === group && target.attrs.group === group) {
-                        source.style({ ...source.oldStyle });
-                        target.style({ ...target.oldStyle });
-                        edge.style({ ...edge.oldStyle });
-                    }
+        
+        // const highLightCommunity = (g,groupArray) => {
+        //     groupArray.forEach(group => {
+        //         let edges = g.edges().toArray();
+        //         edges.forEach(edge => {
+        //             let source = g.getNodeById(edge.source);
+        //             let target = g.getNodeById(edge.target);
+        //             if (source.attrs.group === group && target.attrs.group === group) {
+        //                 source.style({ ...source.oldStyle });
+        //                 target.style({ ...target.oldStyle });
+        //                 edge.style({ ...edge.oldStyle });
+        //             }
+        //         })
+        //     })
+        // }
+        const highLightCommunity = (g,communities) => {
+            communities.forEach(group => {
+                if (group === undefined)
+                    return;
+                group.forEach(node => {
+                    let hahah=[node].concat(this.g.getEdgesByAttribute("source", node.id).toArray(), this.g.getEdgesByAttribute("target", node.id).toArray());
+                    hahah.forEach(item => {
+                        item.style({ ...item.oldStyle });
+                    })
                 })
             })
         }
@@ -156,7 +208,7 @@ const mapStateToProps = (state, ownProps) => {
     const { target } = state.updateTarget;
     const { g } = state.addG;
     // const {rollback}=state.rollback
-    console.log(colorMap);
+    // console.log(colorMap);
     return {
         colorMap,curClickNode,source,target,g
     }
@@ -171,6 +223,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         updateTarget:target => {
             dispatch(createAction("updateTarget", target));
+        },
+        chooseCluster:cluster => {
+            dispatch(createAction("chooseCluster", cluster));
         }
     }
 }    

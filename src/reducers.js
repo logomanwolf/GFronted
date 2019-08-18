@@ -111,7 +111,15 @@ const updateLayout=(state = {}, action) => {
     }
     return state;
 }
-
+const chooseCluster=(state = {}, action) => {
+    if (action.type === "chooseCluster") {
+        return Object.assign({}, state, {
+            //这里的有cluster array里面可能有空
+            'cluster': action.content
+        });
+    }
+    return state;
+}
 
 // combineReducers 合并Reducer
 const reducer = combineReducers({
@@ -127,7 +135,8 @@ const reducer = combineReducers({
     updateCurClickNode,
     updateSource,
     updateTarget,
-    updateLayout
+    updateLayout,
+    chooseCluster
 });
 
 
