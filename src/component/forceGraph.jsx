@@ -78,8 +78,14 @@ class ForceGraph extends Component {
             if (el.attrs.hovered === true) {
                 if (cluster !== undefined)
                     cluster.forEach(com => {
-                        
+                        if (com !== undefined)
+                            com.forEach(item => {
+                                item.style(item.oldStyle
+                                )
+                            })
                     })
+                else
+                    fadeNodeAndEdgesBack();
                 el.attrs.hovered = undefined;
                 // fadeNodeAndEdgesBack();
                 
@@ -241,7 +247,8 @@ class ForceGraph extends Component {
         nodes.forEach((item,i) => {
             item.motionUnitX = (nodes2[i].x - item.x) / count;
             item.motionUnitY = (nodes2[i].y - item.y) / count;
-            item.group = oldNodes.getNodeById(item.id).attrs.group;
+            //这里的group在使用data函数后会变成attr.group
+            item.group = oldNodes.getNodeById(item.id).attrs;
             item.oldStyle = _.cloneDeep(oldNodes.getNodeById(item.id).oldStyle);
         })
         let intervalId=setInterval((g) => {
@@ -270,7 +277,7 @@ class ForceGraph extends Component {
     }
     componentWillReceiveProps(newProps) {
         const { id, community, addColorMap, addG, filename,source,target,layout,updateShortestPath } = newProps;
-        this.initNodes();        
+        // this.initNodes();        
         //点击查找会找到指定的id，并在主视区中显示
         if (id !== undefined && id !== null) {
             console.log(id)
@@ -286,36 +293,41 @@ class ForceGraph extends Component {
         }
         //点击社团检测开关，可以在主视图中看到用不同的颜色编码社团
         if (community !== undefined) {            
-            let color = {};
-            for (var key in community) {
-                this.g.getNodeById(key).attrs["group"] = community[key];
-                const oldStyle = this.g.getNodeById(key).style();
-                if (community[key] < colorMap.length) {
-                    this.g.getNodeById(key).style({ ...oldStyle, fill: colorMap[community[key]] });
-                    color[community[key]] = colorMap[community[key]];
-                }
-                else {
-                    const dealColor = d3.color(d3interpolate.interpolateRgb(colorMap[community[key] % colorMap.length], colorMap[(community[key] + 1) % colorMap.length])(0.5)).hex();
-                    color[community[key]] = dealColor;
-                    this.g.getNodeById(key).style({...oldStyle,fill: dealColor  })
-                }                    
-            }
-            addColorMap(color);
+            
             // addG(this.g);
         }
         
         if (community !== this.props.community) {
             let nodes = this.g.nodes();
             if(community===undefined)
-            nodes.forEach(
+            {
+                nodes.forEach(
                 item => {
-                    item.oldStyle = { ...item.style(), fill: node_color };
-                })
+                        item.oldStyle = { ...item.style(), fill: node_color };
+                        // item.style({...item.oldStyle})
+                    })
+                this.initNodes();
+            }
             else {
+                let color = {};
+                for (var key in community) {
+                    this.g.getNodeById(key).attrs["group"] = community[key];
+                    const oldStyle = this.g.getNodeById(key).style();
+                    if (community[key] < colorMap.length) {
+                        this.g.getNodeById(key).style({ ...oldStyle, fill: colorMap[community[key]] });
+                        color[community[key]] = colorMap[community[key]];
+                    }
+                    else {
+                        const dealColor = d3.color(d3interpolate.interpolateRgb(colorMap[community[key] % colorMap.length], colorMap[(community[key] + 1) % colorMap.length])(0.5)).hex();
+                        color[community[key]] = dealColor;
+                        this.g.getNodeById(key).style({ ...oldStyle, fill: dealColor })
+                    }
+                }
+                addColorMap(color);
                 nodes.forEach(
                     item => {
                         item.oldStyle = { ...item.style()};
-                    })  
+                })  
             }
         }
         if (source !== this.props.source) {
@@ -368,7 +380,7 @@ class ForceGraph extends Component {
             this.g.data(this.dataMap[filename]);
             this.insertOldStyle();
             // addG(this.g);
-            // this.g.draw();
+            this.g.draw();
         }
         this.g.draw();
         this.g.initSearchIndice();

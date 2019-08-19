@@ -16,17 +16,24 @@ class Canvas extends Component {
         let community = [];
         let nodes = g.nodes().toArray();
         nodes.forEach(node => {
-        if (node.group === group) {
+        if (node.attrs.group === group) {
             community.push(node);
         }
         })
         return community;
     }
     componentDidMount() {
-        const { colorMap} = this.props;
+        // const { colorMap} = this.props;
         // const checkedArray =colorMap===undefined? undefined: Array(Object.keys(colorMap).length).fill(false);
-        const chosenCluster = {};
-        this.setState({chosenCluster});
+        // const chosenCluster = {};
+        // this.setState({chosenCluster});
+    }
+    componentWillReceiveProps(newProps){
+        const { colorMap } = newProps;
+        if (colorMap != this.props.colorMap && colorMap !== undefined) {
+            const checkedArray =  Array(Object.keys(colorMap).length).fill(false);
+            this.setState({ ...this.state,checkedArray});
+        }
     }
     render() { 
         const { colorMap, updateListPanelContent, curClickNode, source, updateSource, target, updateTarget, g } = this.props;
@@ -50,37 +57,21 @@ class Canvas extends Component {
         }
         const handleTagClick = (e, tag) => {
             const { checkedArray, innerCluster } = this.state;
-            const { g,colorMap,chooseCluster } = this.g.props;
-            if (checkedArray === undefined)
-                checkedArray = Array(Object.keys(colorMap).length).fill(false);
+            const { g,chooseCluster } = this.props;
             const checked = checkedArray[tag];
             if (checked === true) {
                 checkedArray[tag] = false;
-                innerCluster[tag] = null;
-                fadeNodeAndEdgesBack(g);
+                innerCluster[tag] = undefined;
+                fadeNodesAndEdges(g);
             }
             else {
                 checkedArray[tag] = true;
                 innerCluster[tag] = this.findCommunity(g, tag);
-                //---------dom操作-------------
-                const domEl = document.getElementsByClassName('tag');
-                for (let i = 0; i < domEl.length; i++){
-                    let item = domEl[i];
-                    item.style.borderWidth = 0;
-                }
-                e.target.style.borderWidth = "2px";
-                e.target.style.borderColor = "#1826FF";
-                //---------dom操作-------------
                 fadeNodesAndEdges(g);
-                // let groups=[]
-                // checkedArray.forEach((checked, i) => {
-                //     if (checked)
-                //     groups.push(i);
-                // })
             }
             const communities = Object.values(innerCluster);
             chooseCluster(communities);
-            highLightCommunity(g, communities);
+            highLightCommunity(g, communities,checkedArray);
             this.setState({ checkedArray, innerCluster });
             g.draw();
         }
@@ -99,17 +90,21 @@ class Canvas extends Component {
         //         })
         //     })
         // }
-        const highLightCommunity = (g,communities) => {
+        const highLightCommunity = (g, communities,checkedArray) => {
+            let graph = g;
+            let edges = graph.edges().toArray();
             communities.forEach(group => {
                 if (group === undefined)
                     return;
                 group.forEach(node => {
-                    let hahah=[node].concat(this.g.getEdgesByAttribute("source", node.id).toArray(), this.g.getEdgesByAttribute("target", node.id).toArray());
-                    hahah.forEach(item => {
-                        item.style({ ...item.oldStyle });
-                    })
+                    node.style({ ...node.oldStyle });
+                })
+                edges.forEach(item => {
+                    if (checkedArray[graph.getNodeById(item.source).attrs.group] === true && checkedArray[graph.getNodeById(item.target).attrs.group])
+                        item.style({ ...item.oldStyle, lineWidth: 2 });
                 })
             })
+            
         }
         const fadeColor = color => {
             let oldcolor = d3.color(color);
@@ -154,6 +149,7 @@ class Canvas extends Component {
                 edge.style({ ...oldEdgeStyle});
             })
         }
+
         return (
             <div>               
                 <Card bordered={false}
@@ -179,7 +175,7 @@ class Canvas extends Component {
                     {colorMap!==undefined && Object.values(colorMap).length>0? <Card id="wedget" cover={
                             <div style={{ padding: "0px 0px 10px 10px" }}><div style={{ margin: "5px 0px 0px 0px", color: important_font }}>Community:</div> {
                                 Object.values(colorMap).map((item, i) =>
-                                <Tag key={i} className="tag" color={item} style={{backgroundColor:item}} onClick={(e) => {
+                                <Tag key={i} className="tag" color={item} style={{backgroundColor:item,borderWidth:this.state.checkedArray[i]?"2px":"0px",borderColor :"#1826FF"}} onClick={(e) => {
                                         handleTagClick(e,i)
                                 }}>{i}</Tag>)} </div>
                     } bodyStyle={{ padding:0}} size="small" bordered={false}>
