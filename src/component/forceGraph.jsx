@@ -181,7 +181,37 @@ class ForceGraph extends Component {
         this.g = new G({
             container: canvas,
             data: nodes_4000,
+            // background: {
+            //     r: 0.07,
+            //     g: 0.07,
+            //     b: 0.07,
+            //     a: 1
+            // }
         });
+        // this.g.edges().forEach(edge => {
+        //     edge.style({
+        //         fill: {
+        //             r: 224,
+        //             g: 224,
+        //             b: 224,
+        //             a: 150
+        //         },
+        //         lineWidth: 10
+        //     });
+        // });
+
+        // this.g.nodes().forEach(node => {
+        //     node.style({
+        //         fill: {
+        //             r: 255,
+        //             g: 255,
+        //             b: 255,
+        //             a: 1
+        //         },
+        //         // "#00ffff95"
+        //         r: 10
+        //     });
+        // });
         var clickRightHtml = document.getElementById("clickRightMenu");
         clickRightHtml.style.display = "none";//每次右键都要把之前显示的菜单隐藏哦
         
@@ -193,7 +223,7 @@ class ForceGraph extends Component {
         //     console.log(event.clientX, event.clientY)
         //     return false;//屏蔽浏览器自带的右键菜单
         // };
-        console.log(this.g.data());
+        //initG
         this.g.draw();
         this.g.initSearchIndice();
         this.g.initInteraction();
@@ -214,6 +244,12 @@ class ForceGraph extends Component {
             { item.oldStyle = { ...item.style() } }
         )
         addG(this.g);
+        // this.g.loadTexture('./electric.png').then(() => {
+            
+        // })
+    }
+    initGraph() {
+        
     }
     initNodes() {
         this.g.nodes().toArray().forEach(

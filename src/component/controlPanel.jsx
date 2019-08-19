@@ -9,7 +9,7 @@ class ControlPanel extends Component {
         filestatus:{}
     };
     render() { 
-        const { addPageRank, addCommunityDetect,getFile,updateLayout } = this.props;
+        const { addPageRank, addCommunityDetect,getFile,updateLayout,chooseCluster,chooseLinks } = this.props;
         const handleAddPagerRank = () => {
             fetch(getPageRank, {
                 method: "POST",
@@ -18,11 +18,11 @@ class ControlPanel extends Component {
             }).then(r => {
                 return r.json();
             })
-                .then(response => {
-                    console.log("get data finished!");
-                    // console.log(response);
-                    addPageRank(response);
-                });
+            .then(response => {
+                console.log("get data finished!");
+                // console.log(response);
+                addPageRank(response);
+            });
         }
         
         const handleCommunityDetect = (checked) => {
@@ -44,8 +44,11 @@ class ControlPanel extends Component {
                     });
             }
             else {
-                addCommunityDetect(undefined)
+                addCommunityDetect(undefined);
+                
             }
+            chooseCluster({});
+            chooseLinks({});
         }
         const handleMenuClick=({key})=> {
             getFile(menuContent[parseInt(key)]);
@@ -163,7 +166,15 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         },
         updateLayout:layout=> {
             dispatch(createAction("updateLayout", layout));
+        },
+        chooseCluster: cluster => {
+            dispatch(createAction("chooseCluster", cluster));
+        },
+        chooseLinks:links=> {
+            dispatch(createAction("chooseLinks", links));
         }
+        ,
+    
     }
 } 
 const Content=connect( () => ({}),mapDispatchToProps)(ControlPanel)
