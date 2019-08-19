@@ -71,25 +71,41 @@ class ForceGraph extends Component {
                 neighbourNodes.forEach(item => {
                     enlargeEffect(item, 0.8, 1);
                 })
-                this.g.draw();
+                this.g.refresh();
             }   
         }
         const handleNodeOut = (el, e) => {
             if (el.attrs.hovered === true) {
+                const {cluster,g,links} = this.props;
                 if (cluster !== undefined)
-                    cluster.forEach(com => {
+                {
+                    cluster.forEach((com,i) => {
                         if (com !== undefined)
+                        {
                             com.forEach(item => {
                                 item.style(item.oldStyle
                                 )
                             })
-                    })
+                            
+                        }
+                    })      
+                    links.forEach((com,i) => {
+                        if (com !== undefined)
+                        {
+                            com.forEach(item => {
+                                item.style(item.oldStyle
+                                )
+                            })
+                            
+                        }
+                    })    
+                }
                 else
                     fadeNodeAndEdgesBack();
                 el.attrs.hovered = undefined;
                 // fadeNodeAndEdgesBack();
                 
-                this.g.draw();
+                this.g.refresh();
             }
         }
         const fadeColor = color => {
@@ -164,9 +180,8 @@ class ForceGraph extends Component {
          // eslint-disable-next-line
         this.g = new G({
             container: canvas,
-            data: nodes_4000
+            data: nodes_4000,
         });
-
         var clickRightHtml = document.getElementById("clickRightMenu");
         clickRightHtml.style.display = "none";//每次右键都要把之前显示的菜单隐藏哦
         
@@ -177,7 +192,8 @@ class ForceGraph extends Component {
         //     clickRightHtml.style.top = event.clientY - 30 + "px";
         //     console.log(event.clientX, event.clientY)
         //     return false;//屏蔽浏览器自带的右键菜单
-        // };        
+        // };
+        console.log(this.g.data());
         this.g.draw();
         this.g.initSearchIndice();
         this.g.initInteraction();
@@ -307,6 +323,7 @@ class ForceGraph extends Component {
                         // item.style({...item.oldStyle})
                     })
                 this.initNodes();
+                this.g.refresh();
             }
             else {
                 let color = {};
@@ -327,7 +344,8 @@ class ForceGraph extends Component {
                 nodes.forEach(
                     item => {
                         item.oldStyle = { ...item.style()};
-                })  
+                    })
+                this.g.refresh();
             }
         }
         if (source !== this.props.source) {
@@ -382,9 +400,7 @@ class ForceGraph extends Component {
             // addG(this.g);
             this.g.draw();
         }
-        this.g.draw();
-        this.g.initSearchIndice();
-        this.g.initInteraction();
+        // this.g.draw();
     }
     insertOldStyle() {
         this.g.nodes().toArray().forEach(item => {
@@ -413,10 +429,11 @@ const mapStateToProps = (state, ownProps) => {
     const { target } = state.updateTarget;
     const { layout } = state.updateLayout;
     const { cluster } = state.chooseCluster;
+    const { links } = state.chooseLinks;
     // const {rollback}=state.rollback
     console.log(id);
     return {
-        id, community,  filename,source,target,layout,cluster
+        id, community,  filename,source,target,layout,cluster,links
     }
 }
 const mapDispatchToProps = (dispatch,ownProps) => {

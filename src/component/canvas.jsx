@@ -11,7 +11,7 @@ import $ from 'jquery'
 import createAction from '../actions';
 import { canvas_background, important_font, plain_text, card_background } from '../settings/settings'
 class Canvas extends Component {
-    state = {innerCluster:{}}
+    state = {innerCluster:{},innerLinks:{}}
     findCommunity(g, group) {
         let community = [];
         let nodes = g.nodes().toArray();
@@ -22,6 +22,17 @@ class Canvas extends Component {
         })
         return community;
     }
+    findLinks(g, group) {
+        let links = [];
+        let edges = g.edges();
+        edges.forEach(edge => {
+        if (g.getNodeById(edge.source).attrs.group === group && g.getNodeById(edge.target).attrs.group === group) {
+            links.push(edge);
+        }
+        })
+        return links;
+    }
+    
     componentDidMount() {
         // const { colorMap} = this.props;
         // const checkedArray =colorMap===undefined? undefined: Array(Object.keys(colorMap).length).fill(false);
@@ -55,28 +66,45 @@ class Canvas extends Component {
             if (source !== undefined && target !== curClickNode)
             updateTarget(curClickNode);
         }
+        const allFalse = (array) => {
+            let flag = true;
+            array.forEach(item => {
+                if (item === true)
+                    flag= false;
+            })
+            return flag;
+        }
         const handleTagClick = (e, tag) => {
-            const { checkedArray, innerCluster } = this.state;
-            const { g,chooseCluster } = this.props;
+            const { checkedArray, innerCluster,innerLinks } = this.state;
+            const { g,chooseCluster,chooseLinks } = this.props;
             const checked = checkedArray[tag];
             if (checked === true) {
                 checkedArray[tag] = false;
                 innerCluster[tag] = undefined;
-                fadeNodesAndEdges(g);
+                innerLinks[tag] = undefined;
+                // fadeNodesAndEdges(g);
             }
             else {
                 checkedArray[tag] = true;
                 innerCluster[tag] = this.findCommunity(g, tag);
-                fadeNodesAndEdges(g);
+                innerLinks[tag] = this.findLinks(g,tag);
+                // fadeNodesAndEdges(g);
             }
+            this.setState({ checkedArray, innerCluster, innerLinks });
             const communities = Object.values(innerCluster);
+            const links = Object.values(innerLinks);
             chooseCluster(communities);
-            highLightCommunity(g, communities,checkedArray);
-            this.setState({ checkedArray, innerCluster });
+            chooseLinks(links)
+            if (allFalse(Object.values(checkedArray)))
+                fadeNodeAndEdgesBack(g);
+            else {
+                fadeNodesAndEdges(g);
+                highLightCommunityAndLink(g, communities, links);
+            }
             g.draw();
         }
         
-        // const highLightCommunity = (g,groupArray) => {
+        // const highLightCommunityAndLink = (g,groupArray) => {
         //     groupArray.forEach(group => {
         //         let edges = g.edges().toArray();
         //         edges.forEach(edge => {
@@ -90,21 +118,24 @@ class Canvas extends Component {
         //         })
         //     })
         // }
-        const highLightCommunity = (g, communities,checkedArray) => {
-            let graph = g;
-            let edges = graph.edges().toArray();
+        const highLightCommunityAndLink = (g, communities,links) => {
+            // let edges = graph.edges().toArray();
             communities.forEach(group => {
                 if (group === undefined)
                     return;
                 group.forEach(node => {
                     node.style({ ...node.oldStyle });
                 })
-                edges.forEach(item => {
-                    if (checkedArray[graph.getNodeById(item.source).attrs.group] === true && checkedArray[graph.getNodeById(item.target).attrs.group])
-                        item.style({ ...item.oldStyle, lineWidth: 2 });
-                })
+                // edges.forEach(item => {
+                //     if (checkedArray[graph.getNodeById(item.source).attrs.group] === true && checkedArray[graph.getNodeById(item.target).attrs.group])
+                //         item.style({ ...item.oldStyle, lineWidth: 2 });
+                // })
             })
-            
+            links.forEach(group => {
+                if (group === undefined)
+                    return;
+                    group.forEach(link=>{link.style({ ...link.oldStyle })});
+            })
         }
         const fadeColor = color => {
             let oldcolor = d3.color(color);
@@ -222,6 +253,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         chooseCluster:cluster => {
             dispatch(createAction("chooseCluster", cluster));
+        },
+        chooseLinks: links => {
+            dispatch(createAction("chooseLinks", links));
         }
     }
 }    

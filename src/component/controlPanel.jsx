@@ -7,7 +7,7 @@ class ControlPanel extends Component {
     state = {
         value: 2,
         filestatus:{}
-      };
+    };
     render() { 
         const { addPageRank, addCommunityDetect,getFile,updateLayout } = this.props;
         const handleAddPagerRank = () => {
@@ -44,7 +44,7 @@ class ControlPanel extends Component {
                     });
             }
             else {
-                addCommunityDetect({})
+                addCommunityDetect(undefined)
             }
         }
         const handleMenuClick=({key})=> {
@@ -82,7 +82,7 @@ class ControlPanel extends Component {
                     <Card style={{overflow:"auto",backgroundColor:card_background}} bordered={false} size="small" headStyle={{color:important_font}} 
                 >
                         <Row>
-                            <Card.Meta title="Analysis" size="small"  style={{ marginBottom: "10px"}} bordered={false}></Card.Meta></Row>
+                            <Card.Meta title="Analysis" size="small"  style={{ marginBottom: "10px"}} bordered={"false"}></Card.Meta></Row>
                         <Row>
                             <Row>
                                 <Col span={6}><Dropdown.Button placement="bottomLeft" overlay={filemenu} icon={<Icon type="down" />}>Open</Dropdown.Button><br /></Col>

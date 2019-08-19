@@ -35,7 +35,7 @@ class SliderChart extends Component {
     }
     render() {
         const { community } = this.props;
-        if (community === undefined || community === {})
+        if (community === undefined)
             return null;
         else
             return (

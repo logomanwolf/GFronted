@@ -120,7 +120,15 @@ const chooseCluster=(state = {}, action) => {
     }
     return state;
 }
-
+const chooseLinks=(state = {}, action) => {
+    if (action.type === "chooseLinks") {
+        return Object.assign({}, state, {
+            //这里的有cluster array里面可能有空
+            'links': action.content
+        });
+    }
+    return state;
+}
 // combineReducers 合并Reducer
 const reducer = combineReducers({
     alterData,
@@ -136,7 +144,8 @@ const reducer = combineReducers({
     updateSource,
     updateTarget,
     updateLayout,
-    chooseCluster
+    chooseCluster,
+    chooseLinks
 });
 
 
