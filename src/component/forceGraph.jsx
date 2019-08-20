@@ -6,7 +6,7 @@ import lesmis_nodelink from '../data/lesmis_linknode'
 import createAction from '../actions';
 import { connect } from 'react-redux';
 import colorMap from '../settings/colorMap';
-import { getShortestPath,node_color,edge_color,canvas_background } from '../settings/settings'
+import { getShortestPath,node_color,edge_color,canvas_background,source_node_clicked,red } from '../settings/settings'
 import URLSearchParams from 'url-search-params';
 import * as d3color from 'd3-color';
 import * as d3interpolate from 'd3-interpolate';
@@ -28,7 +28,35 @@ class ForceGraph extends Component {
         this.canvas = React.createRef();
         this.state={}
     }
-    
+    fadeColor = color => {
+        let oldcolor = {...color};
+        let backgroundColor = d3.color('#000000');
+        oldcolor.a = 0.2;
+        let newR = oldcolor.r * oldcolor.a + backgroundColor.r * (1 - oldcolor.a);
+        let newG = oldcolor.g * oldcolor.a + backgroundColor.g * (1 - oldcolor.a);
+        let newB = oldcolor.b * oldcolor.a + backgroundColor.b * (1 - oldcolor.a);
+        let newColor = {};
+        newColor.r = newR;
+        newColor.g = newG;
+        newColor.b = newB;
+        newColor.a = 255;
+        return newColor;
+    }
+    //将所有的的nodes和edges淡去
+    fadeNodesAndEdges = () => {
+        let nodes = this.g.nodes().toArray();
+        nodes.forEach(node => {
+            let oldNodeStyle = node.oldStyle;
+            // node.oldStyle = oldNodeStyle;
+            node.style({ r:oldNodeStyle.r,  fill: this.fadeColor(oldNodeStyle.fill) });
+        })
+        let edges = this.g.edges().toArray();
+            edges.forEach(edge => {
+            let oldEdgeStyle = edge.oldStyle;
+            // edge.oldStyle = oldEdgeStyle;
+            edge.style({ lineWidth:oldEdgeStyle.lineWidth, fill: this.fadeColor(oldEdgeStyle.fill) });
+        })
+    }
     componentDidMount() {
         // const {d3Force,G}=require('../utils/G')
         const canvas = this.canvas.current;
@@ -46,13 +74,14 @@ class ForceGraph extends Component {
             updateCurClickNode(el);
         }
         const handleNodeHover = (el, e) => {
+            const { source } = this.props;
             if (el.attrs.hovered === undefined) {
                 const neighbourEdges = this.g.getEdgesByAttribute("source", el.id).toArray().concat(this.g.getEdgesByAttribute("target", el.id).toArray());
                 let neighbourNodes = [];
                 el.attrs.hovered = true;
                 // let oldStyle = el.style();
                 let oldStyle = el.oldStyle;
-                fadeNodesAndEdges();
+                this.fadeNodesAndEdges();
                 el.style({ ...oldStyle });
                 neighbourEdges.forEach(item => {
                     if (item.source !== el.id) {
@@ -71,13 +100,19 @@ class ForceGraph extends Component {
                 neighbourNodes.forEach(item => {
                     enlargeEffect(item, 0.8, 1);
                 })
-                this.g.refresh();
+                if (source !== undefined) {
+                    source.style({ fill: source_node_clicked });
+                    this.g.draw();
+                    return;
+                }
+                this.g.draw();
             }   
         }
         const handleNodeOut = (el, e) => {
             if (el.attrs.hovered === true) {
-                const {cluster,g,links} = this.props;
-                if (cluster !== undefined)
+                const { cluster, links,source } = this.props;
+                                    
+                if (cluster !== undefined )
                 {
                     cluster.forEach((com,i) => {
                         if (com !== undefined)
@@ -104,49 +139,26 @@ class ForceGraph extends Component {
                     fadeNodeAndEdgesBack();
                 el.attrs.hovered = undefined;
                 // fadeNodeAndEdgesBack();
-                
+                if (source !== undefined) {
+                    source.style({ fill: source_node_clicked });
+                    this.g.refresh();
+                    return;
+                }
                 this.g.refresh();
             }
         }
-        const fadeColor = color => {
-            let oldcolor = d3.color(color);
-            let backgroundColor = d3.color('#000000');
-            oldcolor.opacity = 0.2;
-            let newR = oldcolor.r * oldcolor.opacity + backgroundColor.r * (1 - oldcolor.opacity);
-            let newG = oldcolor.g * oldcolor.opacity + backgroundColor.g * (1 - oldcolor.opacity);
-            let newB = oldcolor.b * oldcolor.opacity + backgroundColor.b * (1 - oldcolor.opacity);
-            let newColor = oldcolor;
-            newColor.r = newR;
-            newColor.g = newG;
-            newColor.b = newB;
-            return newColor.hex();
-        }
-        //将所有的的nodes和edges淡去
-        const fadeNodesAndEdges = () => {
-            let nodes = this.g.nodes().toArray();
-            nodes.forEach(node => {
-                let oldNodeStyle = node.oldStyle;
-                // node.oldStyle = oldNodeStyle;
-                node.style({ ...oldNodeStyle, fill: fadeColor(oldNodeStyle.fill) });
-            })
-            let edges = this.g.edges().toArray();
-                edges.forEach(edge => {
-                let oldEdgeStyle = edge.oldStyle;
-                // edge.oldStyle = oldEdgeStyle;
-                edge.style({ ...oldEdgeStyle, fill: fadeColor(oldEdgeStyle.fill) });
-            })
-        }
+        
         //将所有的nodes和edges变回来
         const fadeNodeAndEdgesBack = () => {
             let nodes = this.g.nodes().toArray();
             nodes.forEach(node => {
                 let oldNodeStyle = node.oldStyle;
-                node.style({ ...oldNodeStyle });
+                node.style({ r: oldNodeStyle.r, fill: { ...oldNodeStyle.fill }});
             })
             let edges = this.g.edges().toArray();
             edges.forEach(edge => {
                 let oldEdgeStyle = edge.oldStyle;
-                edge.style({ ...oldEdgeStyle});
+                edge.style({ lineWidth:oldEdgeStyle.lineWidth,fill: {...oldEdgeStyle.fill}});
             })
         }
         const enlargeEffect = (node,increseR1,increseR2) => {
@@ -181,37 +193,37 @@ class ForceGraph extends Component {
         this.g = new G({
             container: canvas,
             data: nodes_4000,
-            // background: {
-            //     r: 0.07,
-            //     g: 0.07,
-            //     b: 0.07,
-            //     a: 1
-            // }
+            background: {
+                r: 0.07,
+                g: 0.07,
+                b: 0.07,
+                a: 1
+            }
         });
-        // this.g.edges().forEach(edge => {
-        //     edge.style({
-        //         fill: {
-        //             r: 224,
-        //             g: 224,
-        //             b: 224,
-        //             a: 150
-        //         },
-        //         lineWidth: 10
-        //     });
-        // });
+        this.g.edges().forEach(edge => {
+            edge.style({
+                fill: {
+                    r: 224,
+                    g: 224,
+                    b: 224,
+                    a: 225
+                },
+                lineWidth: 1
+            });
+        });
 
-        // this.g.nodes().forEach(node => {
-        //     node.style({
-        //         fill: {
-        //             r: 255,
-        //             g: 255,
-        //             b: 255,
-        //             a: 1
-        //         },
-        //         // "#00ffff95"
-        //         r: 10
-        //     });
-        // });
+        this.g.nodes().forEach(node => {
+            node.style({
+                fill: {
+                    r: 44,
+                    g: 146,
+                    b: 255,
+                    a: 255
+                },
+                // "#00ffff95"
+                r: 10
+            });
+        });
         var clickRightHtml = document.getElementById("clickRightMenu");
         clickRightHtml.style.display = "none";//每次右键都要把之前显示的菜单隐藏哦
         
@@ -224,29 +236,29 @@ class ForceGraph extends Component {
         //     return false;//屏蔽浏览器自带的右键菜单
         // };
         //initG
-        this.g.draw();
-        this.g.initSearchIndice();
-        this.g.initInteraction();
-        this.g.on('click', (el,e) => {
-            handleNodeClick(el,e);
+
+        this.g.loadTexture('./electric.png').then(() => {
+            this.g.draw();
+            this.g.initSearchIndice();
+            this.g.initInteraction();
+            this.g.on('click', (el,e) => {
+                handleNodeClick(el,e);
+            })
+            this.g.on('mouseOver', (el, e) => {
+                handleNodeHover(el, e);
+            })
+            this.g.on('mouseOut', (el, e) => {
+                handleNodeOut(el, e);
+            })
+            this.g.nodes().toArray().forEach(item => {
+                item.oldStyle = { ...item.style() };
+            })
+            this.g.edges().forEach(
+                item=>
+                { item.oldStyle = { ...item.style() } }
+            )
+            addG(this.g);
         })
-        this.g.on('mouseOver', (el, e) => {
-            handleNodeHover(el, e);
-        })
-        this.g.on('mouseOut', (el, e) => {
-            handleNodeOut(el, e);
-        })
-        this.g.nodes().toArray().forEach(item => {
-            item.oldStyle = { ...item.style() };
-        })
-        this.g.edges().forEach(
-            item=>
-            { item.oldStyle = { ...item.style() } }
-        )
-        addG(this.g);
-        // this.g.loadTexture('./electric.png').then(() => {
-            
-        // })
     }
     initGraph() {
         
@@ -257,7 +269,7 @@ class ForceGraph extends Component {
                 // const oldStyle = this.g.getNodeById(item.id).oldStyle;
                 // this.g.getNodeById(item.id).style({...oldStyle,fill: node_color });
                 const oldStyle = item.oldStyle;
-                item.style({...oldStyle,fill: node_color });
+                item.style({r:oldStyle.r ,fill: node_color });
                 }
         )
         this.g.edges().toArray().forEach(
@@ -275,19 +287,21 @@ class ForceGraph extends Component {
         'lesmis_nodelink':lesmis_nodelink
     }
     //highlight the shortestPath
-    highlightPath = data => {
+    highlightPath(data) {
+        this.fadeNodesAndEdges();
         data.forEach(item => {
             item.forEach(n => {
-                this.g.getNodeById(n).style({ fill: '#FF0000' });
+                this.g.getNodeById(n).style({ fill: {r:255,g:0,b:0,a:255} });
             });
             for (let i = 0; i < item.length - 1; i++) {
                 // console.log(item[i] + '->' + item[i + 1]);
                 const data = this.g.getEdgesByAttribute('source', item[i]).getEdgesByAttribute('target', item[i + 1]).toArray()
                     .concat(this.g.getEdgesByAttribute('source', item[i+1]).getEdgesByAttribute('target', item[i]).toArray())
                 // data[0].style({ fill: "#ccc" });
-                data[0].style({ fill: "#e19d54" });
+                data[0].style({ fill: { r: 225, g: 157, b: 84, a: 255 } });
             }
         });
+        // this.props.updateSource(undefined);
     }
     motion = (collection1, collection2) => {
         let nodes = _.cloneDeep(collection1.nodes);
@@ -313,19 +327,23 @@ class ForceGraph extends Component {
             count--;
             if (count < 1) {
                 g.nodes().forEach(item => {
-                    item.oldStyle = item.attrs.oldStyle;
+                    item.oldStyle = {fill:{...item.attrs.oldStyle.fill},r:item.attrs.oldStyle.r};
                     // item.group = item.attrs.group;
                     item.style({ ...item.oldStyle });
                 })
                 g.edges().forEach(item => {
-                    item.oldStyle = item.style();
+                    item.oldStyle = { fill: {...edge_color}, lineWidth: 1 };
+                    item.style({ fill: {...edge_color}, lineWidth: 1 })
                 })
-                g.refresh();
+                g.draw();
                 g.initSearchIndice();
                 g.initInteraction();
                 clearInterval(intervalId);
             }
         }, montionInterval, this.g);
+    }
+    changeObjectToRgb(obj) {
+        return 'rgb(' + obj.r+','+obj.g+','+obj.g+')';
     }
     componentWillReceiveProps(newProps) {
         const { id, community, addColorMap, addG, filename,source,target,layout,updateShortestPath } = newProps;
@@ -339,8 +357,9 @@ class ForceGraph extends Component {
             }
             const oldStyle = this.g.getNodeById(id).style();
             this.g.panToNode(id);
-            this.g.getNodeById(id).style({ ...oldStyle,fill: '#FF0000' });
+            this.g.getNodeById(id).style({ fill: red });
             this.lastId = id;
+            this.g.draw();
             // this.force.data(this.g.data());
         }
         //点击社团检测开关，可以在主视图中看到用不同的颜色编码社团
@@ -371,9 +390,9 @@ class ForceGraph extends Component {
                         color[community[key]] = colorMap[community[key]];
                     }
                     else {
-                        const dealColor = d3.color(d3interpolate.interpolateRgb(colorMap[community[key] % colorMap.length], colorMap[(community[key] + 1) % colorMap.length])(0.5)).hex();
-                        color[community[key]] = dealColor;
-                        this.g.getNodeById(key).style({ ...oldStyle, fill: dealColor })
+                        const dealColor = d3.color(d3interpolate.interpolateRgb(this.changeObjectToRgb(colorMap[community[key] % colorMap.length]), this.changeObjectToRgb(colorMap[(community[key] + 1) % colorMap.length]))(0.5));;
+                        color[community[key]] = {r:dealColor.r,g:dealColor.g,b:dealColor.b,a:Math.round(dealColor.opacity*255) };
+                        this.g.getNodeById(key).style({ ...oldStyle, fill: color[community[key]] })
                     }
                 }
                 addColorMap(color);
@@ -383,9 +402,6 @@ class ForceGraph extends Component {
                     })
                 this.g.refresh();
             }
-        }
-        if (source !== this.props.source) {
-            this.g.getNodeById(source.id).style({ fill: "#607D8B" })
         }
         if (layout !== this.props.layout) {
             //toDo:定义一个动画函数

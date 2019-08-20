@@ -59,12 +59,14 @@ class Canvas extends Component {
         const handleAddSource = () => {
             displayed();
             if(source !== curClickNode)
-            updateSource(curClickNode);
+                updateSource(curClickNode);
+            updateTarget(undefined)
         }
         const handleAddTarget = () => {
             displayed();
             if (source !== undefined && target !== curClickNode)
-            updateTarget(curClickNode);
+                updateTarget(curClickNode);
+            // updateSource(undefined);
         }
         const allFalse = (array) => {
             let flag = true;
@@ -93,13 +95,18 @@ class Canvas extends Component {
             this.setState({ checkedArray, innerCluster, innerLinks });
             const communities = Object.values(innerCluster);
             const links = Object.values(innerLinks);
-            chooseCluster(communities);
-            chooseLinks(links)
+
             if (allFalse(Object.values(checkedArray)))
+            {
                 fadeNodeAndEdgesBack(g);
+                chooseCluster(undefined);
+                chooseLinks(undefined)
+            }
             else {
                 fadeNodesAndEdges(g);
                 highLightCommunityAndLink(g, communities, links);
+                chooseCluster(communities);
+                chooseLinks(links)
             }
             g.draw();
         }
@@ -124,7 +131,7 @@ class Canvas extends Component {
                 if (group === undefined)
                     return;
                 group.forEach(node => {
-                    node.style({ ...node.oldStyle });
+                    node.style({r:node.oldStyle.r,fill: {...node.oldStyle.fill} });
                 })
                 // edges.forEach(item => {
                 //     if (checkedArray[graph.getNodeById(item.source).attrs.group] === true && checkedArray[graph.getNodeById(item.target).attrs.group])
@@ -138,17 +145,18 @@ class Canvas extends Component {
             })
         }
         const fadeColor = color => {
-            let oldcolor = d3.color(color);
-            let backgroundColor = d3.color('#000000');
-            oldcolor.opacity = 0.2;
-            let newR = oldcolor.r * oldcolor.opacity + backgroundColor.r * (1 - oldcolor.opacity);
-            let newG = oldcolor.g * oldcolor.opacity + backgroundColor.g * (1 - oldcolor.opacity);
-            let newB = oldcolor.b * oldcolor.opacity + backgroundColor.b * (1 - oldcolor.opacity);
-            let newColor = oldcolor;
-            newColor.r = newR;
-            newColor.g = newG;
-            newColor.b = newB;
-            return newColor.hex();
+            const oldcolor = {...color};
+            const backgroundColor = d3.color('#000000');
+            oldcolor.a = 0.2;
+            const newR = oldcolor.r * oldcolor.a + backgroundColor.r * (1 - oldcolor.a);
+            const newG = oldcolor.g * oldcolor.a + backgroundColor.g * (1 - oldcolor.a);
+            const newB = oldcolor.b * oldcolor.a + backgroundColor.b * (1 - oldcolor.a);
+            let newColor = {};
+            newColor.r = Math.round(newR);
+            newColor.g = Math.round(newG);
+            newColor.b = Math.round(newB);
+            newColor.a = 255;
+            return newColor;
         }
         //将所有的的nodes和edges淡去
         const fadeNodesAndEdges = (g) => {
@@ -156,28 +164,26 @@ class Canvas extends Component {
             nodes.forEach(node => {
                 // if(node.oldStyle===undefined)
                 //     node.oldStyle =node.style();
-                node.style({ ...node.oldStyle, fill: fadeColor(node.oldStyle.fill) });
+                node.style({ r:node.oldStyle.r, fill: fadeColor(node.oldStyle.fill) });
             })
             let edges = g.edges().toArray();
                 edges.forEach(edge => {
                     // if (edge.oldStyle === undefined)
                     //     edge.oldStyle = edge.style();
-                edge.style({ ...edge.oldStyle, fill: fadeColor(edge.oldStyle.fill) });
+                edge.style({ lineWidth:edge.oldStyle.lineWidth, fill: fadeColor(edge.oldStyle.fill) });
             })
         }
         //将所有的nodes和edges变回来
         const fadeNodeAndEdgesBack = (g) => {
             let nodes = g.nodes().toArray();
-            // if (nodes[0].oldStyle === undefined)
-            //     return;
             nodes.forEach(node => {
                 let oldNodeStyle = node.oldStyle;
-                node.style({ ...oldNodeStyle });
+                node.style({ r: oldNodeStyle.r, fill: { ...oldNodeStyle.fill }});
             })
             let edges = g.edges().toArray();
             edges.forEach(edge => {
                 let oldEdgeStyle = edge.oldStyle;
-                edge.style({ ...oldEdgeStyle});
+                edge.style({ lineWidth:oldEdgeStyle.lineWidth,fill: {...oldEdgeStyle.fill}});
             })
         }
 
@@ -206,9 +212,11 @@ class Canvas extends Component {
                     {colorMap!==undefined && Object.values(colorMap).length>0? <Card id="wedget" cover={
                             <div style={{ padding: "0px 0px 10px 10px" }}><div style={{ margin: "5px 0px 0px 0px", color: important_font }}>Community:</div> {
                                 Object.values(colorMap).map((item, i) =>
-                                <Tag key={i} className="tag" color={item} style={{backgroundColor:item,borderWidth:this.state.checkedArray[i]?"2px":"0px",borderColor :"#1826FF"}} onClick={(e) => {
+                                {
+                                    const tag_color = 'rgba(' + item.r + ',' + item.g + ',' + item.b + ',' + item.a + ')';
+                                    return <Tag key={i} className="tag" color={tag_color} style={{ backgroundColor: tag_color, borderWidth: this.state.checkedArray[i] ? "2px" : "0px", borderColor: "#1826FF" }} onClick={(e) => {
                                         handleTagClick(e,i)
-                                }}>{i}</Tag>)} </div>
+                                }}>{i}</Tag>})} </div>
                     } bodyStyle={{ padding:0}} size="small" bordered={false}>
                     </Card> : null  }
                     </Col>

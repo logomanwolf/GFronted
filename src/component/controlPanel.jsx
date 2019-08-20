@@ -47,8 +47,8 @@ class ControlPanel extends Component {
                 addCommunityDetect(undefined);
                 
             }
-            chooseCluster({});
-            chooseLinks({});
+            chooseCluster(undefined);
+            chooseLinks(undefined);
         }
         const handleMenuClick=({key})=> {
             getFile(menuContent[parseInt(key)]);
