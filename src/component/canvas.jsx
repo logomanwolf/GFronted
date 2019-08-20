@@ -223,7 +223,7 @@ class Canvas extends Component {
                     <Col span={15}></Col>
                     <Col span={4}>
                         {/* <Card className="heatmap"
-                        // cover={<MiniMap></MiniMap>}
+                        cover={<MiniMap></MiniMap>}
                         bodyStyle={{ padding: 0,height:250 }} size="small"
                         // extra={<a href="#"><Icon type="close" /></a>}
                     >

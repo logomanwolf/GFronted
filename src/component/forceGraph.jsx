@@ -94,7 +94,7 @@ class ForceGraph extends Component {
                         node.style({ ...oldStyle });
                         neighbourNodes.push(node);
                     }
-                    item.style({ ...item.oldStyle, lineWidth: 2 });
+                    item.style({  lineWidth: 5 });
                 })
                 enlargeEffect(el, 2.2, 1.8);
                 neighbourNodes.forEach(item => {
@@ -198,7 +198,8 @@ class ForceGraph extends Component {
                 g: 0.07,
                 b: 0.07,
                 a: 1
-            }
+            },
+            mode: 'texture'
         });
         this.g.edges().forEach(edge => {
             edge.style({
