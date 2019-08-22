@@ -140,7 +140,7 @@ class ForceGraph extends Component {
                     this.enlargeEffect(item, 0.8, 1);
                 })
                 if (source !== undefined) {
-                    source.style({ fill: source_node_clicked });
+                    source.style({ fill: source_node_clicked ,r:20});
                     this.g.draw();
                     return;
                 }
@@ -293,8 +293,13 @@ class ForceGraph extends Component {
     highlightPath(data) {
         this.fadeNodesAndEdges();
         data.forEach(item => {
-            item.forEach(n => {
-                this.g.getNodeById(n).style({ fill: {r:255,g:0,b:0,a:255} });
+            item.forEach((n, i) => {
+                if (i === 0)
+                    this.g.getNodeById(n).style({ fill: { r: 130, g: 0, b: 20, a: 255 }, r: 20 });
+                else if (i === item.length - 1)
+                    this.g.getNodeById(n).style({ fill: { r: 255, g: 204, b: 199, a: 255 }, r: 20 });
+                else
+                    this.g.getNodeById(n).style({ fill: { r: 255, g: 0, b: 0, a: 255 } });
             });
             for (let i = 0; i < item.length - 1; i++) {
                 // console.log(item[i] + '->' + item[i + 1]);
@@ -310,7 +315,7 @@ class ForceGraph extends Component {
         let nodes = _.cloneDeep(collection1.nodes);
         let nodes2 = _.cloneDeep(collection2.nodes);
         let links = collection1.links.slice();
-        let count = 5;
+        let count = 10;
         let montionInterval = 0.1;
         const oldNodes = this.g.nodes();
         nodes.forEach((item,i) => {
@@ -319,6 +324,7 @@ class ForceGraph extends Component {
             //这里的group在使用data函数后会变成attr.group
             item.group = oldNodes.getNodeById(item.id).attrs.group;
             item.oldStyle = _.cloneDeep(oldNodes.getNodeById(item.id).oldStyle);
+            // item.oldStyle = oldNodes.getNodeById(item.id).oldStyle;
         })
         let intervalId=setInterval((g) => {
             nodes.forEach((item, i) => {
@@ -429,9 +435,12 @@ class ForceGraph extends Component {
                     this.motion(this.dataMap["lesmis_nodelink"], this.dataMap[filename]);
                     // this.g.data(this.dataMap[filename]);
             }
+            
             this.g.draw();
+            this.g.initInteraction();
+            this.g.initSearchIndice();
         }
-        if (target !== this.props.target) {
+        if (target !== this.props.target && target!==undefined  ) {
             const searchParams = new URLSearchParams();
             searchParams.set("start", source.id);
             searchParams.set("end", target.id);
@@ -448,7 +457,11 @@ class ForceGraph extends Component {
                 this.highlightPath(response);
                 updateShortestPath(response);
                 this.g.draw();
+                return response;
                 // this.initNodes()
+            }).then(response => {
+                console.log('alterResponse!!')
+                console.log(this.alterResponse(response));
             });
         }
         if (filename !== this.props.filename) {
@@ -456,27 +469,44 @@ class ForceGraph extends Component {
             this.insertOldStyle();
             // addG(this.g);
             this.g.draw();
+            this.g.initSearchIndice();
+            this.g.initInteraction();
         }
         // this.g.draw();
     }
     insertOldStyle() {
-        this.g.nodes().toArray().forEach(item => {
-            item.oldStyle = item.style();
+        this.g.nodes().forEach(item => {
+            item.oldStyle = {r:item.style().r,fill:node_color};
+            item.style(item.oldStyle);
         });
-        this.g.edges().toArray().forEach(item => {
-            item.oldStyle = item.style();
+        this.g.edges().forEach(item => {
+            item.oldStyle ={lineWidth:item.style().lineWidth, fill:edge_color };
+            item.style(item.oldStyle);
         })
+    }
+    alterResponse(response) {
+        let newData = _.unzip(response);
+        let uniqData = _.uniq(_.flatten(newData));
+        let dictData = _.zipObject(uniqData, Array(uniqData.length).fill(false));
+        let result=[]
+        newData.forEach(item => {
+            let inner = [];
+            item.forEach(it => {
+                if (!dictData[it]) {
+                    inner.push(it);
+                    dictData[it] = true;
+                }
+            })
+            result.push(inner)
+        })
+        return result;
     }
     render() { 
         return (
             <canvas ref={this.canvas} width="1380px" height="1000px" style={{backgroundColor:canvas_background}} />
         );
     }
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.filename !== this.props.filename) {
-            this.g.draw();
-        }
-    }
+
 }
 const mapStateToProps = (state, ownProps) => {  
     const { id } = state.alterData;

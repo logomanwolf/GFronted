@@ -58,9 +58,9 @@ class Canvas extends Component {
         }
         const handleAddSource = () => {
             displayed();
+            updateTarget(undefined);
             if(source !== curClickNode)
                 updateSource(curClickNode);
-            updateTarget(undefined)
         }
         const handleAddTarget = () => {
             displayed();

@@ -21,12 +21,7 @@ const edge_color =  {
     b: 224,
     a: 255
 };
-const source_node_clicked = {
-    r: 96,
-    g: 125,
-    b: 139,
-    a:255
-}
+const source_node_clicked = { r: 130, g: 0, b: 20, a: 255 }
 const red = {
     r: 255,
     g: 0,
