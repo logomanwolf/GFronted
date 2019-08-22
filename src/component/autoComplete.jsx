@@ -13,7 +13,36 @@ class autoComplete extends Component {
         const nextSelectedTags = checked ? [...selectedTags, tag] : selectedTags.filter(t => t !== tag);
         console.log('You are interested in: ', nextSelectedTags);
         this.setState({ selectedTags: nextSelectedTags });
-      }
+    }
+    fadeColor = color => {
+        let oldcolor = {...color};
+        let backgroundColor = { r: 0, g: 0, b: 0 };;
+        oldcolor.a = 0.2;
+        let newR = oldcolor.r * oldcolor.a + backgroundColor.r * (1 - oldcolor.a);
+        let newG = oldcolor.g * oldcolor.a + backgroundColor.g * (1 - oldcolor.a);
+        let newB = oldcolor.b * oldcolor.a + backgroundColor.b * (1 - oldcolor.a);
+        let newColor = {};
+        newColor.r = newR;
+        newColor.g = newG;
+        newColor.b = newB;
+        newColor.a = 255;
+        return newColor;
+    }
+    //将所有的的nodes和edges淡去
+    fadeNodesAndEdges = (g) => {
+        let nodes = g.nodes().toArray();
+        nodes.forEach(node => {
+            let oldNodeStyle = node.oldStyle;
+            // node.oldStyle = oldNodeStyle;
+            node.style({ r:oldNodeStyle.r,  fill: this.fadeColor(oldNodeStyle.fill) });
+        })
+        let edges = g.edges().toArray();
+            edges.forEach(edge => {
+            let oldEdgeStyle = edge.oldStyle;
+            // edge.oldStyle = oldEdgeStyle;
+            edge.style({ lineWidth:oldEdgeStyle.lineWidth, fill: this.fadeColor(oldEdgeStyle.fill) });
+        })
+    }
     render() { 
         const { innerData,selectedTags  } = this.state;
         const { g ,alterData} = this.props;
@@ -36,7 +65,11 @@ class autoComplete extends Component {
             this.setState({ innerData: innerData });           
         }
         const handleClickA = (value) => {
-            alterData(value);
+            let node = g.getNodeById(value);
+            g.panTo({ x: node.attrs.x, y: node.attrs.y });
+            this.fadeNodesAndEdges(g);
+            node.style({ fill: { ...node.oldStyle.fill },r:20 });
+            g.draw();
         }
         return (
             <Card title="Search Panel" bordered={false} size={"small"} headStyle={{ backgroundColor:card_background }} style={{height: "130px", overflow: "auto",backgroundColor:card_background}} type="inner" >

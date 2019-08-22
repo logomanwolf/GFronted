@@ -1,9 +1,10 @@
-@canvas_background: #121212;
-@important_font :#E0E0E0;
-@plain_text: #A0A0A0;
-@card_background: rgba(0,0,0,0.1   );
-@inner_card_background :"rgba(255,255,255,0.1)";
-
+:root{
+  --plain_text: #A0A0A0;
+  --important_font :#E0E0E0;
+  --inner_card_background :"rgba(255,255,255,0.1)";
+  --card_background: rgba(0,0,0,0.1   );
+  --canvas_background: #121212;
+}
 .certain-category-icon {
   color: #6e6e6e;
   background: #1DA57A;
@@ -59,8 +60,8 @@ button.ant-btn{
 div.ant-select-search__field__wrap{
   background-color: black;
 }
-span.ant-typography{
-  color:#A0A0A0
+span.ant-typography{ 
+  color:var(--plain_text);
 }
 i.ant-input-search-icon{
   color:#E0E0E0;
@@ -87,6 +88,23 @@ div.ant-card-head div.ant-tabs-bar{
 div.ant-collapse.ant-collapse-icon-position-left{
   border: 0ch;
   background-color: rgba(255, 255, 255, 0.1);
+}
+.ant-collapse-item.ant-collapse-item-active .ant-collapse-content-box{
+  background-color:rgba(255, 255, 255, 0.05);
+  border: 0px;
+}
+.ant-collapse div.ant-collapse-item div.ant-collapse-content{
+  background-color: rgba(255, 255, 255, 0);
+  border: 0px;
+}
+.ant-collapse.ant-collapse-icon-position-left .ant-collapse-item{
+  border: 0px;
+}
+.ant-card-body .ant-collapse .ant-collapse-item .ant-collapse-header{
+  color:var(--important_font);
+}
+.ant-list-item-meta-content .ant-list-item-meta-description{
+  color: var(--plain_text);
 }
 .heatmap{
   z-index: 100;

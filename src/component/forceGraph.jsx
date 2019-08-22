@@ -57,6 +57,45 @@ class ForceGraph extends Component {
             edge.style({ lineWidth:oldEdgeStyle.lineWidth, fill: this.fadeColor(oldEdgeStyle.fill) });
         })
     }
+    fadeNodeAndEdgesBack = () => {
+        let nodes = this.g.nodes().toArray();
+        nodes.forEach(node => {
+            let oldNodeStyle = node.oldStyle;
+            node.style({ r: oldNodeStyle.r, fill: { ...oldNodeStyle.fill }});
+        })
+        let edges = this.g.edges().toArray();
+        edges.forEach(edge => {
+            let oldEdgeStyle = edge.oldStyle;
+            edge.style({ lineWidth:oldEdgeStyle.lineWidth,fill: {...oldEdgeStyle.fill}});
+        })
+    }
+    enlargeEffect = (node,increseR1,increseR2) => {
+        const oldStyle = node.oldStyle;
+        const oldR = oldStyle.r;
+        const mediaR = oldR*increseR1;
+        const newR = oldR*increseR2 ;
+        const motionInternal = 1;
+        // node.style({r:13.4})
+        this.nodeSizeMotion(node, mediaR,motionInternal*5).then((result)=>this.nodeSizeMotion(result, newR,motionInternal*3));
+    }
+    nodeSizeMotion = (node, newR, motionInternal)=>{
+        let count = 5;
+        // let montionInterval = 2;
+        const oldStyle = node.nodeStyle;
+        node.motionUnitR = (newR - node.style().r) / count;
+        // console.log(node.motionUnitR);
+        return new Promise((resolve, reject) => {
+            let intervalId=setInterval((g) => {
+                node.style({ ...oldStyle, r: node.style().r + node.motionUnitR });
+                g.refresh();                    
+                count--;
+                if (count < 1) {
+                    clearInterval(intervalId);
+                    resolve(node);
+                }
+            }, motionInternal, this.g);
+        })
+    }
     componentDidMount() {
         // const {d3Force,G}=require('../utils/G')
         const canvas = this.canvas.current;
@@ -96,9 +135,9 @@ class ForceGraph extends Component {
                     }
                     item.style({  lineWidth: 5 });
                 })
-                enlargeEffect(el, 2.2, 1.8);
+                this.enlargeEffect(el, 2.2, 1.8);
                 neighbourNodes.forEach(item => {
-                    enlargeEffect(item, 0.8, 1);
+                    this.enlargeEffect(item, 0.8, 1);
                 })
                 if (source !== undefined) {
                     source.style({ fill: source_node_clicked });
@@ -136,7 +175,7 @@ class ForceGraph extends Component {
                     })    
                 }
                 else
-                    fadeNodeAndEdgesBack();
+                    this.fadeNodeAndEdgesBack();
                 el.attrs.hovered = undefined;
                 // fadeNodeAndEdgesBack();
                 if (source !== undefined) {
@@ -149,45 +188,8 @@ class ForceGraph extends Component {
         }
         
         //将所有的nodes和edges变回来
-        const fadeNodeAndEdgesBack = () => {
-            let nodes = this.g.nodes().toArray();
-            nodes.forEach(node => {
-                let oldNodeStyle = node.oldStyle;
-                node.style({ r: oldNodeStyle.r, fill: { ...oldNodeStyle.fill }});
-            })
-            let edges = this.g.edges().toArray();
-            edges.forEach(edge => {
-                let oldEdgeStyle = edge.oldStyle;
-                edge.style({ lineWidth:oldEdgeStyle.lineWidth,fill: {...oldEdgeStyle.fill}});
-            })
-        }
-        const enlargeEffect = (node,increseR1,increseR2) => {
-            const oldStyle = node.oldStyle;
-            const oldR = oldStyle.r;
-            const mediaR = oldR*increseR1;
-            const newR = oldR*increseR2 ;
-            const motionInternal = 1;
-            // node.style({r:13.4})
-            nodeSizeMotion(node, mediaR,motionInternal*5).then((result)=>nodeSizeMotion(result, newR,motionInternal*3));
-        }
-        const nodeSizeMotion = (node, newR, motionInternal)=>{
-            let count = 5;
-            // let montionInterval = 2;
-            const oldStyle = node.nodeStyle;
-            node.motionUnitR = (newR - node.style().r) / count;
-            console.log(node.motionUnitR);
-            return new Promise((resolve, reject) => {
-                let intervalId=setInterval((g) => {
-                    node.style({ ...oldStyle, r: node.style().r + node.motionUnitR });
-                    g.refresh();                    
-                    count--;
-                    if (count < 1) {
-                        clearInterval(intervalId);
-                        resolve(node);
-                    }
-                }, motionInternal, this.g);
-            })
-        }
+        
+
         var gl = canvas.getContext('webgl2');
          // eslint-disable-next-line
         this.g = new G({
@@ -309,13 +311,13 @@ class ForceGraph extends Component {
         let nodes2 = _.cloneDeep(collection2.nodes);
         let links = collection1.links.slice();
         let count = 5;
-        let montionInterval = 5;
+        let montionInterval = 0.1;
         const oldNodes = this.g.nodes();
         nodes.forEach((item,i) => {
             item.motionUnitX = (nodes2[i].x - item.x) / count;
             item.motionUnitY = (nodes2[i].y - item.y) / count;
             //这里的group在使用data函数后会变成attr.group
-            item.group = oldNodes.getNodeById(item.id).attrs;
+            item.group = oldNodes.getNodeById(item.id).attrs.group;
             item.oldStyle = _.cloneDeep(oldNodes.getNodeById(item.id).oldStyle);
         })
         let intervalId=setInterval((g) => {
@@ -323,20 +325,20 @@ class ForceGraph extends Component {
                 item.x += item.motionUnitX;
                 item.y += item.motionUnitY;
             })
-            g.data({nodes,links});
-            g.draw()
+            g.data({ nodes, links });
+            
+            g.nodes().forEach(item => {
+                item.oldStyle = { fill: { ...item.attrs.oldStyle.fill }, r: item.attrs.oldStyle.r };
+                // item.group = item.attrs.group;
+                item.style({ fill: { ...item.oldStyle.fill }, r: item.oldStyle.r });
+            })
+            g.edges().forEach(item => {
+                item.oldStyle = { fill: {...edge_color}, lineWidth: 1 };
+                item.style({ fill: {...edge_color}, lineWidth: 1 })
+            })
+            g.draw();
             count--;
             if (count < 1) {
-                g.nodes().forEach(item => {
-                    item.oldStyle = {fill:{...item.attrs.oldStyle.fill},r:item.attrs.oldStyle.r};
-                    // item.group = item.attrs.group;
-                    item.style({ ...item.oldStyle });
-                })
-                g.edges().forEach(item => {
-                    item.oldStyle = { fill: {...edge_color}, lineWidth: 1 };
-                    item.style({ fill: {...edge_color}, lineWidth: 1 })
-                })
-                g.draw();
                 g.initSearchIndice();
                 g.initInteraction();
                 clearInterval(intervalId);
@@ -350,19 +352,21 @@ class ForceGraph extends Component {
         const { id, community, addColorMap, addG, filename,source,target,layout,updateShortestPath } = newProps;
         // this.initNodes();        
         //点击查找会找到指定的id，并在主视区中显示
-        if (id !== undefined && id !== null) {
-            console.log(id)
-            if (this.lastId !== undefined) {
-                const lastOldStyle = this.g.getNodeById(this.lastId).style();
-                this.g.getNodeById(this.lastId).style({ ...lastOldStyle, fill: node_color });
-            }
-            const oldStyle = this.g.getNodeById(id).style();
-            this.g.panToNode(id);
-            this.g.getNodeById(id).style({ fill: red });
-            this.lastId = id;
-            this.g.draw();
-            // this.force.data(this.g.data());
-        }
+        // if (id !== undefined && id !== null) {
+        //     console.log(id)
+        //     if (this.lastId !== undefined) {
+        //         const lastOldStyle = this.g.getNodeById(this.lastId).style();
+        //         this.g.getNodeById(this.lastId).style({ ...lastOldStyle, fill: node_color });
+        //     }
+        //     this.fadeNodesAndEdges();
+        //     this.g.panToNode(id);
+        //     let node = this.g.getNodeById(id);
+        //     node.style({ fill: red });
+        //     this.enlargeEffect(node, 2.8, 2.2);
+        //     this.lastId = id;
+        //     this.g.draw();
+        //     // this.force.data(this.g.data());
+        // }
         //点击社团检测开关，可以在主视图中看到用不同的颜色编码社团
         if (community !== undefined) {            
             
@@ -440,7 +444,7 @@ class ForceGraph extends Component {
                 return r.json();
             }).then(response => {
                 console.log("get shortest path!");
-                console.log(response);  
+                // console.log(response);  
                 this.highlightPath(response);
                 updateShortestPath(response);
                 this.g.draw();
@@ -484,7 +488,7 @@ const mapStateToProps = (state, ownProps) => {
     const { cluster } = state.chooseCluster;
     const { links } = state.chooseLinks;
     // const {rollback}=state.rollback
-    console.log(id);
+    // console.log(id);
     return {
         id, community,  filename,source,target,layout,cluster,links
     }
