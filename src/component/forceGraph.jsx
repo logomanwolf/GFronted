@@ -289,6 +289,9 @@ class ForceGraph extends Component {
         'nodes_4000_nodelink': nodes_4000_nodelink,
         'lesmis_nodelink':lesmis_nodelink
     }
+    dataload = (func) => {
+        d3.json('./data/member-edges-subgraph2-addXY.json').then(func)
+    }
     //highlight the shortestPath
     highlightPath(data) {
         this.fadeNodesAndEdges();
@@ -461,7 +464,10 @@ class ForceGraph extends Component {
                 // this.initNodes()
             }).then(response => {
                 console.log('alterResponse!!')
-                console.log(this.alterResponse(response));
+                // console.log(this.alterResponse(response, this.g));
+                 // eslint-disable-next-line
+                const dotAnimation = new DotAnimation(this.g);
+                dotAnimation.startAnimation(this.alterResponse(response, this.g));
             });
         }
         if (filename !== this.props.filename) {
@@ -484,11 +490,11 @@ class ForceGraph extends Component {
             item.style(item.oldStyle);
         })
     }
-    alterResponse(response) {
+    alterResponse(response,g) {
         let newData = _.unzip(response);
         let uniqData = _.uniq(_.flatten(newData));
         let dictData = _.zipObject(uniqData, Array(uniqData.length).fill(false));
-        let result=[]
+        let result = [];
         newData.forEach(item => {
             let inner = [];
             item.forEach(it => {
@@ -499,7 +505,22 @@ class ForceGraph extends Component {
             })
             result.push(inner)
         })
-        return result;
+        let realism = [];
+        for (let i = 0; i < result.length - 1; i++) {
+            let hierarchy = [];
+            let firstArray = result[i];
+            let nextArray = result[i + 1];
+            firstArray.forEach(first => {
+                nextArray.forEach(next => {
+                    if (g.getEdgeByNodes({ source: first, target: next }) !== undefined)
+                        hierarchy.push(g.getEdgeByNodes({ source: first, target: next }).id);
+                    else if (g.getEdgeByNodes({ source: next, target: first }) !== undefined)
+                        hierarchy.push(g.getEdgeByNodes({ source: next, target: first }).id);
+                })
+            })
+            realism.push(hierarchy);
+        }
+        return realism;
     }
     render() { 
         return (
