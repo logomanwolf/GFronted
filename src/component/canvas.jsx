@@ -222,13 +222,13 @@ class Canvas extends Component {
                     </Col>
                     <Col span={15}></Col>
                     <Col span={4}>
-                        {/* <Card className="heatmap"
-                        cover={<MiniMap></MiniMap>}
+                        <Card className="heatmap"
+                        // cover={<MiniMap></MiniMap>}
                         bodyStyle={{ padding: 0,height:250 }} size="small"
                         // extra={<a href="#"><Icon type="close" /></a>}
                     >
                         <MiniMap/>
-                    </Card> */}
+                    </Card>
                     </Col>
                 </Card>
             </div>
