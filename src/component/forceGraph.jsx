@@ -577,12 +577,17 @@ class ForceGraph extends Component {
             let hierarchy = [];
             let firstArray = result[i];
             let nextArray = result[i + 1];
+            // eslint-disable-next-line no-loop-func
             firstArray.forEach(first => {
                 nextArray.forEach(next => {
-                    if (g.getEdgeByNodes({ source: first, target: next }) !== undefined)
-                        hierarchy.push(g.getEdgeByNodes({ source: first, target: next }).id);
-                    else if (g.getEdgeByNodes({ source: next, target: first }) !== undefined)
-                        hierarchy.push(g.getEdgeByNodes({ source: next, target: first }).id);
+                    if (g.getEdgeByNodes({ source: first, target: next }) !== undefined) {
+                        let inv = true;
+                        if (g.getEdgeByNodes({ source: first, target: next }).source === first)
+                        inv = false;
+                        hierarchy.push({ id: g.getEdgeByNodes({ source: first, target: next }).id ,inv});
+                    }
+                    // else if (g.getEdgeByNodes({ source: next, target: first }) !== undefined)
+                    //     hierarchy.push(g.getEdgeByNodes({ source: next, target: first }).id);
                 })
             })
             realism.push(hierarchy);
