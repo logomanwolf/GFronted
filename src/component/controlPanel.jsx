@@ -22,6 +22,7 @@ class ControlPanel extends Component {
                 console.log("get data finished!");
                 // console.log(response);
                 addPageRank(response);
+                // updateListPanelContent({ 2: 2 });
             });
         }
         
@@ -80,24 +81,24 @@ class ControlPanel extends Component {
 
         return ( 
         <div>
-            <Card title="Control Panel" bordered={false} size={"small"} type="inner" headStyle={{color:important_font,backgroundColor:card_background}} style={{backgroundColor:card_background}} >
+            <Card title="" bordered={false}  size={"small"} type="inner" headStyle={{color:important_font,backgroundColor:card_background}} style={{backgroundColor:card_background}} >
                 <Row>
                     <Card style={{overflow:"auto",backgroundColor:card_background}} bordered={false} size="small" headStyle={{color:important_font}} 
                 >
                         <Row>
-                            <Card.Meta title="Analysis" size="small"  style={{ marginBottom: "10px"}} bordered={"false"}></Card.Meta></Row>
+                            <Card.Meta title="分析" size="small"  style={{ marginBottom: "10px"}} bordered={"false"}></Card.Meta></Row>
                         <Row>
                             <Row>
-                                <Col span={6}><Dropdown.Button placement="bottomLeft" overlay={filemenu} icon={<Icon type="down" />}>Open</Dropdown.Button><br /></Col>
+                                <Col span={6}><Dropdown.Button placement="bottomLeft" overlay={filemenu} icon={<Icon type="down" />}>打开</Dropdown.Button><br /></Col>
                                 <Col span={18}><div style={{ height: "32px", display: "table-cell", verticalAlign: "middle", fontSize: "110%", paddingLeft: "30px",color:plain_text }} > {this.state.filestatus.filename}</div>
                                     <Divider style={{ margin: "0px 0px 0px 10px", width: "90%",minWidth:"50%",backgroundColor:dividar_color }} /></Col>
                             </Row>
                             <Row className="defaultText">
-                                    <Col span={9} ><Typography.Text strong >Nodes:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.nodesNum}</Typography.Text></Col>
-                                <Col span={9}><Typography.Text strong >Edges:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.edgesBum}</Typography.Text></Col>
+                                    <Col span={9} ><Typography.Text strong >节点数:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.nodesNum}</Typography.Text></Col>
+                                <Col span={9}><Typography.Text strong >边数:&nbsp;&nbsp;&nbsp;</Typography.Text><Typography.Text>{this.state.filestatus.edgesBum}</Typography.Text></Col>
                             </Row>    
                             <Row className="defaultText">
-                                <Col span={18}><Typography.Text  strong >Community Detection</Typography.Text></Col>
+                                <Col span={18}><Typography.Text  strong >社团检测</Typography.Text></Col>
                                 <Col><Switch  onChange={(checked)=>handleCommunityDetect(checked)} /></Col>
                             </Row>
                             <Row className="defaultText">
@@ -125,21 +126,21 @@ class ControlPanel extends Component {
                 </Row>
                 <Row>
                     <Card style={{overflow:"auto",backgroundColor:card_background}} bordered={false} size="small" bodyStyle={{color:important_font}} >
-                            <Row><Card.Meta title="Encoding"/></Row>
+                            <Row><Card.Meta title="编码"/></Row>
                         <Row className="defaultText">
-                            <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>Color</Typography.Text></Col>
+                            <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>颜色</Typography.Text></Col>
                             <Col span={10}><Dropdown overlay={menu}><Button block> <Icon type="down" /></Button></Dropdown><br/></Col>
                         </Row>
                         <Row className="defaultText">
-                            <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>Size</Typography.Text></Col>
+                            <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>大小</Typography.Text></Col>
                             <Col span={10}><Dropdown overlay={menu}><Button block> <Icon type="down" /></Button></Dropdown><br/></Col>
                         </Row>
                         <Row className="defaultText">
-                            <Col span={10} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>Layout</Typography.Text></Col>
+                            <Col span={10} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>布局</Typography.Text></Col>
                             <Col span={14}>
                                 <Radio.Group  onChange={e=>{handleLayoutChange(e)}} value={this.state.value} >
-                                    <Radio value={1} style={{height:"32px",lineHeight:2}}>node-link</Radio>
-                                    <Radio value={2} style={{height:"32px",lineHeight:2}}>hierarchy</Radio>
+                                    <Radio value={1} style={{height:"32px",lineHeight:2}}>原始布局</Radio>
+                                    <Radio value={2} style={{height:"32px",lineHeight:2}}>层次布局</Radio>
                                 </Radio.Group>
                             </Col>
                             </Row>
@@ -174,7 +175,9 @@ const mapDispatchToProps = (dispatch,ownProps) => {
             dispatch(createAction("chooseLinks", links));
         }
         ,
-    
+        updateListPanelContent:listPanelContent => {
+            dispatch(createAction("updateListPanelContent", listPanelContent));
+        },
     }
 } 
 const Content=connect( () => ({}),mapDispatchToProps)(ControlPanel)

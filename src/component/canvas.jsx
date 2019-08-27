@@ -197,13 +197,13 @@ class Canvas extends Component {
                     <Col span={1}>
                     <ul className="clickRightMenu" id="clickRightMenu">
                             
-                            <li className="li1" onClick={ handleSeeDetails } >See details
+                            <li className="li1" onClick={ handleSeeDetails } >调加到比较面板
                                 {/* <ul className="nav2">
                                     <li className="li2">1</li>
                                 </ul> */}
                             </li>
-                            <li className="li1" onClick={handleAddSource}>Add As A Source </li>
-                            <li className="li1" onClick={handleAddTarget}>Add As A Target </li>
+                            <li className="li1" onClick={handleAddSource}>选择作为起点 </li>
+                            <li className="li1" onClick={handleAddTarget}>选择作为终点 </li>
                     </ul>
                     <ForceGraph />                                        
                     </Col>

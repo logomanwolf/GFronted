@@ -13,11 +13,17 @@ class PageRank extends Component {
     };
     componentWillReceiveProps(newProps) {
         const { listContent } = this.state;
-        const { listPanelContent, g } = newProps;
-        if (listPanelContent!==undefined && g!==undefined  && listContent.indexOf(g.getNodeById(listPanelContent)) === -1) {
+        const { listPanelContent, g,pageRank } = newProps;
+    
+        if (listPanelContent !== undefined && listPanelContent !== this.props.listPanelContent && listContent.indexOf(g.getNodeById(listPanelContent)) === -1) {
             listContent.push(g.getNodeById(listPanelContent));
             const key = 'tab3';
             this.setState({ ...this.state, key });
+        }
+        else if (pageRank !== this.props.pageRank && pageRank !== undefined)
+        {
+            const key = 'tab2';
+            this.setState({ ...this.state, key});
         }
     }
     shouldComponentUpdate(newProps, newState) {
@@ -75,13 +81,13 @@ class PageRank extends Component {
                 <Card style={{ width: '100%' ,height:"418px",backgroundColor:card_background}} size="small" tabList={[
                     {
                         key: 'tab1',
-                        tab: 'Statistic',
+                        tab: '社团分类',
                     }, {
                         key: 'tab2',
-                        tab: 'List',
+                        tab: '推荐列表',
                     }, {
                         key: 'tab3',
-                        tab: 'Detail',
+                        tab: '详细信息',
                     },]}
                     activeTabKey={this.state.key}
                     onTabChange={key => {

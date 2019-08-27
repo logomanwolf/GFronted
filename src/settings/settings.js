@@ -44,7 +44,10 @@ const red = {
     b: 0,
     a:255
 }
+const highlightEdge = {
+     r: 225, g: 157, b: 84, a: 255 
+}
 export {
 getPageRank,getCommunityDetect,getShortestPath,canvas_background,
-important_font,plain_text,card_background,node_color,edge_color,inner_card_background,dividar_color,source_node_clicked,red,
+important_font,plain_text,card_background,node_color,edge_color,inner_card_background,dividar_color,source_node_clicked,red,    highlightEdge,
 node_4000_hierarchy,node_4000_node_link,node_70_hierarchy,node_70_node_link,node_25_node_link}

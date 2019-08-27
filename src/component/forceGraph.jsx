@@ -6,7 +6,10 @@ import React, { Component } from 'react';
 import createAction from '../actions';
 import { connect } from 'react-redux';
 import colorMap from '../settings/colorMap';
-import { getShortestPath,node_color,edge_color,canvas_background,source_node_clicked,red,node_4000_hierarchy,node_4000_node_link,node_70_hierarchy,node_70_node_link,node_25_node_link } from '../settings/settings'
+import {
+    getShortestPath, node_color, edge_color, canvas_background,
+    highlightEdge,source_node_clicked, red, node_4000_hierarchy, node_4000_node_link, node_70_hierarchy, node_70_node_link, node_25_node_link
+} from '../settings/settings'
 import URLSearchParams from 'url-search-params';
 import * as d3color from 'd3-color';
 import * as d3interpolate from 'd3-interpolate';
@@ -345,18 +348,18 @@ class ForceGraph extends Component {
         data.forEach(item => {
             item.forEach((n, i) => {
                 if (i === 0)
-                    this.g.getNodeById(n).style({ fill: { r: 130, g: 0, b: 20, a: 255 }, r: 20 });
+                    this.g.getNodeById(n).style({ fill: source_node_clicked, r: 20 });
                 else if (i === item.length - 1)
                     this.g.getNodeById(n).style({ fill: { r: 255, g: 204, b: 199, a: 255 }, r: 20 });
                 else
-                    this.g.getNodeById(n).style({ fill: { r: 255, g: 0, b: 0, a: 255 } });
+                    this.g.getNodeById(n).style({ fill:red });
             });
             for (let i = 0; i < item.length - 1; i++) {
                 // console.log(item[i] + '->' + item[i + 1]);
                 const data = this.g.getEdgesByAttribute('source', item[i]).getEdgesByAttribute('target', item[i + 1]).toArray()
                     .concat(this.g.getEdgesByAttribute('source', item[i+1]).getEdgesByAttribute('target', item[i]).toArray())
                 // data[0].style({ fill: "#ccc" });
-                data[0].style({ fill: { r: 225, g: 157, b: 84, a: 255 } });
+                data[0].style({ fill: edge_color });
             }
         });
         // this.props.updateSource(undefined);
@@ -408,21 +411,20 @@ class ForceGraph extends Component {
         const { id, community, addColorMap, addG, filename,source,target,layout,updateShortestPath } = newProps;
         // this.initNodes();        
         //点击查找会找到指定的id，并在主视区中显示
-        // if (id !== undefined && id !== null) {
-        //     console.log(id)
-        //     if (this.lastId !== undefined) {
-        //         const lastOldStyle = this.g.getNodeById(this.lastId).style();
-        //         this.g.getNodeById(this.lastId).style({ ...lastOldStyle, fill: node_color });
-        //     }
-        //     this.fadeNodesAndEdges();
-        //     this.g.panToNode(id);
-        //     let node = this.g.getNodeById(id);
-        //     node.style({ fill: red });
-        //     this.enlargeEffect(node, 2.8, 2.2);
-        //     this.lastId = id;
-        //     this.g.draw();
-        //     // this.force.data(this.g.data());
-        // }
+        if (id !== this.props.id) {
+            // if (this.lastId !== undefined) {
+            //     const lastOldStyle = this.g.getNodeById(this.lastId).style();
+            //     this.g.getNodeById(this.lastId).style({ ...lastOldStyle, fill: node_color });
+            // }
+            this.fadeNodesAndEdges();
+            this.g.panToNode(id);
+            let node = this.g.getNodeById(id);
+            node.style({ fill: red });
+            this.enlargeEffect(node, 2.8, 2.2);
+            // this.lastId = id;
+            this.g.draw();
+            // this.force.data(this.g.data());
+        }
         //点击社团检测开关，可以在主视图中看到用不同的颜色编码社团
         if (community !== undefined) {            
             

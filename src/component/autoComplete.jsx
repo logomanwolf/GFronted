@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import createAction from '../actions';
 import {card_background,canvas_background,important_font,plain_text} from '../settings/settings'
 const dataSource = ["Anzelma", "Babet", "Bamatabois"];
-const tagsFromServer = ['Movies', 'Books', 'Musics'];
+const tagsFromServer = ['电影 ', '书籍 ', '音乐 '];
 
 class autoComplete extends Component {
     state = { innerData: [], selectedTags: [], };    
@@ -72,7 +72,7 @@ class autoComplete extends Component {
             g.draw();
         }
         return (
-            <Card title="Search Panel" bordered={false} size={"small"} headStyle={{ backgroundColor:card_background }} style={{height: "130px", overflow: "auto",backgroundColor:card_background}} type="inner" >
+            <Card title="搜索栏" bordered={false} size={"small"} headStyle={{ backgroundColor:card_background }} style={{height: "130px", overflow: "auto",backgroundColor:card_background}} type="inner" >
                 <Row>
                     <Col span={12}>
                         < AutoComplete  dataSource={dataSource} placeholder="try to type `b`" filterOption={(inputValue, option) =>option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1} >
@@ -80,7 +80,7 @@ class autoComplete extends Component {
                         </AutoComplete >
                     </Col>
                     <Col span={12}>
-                        <h6 style={{ display: "inline" ,lineHeight:"32px" }}>Categories:</h6>{tagsFromServer.map(tag => (
+                        <h6 style={{ display: "inline" ,lineHeight:"32px" }}>关键词:</h6>{tagsFromServer.map(tag => (
                             <Tag.CheckableTag style={{display:"inline",margin:"0 0 0 6px", padding:"0px"}} key={tag} checked={selectedTags.indexOf(tag) > -1} onChange={checked => this.handleTagChange(tag, checked)}>{tag}</Tag.CheckableTag>))}
                     </Col>
                 </Row>

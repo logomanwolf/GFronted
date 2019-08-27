@@ -11,6 +11,10 @@
   transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   font-size: 16px;
 }
+
+html { -ms-overflow-style:none; overflow:-moz-scrollbars-none; } 
+::-webkit-scrollbar{display:none;}
+
 .left-side-row {
   padding: 20px 20px 0px 20px;
   /* margin: 0px 0px 0px 0px */
@@ -31,6 +35,9 @@ div.ant-card-head{
   /* background-color: rgba(255, 255, 255, 0.1); */
   color: #E0E0E0;
   border: 0px;
+}
+a {
+  cursor: pointer;
 }
 input.ant-select-auto-complete.ant-select .ant-input{
   background-color: rgba(255, 255, 255, 0.1);
