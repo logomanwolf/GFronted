@@ -11,11 +11,12 @@ const getCommunityDetect = 'community/community.json'
 
 
 //-----------file list
-const node_4000_hierarchy='data/member-edges-subgraph4-addXY.json'
+// const node_4000_hierarchy='clustery/community_graph.json'
+const node_4000_hierarchy='data/node_4000_hierarchy.json'
 const node_4000_node_link='data/node_4000_node_link.json'
 const node_70_hierarchy='data/node_70_hierarchy.json'
 const node_70_node_link='data/node_70_node_link.json'
-
+const node_25_node_link='data/node_25_node_link.json'
 
 //------------default outlook style 
 const canvas_background = '#121212'
@@ -34,7 +35,7 @@ const edge_color =  {
     r: 224,
     g: 224,
     b: 224,
-    a: 255
+    a: 150
 };
 const source_node_clicked = { r: 130, g: 0, b: 20, a: 255 }
 const red = {
@@ -46,4 +47,4 @@ const red = {
 export {
 getPageRank,getCommunityDetect,getShortestPath,canvas_background,
 important_font,plain_text,card_background,node_color,edge_color,inner_card_background,dividar_color,source_node_clicked,red,
-node_4000_hierarchy,node_4000_node_link,node_70_hierarchy,node_70_node_link}
+node_4000_hierarchy,node_4000_node_link,node_70_hierarchy,node_70_node_link,node_25_node_link}

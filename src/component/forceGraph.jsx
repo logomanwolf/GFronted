@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import createAction from '../actions';
 import { connect } from 'react-redux';
 import colorMap from '../settings/colorMap';
-import { getShortestPath,node_color,edge_color,canvas_background,source_node_clicked,red,node_4000_hierarchy,node_4000_node_link,node_70_hierarchy,node_70_node_link } from '../settings/settings'
+import { getShortestPath,node_color,edge_color,canvas_background,source_node_clicked,red,node_4000_hierarchy,node_4000_node_link,node_70_hierarchy,node_70_node_link,node_25_node_link } from '../settings/settings'
 import URLSearchParams from 'url-search-params';
 import * as d3color from 'd3-color';
 import * as d3interpolate from 'd3-interpolate';
@@ -133,7 +133,7 @@ class ForceGraph extends Component {
                         node.style({ ...oldStyle });
                         neighbourNodes.push(node);
                     }
-                    item.style({  lineWidth: 5 });
+                    item.style({  lineWidth: item.style().lineWidth+9 });
                 })
                 this.enlargeEffect(el, 2.2, 1.8);
                 neighbourNodes.forEach(item => {
@@ -183,7 +183,7 @@ class ForceGraph extends Component {
                     this.g.refresh();
                     return;
                 }
-                this.g.refresh();
+                this.g.draw();
             }
         }
         
@@ -206,10 +206,21 @@ class ForceGraph extends Component {
                 mode: 'texture'
             });
             this.initNodes();
+            // this.g.nodes().forEach(
+            //     (item) => {
+            //         item.style({r:item.attrs.radius ,fill: node_color });
+            //         }
+            // )
+            // this.g.edges().forEach(
+            //     item => {
+            //         item.style({fill:edge_color,lineWidth:1})
+            //     }
+            // )
             this.g.loadTexture('./electric.png').then(() => {
                 this.g.draw();
                 this.g.initSearchIndice();
                 this.g.initInteraction();
+                this.bindZoom();
                 this.g.on('click', (el,e) => {
                     handleNodeClick(el,e);
                 })
@@ -225,11 +236,12 @@ class ForceGraph extends Component {
                 this.g.edges().forEach(
                     item=>
                     { item.oldStyle = { ...item.style() } }
-                )
+                ) 
+                
                 addG(this.g);
             })
 
-        },this.dataMap['nodes_4000']);
+        },this.dataMap['nodes_4000_nodelink']);
         // this.g.edges().forEach(edge => {
         //     edge.style({
         //         fill: {
@@ -270,25 +282,56 @@ class ForceGraph extends Component {
     initNodes() {
         this.g.nodes().forEach(
             (item) => {
-                // const oldStyle = this.g.getNodeById(item.id).oldStyle;
-                // this.g.getNodeById(item.id).style({...oldStyle,fill: node_color });
-                // const oldStyle = item.oldStyle;
-                item.style({r:10 ,fill: node_color });
+                item.style({r:10 ,fill: {...node_color} });
                 }
         )
         this.g.edges().forEach(
             item => {
-                // this.g.getEdgeById(item.id).style({fill:edge_color,lineWidth:1})
-                item.style({fill:edge_color,lineWidth:1})
+                item.style({fill:{...edge_color},lineWidth:1})
             }
         )
+    }
+    bindZoom() {
+        this.g.onZoom(() => {
+            const transform = this.g._private.renderer.getTransform()
+            if (transform.k < 0.25 && this.g.nodes().toArray().length>25) {
+                d3.json(this.dataMap['nodes_25']).then((data) => {
+                    this.g.data(data)
+                    this.g.nodes().forEach(
+                        (item) => {
+                            item.style({ r: item.attrs.radius, fill: {...node_color} });
+                    })
+                    this.g.edges().forEach(
+                        item => {
+                            item.style({
+                                lineWidth:item.attrs.width,fill:{...edge_color}
+                            })
+                        }
+                    )
+                    this.initOldStyle()
+                    this.g.draw();
+                    this.g.initSearchIndice();
+                    this.g.initInteraction();
+                })
+            }
+            else if (transform.k > 0.25 && this.g.nodes().toArray().length === 25) {
+                d3.json(this.dataMap['nodes_4000_nodelink']).then((data) => {
+                    this.g.data(data);
+                    this.insertOldStyle();
+                    this.g.draw();
+                    this.g.initSearchIndice();
+                    this.g.initInteraction();
+                })
+            }
+        });
     }
 
     dataMap = {
         "nodes_4000": node_4000_hierarchy,
         "nodes_62":node_70_hierarchy,
         'nodes_4000_nodelink': node_4000_node_link,
-        'lesmis_nodelink':node_70_node_link
+        'lesmis_nodelink': node_70_node_link,
+        'nodes_25':node_25_node_link
     }
 
 
@@ -392,7 +435,7 @@ class ForceGraph extends Component {
             {
                 nodes.forEach(
                 item => {
-                        item.oldStyle = { ...item.style(), fill: node_color };
+                        item.oldStyle = { ...item.style(), fill: {...node_color} };
                         // item.style({...item.oldStyle})
                     })
                 this.initNodes();
@@ -434,7 +477,8 @@ class ForceGraph extends Component {
             // eslint-disable-next-line    
                 if (filename === undefined || filename === 'nodes_4000') {
                     // // 这里是测试数据部分
-                    changeLayout('nodes_4000','nodes_4000_nodelink');
+                    changeLayout('nodes_4000', 'nodes_4000_nodelink');
+                    this.bindZoom();
                 }   
                 else if (filename === 'nodes_62')
                     changeLayout("nodes_62","lesmis_nodelink");
@@ -491,13 +535,25 @@ class ForceGraph extends Component {
     }
     insertOldStyle() {
         this.g.nodes().forEach(item => {
-            item.oldStyle = {r:item.style().r,fill:node_color};
+            item.oldStyle = {r:10,fill:{...node_color}};
             item.style(item.oldStyle);
         });
         this.g.edges().forEach(item => {
-            item.oldStyle ={lineWidth:item.style().lineWidth, fill:edge_color };
+            item.oldStyle ={lineWidth:1, fill:{...edge_color} };
             item.style(item.oldStyle);
         })
+    }
+    initOldStyle() {
+        this.g.nodes().forEach(
+            (item) => {
+                item.oldStyle = {r:item.style().r,fill:{...node_color}};
+            }
+        )
+        this.g.edges().forEach(
+            item => {
+                item.oldStyle = {lineWidth:item.style().lineWidth,fill:{...edge_color}};
+            }
+        )
     }
     alterResponse(response,g) {
         let newData = _.unzip(response);

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { getPageRank, getCommunityDetect, card_background ,important_font,plain_text,inner_card_background,dividar_color} from '../settings/settings.js'
 class ControlPanel extends Component {
     state = {
-        value: 2,
+        value: 1,
         filestatus:{}
     };
     render() { 
@@ -70,8 +70,8 @@ class ControlPanel extends Component {
               <Menu.Item key="3">attributes</Menu.Item>
             </Menu>
         );
-        const menuContent = ["nodes_62", "nodes_4000"];
-        const menuContentMap={nodes_62:{nodesNum:77,edgesBum:254},nodes_4000:{nodesNum:4720,edgesBum:13722}}
+        const menuContent = ["lesmis_nodelink", "nodes_4000_nodelink"];
+        const menuContentMap={lesmis_nodelink:{nodesNum:77,edgesBum:254},nodes_4000_nodelink:{nodesNum:4720,edgesBum:13722}}
         const filemenu = (
             <Menu onClick={handleMenuClick}>
                 {menuContent.map((item,i)=><Menu.Item key={i}>{item}</Menu.Item>)}

@@ -49,9 +49,9 @@ class MiniMap extends Component{
 			}
 			return result;
 		}
-		const x = d3.scaleLinear().domain([0, d3.max(this.nodes, (d) => d.x)]).range([0,this.canvasWidth ]).nice();
-		const y = d3.scaleLinear().domain([0, d3.max(this.nodes, (d) => d.y)]).range([this.canvasHeight, 0]).nice();
-		const drawPoint=(scaleX, scaleY, point, k) =>{
+		// const x = d3.scaleLinear().domain([0, d3.max(this.nodes, (d) => d.x)]).range([0,this.canvasWidth ]).nice();
+		// const y = d3.scaleLinear().domain([0, d3.max(this.nodes, (d) => d.y)]).range([this.canvasHeight, 0]).nice();
+		// const drawPoint=(scaleX, scaleY, point, k) =>{
 			// context.beginPath();
 			// context.fillStyle = pointColor;
 			// const px = scaleX(point[0]);
@@ -60,10 +60,10 @@ class MiniMap extends Component{
 			// context.fill();
 			
 			
-		}
-		const drawCanvas = (transform) => {
-			const scaleX = transform.rescaleX(x);
-			const scaleY = transform.rescaleY(y);
+		// }
+		// const drawCanvas = (transform) => {
+			// const scaleX = transform.rescaleX(x);
+			// const scaleY = transform.rescaleY(y);
 			// gxAxis.call(xAxis.scale(scaleX));
     		// gyAxis.call(yAxis.scale(scaleY));
    	 		// context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
@@ -72,7 +72,7 @@ class MiniMap extends Component{
 			// 	point.y = scaleY(point.y);
 			// 	return point;
 			// });
-		}
+		// }
 
 		let colorBlue = d3.scalePow().domain(ticks(0, d3.max(contourMapData.map(d => d.value)), 4)).range(["#ffffff", "#b3cddd", "#7ab2d2", "#5288ab"])
 
