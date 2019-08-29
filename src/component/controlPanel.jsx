@@ -71,8 +71,8 @@ class ControlPanel extends Component {
               <Menu.Item key="3">attributes</Menu.Item>
             </Menu>
         );
-        const menuContent = ["lesmis_nodelink", "nodes_4000_nodelink"];
-        const menuContentMap={lesmis_nodelink:{nodesNum:77,edgesBum:254},nodes_4000_nodelink:{nodesNum:4720,edgesBum:13722}}
+        const menuContent = ["nodes_70_nodelink", "nodes_4000_nodelink"];
+        const menuContentMap={nodes_70_nodelink:{nodesNum:77,edgesBum:254},nodes_4000_nodelink:{nodesNum:4720,edgesBum:13722}}
         const filemenu = (
             <Menu onClick={handleMenuClick}>
                 {menuContent.map((item,i)=><Menu.Item key={i}>{item}</Menu.Item>)}
