@@ -8,7 +8,8 @@ import { connect } from 'react-redux';
 import colorMap from '../settings/colorMap';
 import {
     getShortestPath, node_color, edge_color, canvas_background,
-    highlightEdge,source_node_clicked, red, node_4000_hierarchy, node_4000_node_link, node_70_hierarchy, node_70_node_link, node_25_node_link
+    highlightEdge, source_node_clicked, red,
+    node_4000_hierarchy, node_4000_node_link, node_70_hierarchy, node_70_node_link, node_25_node_link,node_4000_node_link_circle,node_4000_node_link_square
 } from '../settings/settings'
 import URLSearchParams from 'url-search-params';
 import * as d3color from 'd3-color';
@@ -241,7 +242,7 @@ class ForceGraph extends Component {
                 addG(this.g);
             })
 
-        },this.dataMap['nodes_4000_nodelink']);
+        },this.dataMap['nodes_4000_node_link']);
         // this.g.edges().forEach(edge => {
         //     edge.style({
         //         fill: {
@@ -316,7 +317,7 @@ class ForceGraph extends Component {
                 })
             }
             else if (transform.k > 0.25 && this.g.nodes().toArray().length === 25) {
-                d3.json(this.dataMap['nodes_4000_nodelink']).then((data) => {
+                d3.json(this.dataMap['nodes_4000_node_link']).then((data) => {
                     this.g.data(data);
                     this.insertOldStyle();
                     this.g.draw();
@@ -329,11 +330,13 @@ class ForceGraph extends Component {
     }
 
     dataMap = {
-        "nodes_4000": node_4000_hierarchy,
-        "nodes_70":node_70_hierarchy,
-        'nodes_4000_nodelink': node_4000_node_link,
-        'nodes_70_nodelink': node_70_node_link,
-        'nodes_25':node_25_node_link
+        "nodes_4000_hierarchy": node_4000_hierarchy,
+        "nodes_70_hierarchy":node_70_hierarchy,
+        'nodes_4000_node_link': node_4000_node_link,
+        'nodes_70_node_link': node_70_node_link,
+        'nodes_25': node_25_node_link,
+        'nodes_4000_circle': node_4000_node_link_circle,
+        'nodes_4000_square': node_4000_node_link_square
     }
 
 
@@ -471,33 +474,40 @@ class ForceGraph extends Component {
                     this.dataload((data1) => { 
                         this.dataload((data2) => {
                             this.motion(data1, data2);
-                        }, this.dataMap[filename2]);
-                     },this.dataMap[filename1])
-            };
-            if (layout === "node-link") {
-            // eslint-disable-next-line    
-                if (filename === undefined || filename === 'nodes_4000_nodelink') {
-                    // // 这里是测试数据部分
-                    changeLayout('nodes_4000', 'nodes_4000_nodelink');
-                    setTimeout(() => { this.bindZoom() }, 1000);
-                }   
-                else if (filename === 'nodes_70_nodelink')
-                    changeLayout("nodes_70","nodes_70_nodelink");
-            }
-            else {
-                if (filename === undefined || filename === 'nodes_4000_nodelink'){
-                    changeLayout("nodes_4000_nodelink", "nodes_4000")
-                }
-                else if (filename === 'nodes_70_nodelink')
-                changeLayout("nodes_70_nodelink", "nodes_70"); 
-                // eslint-disable-next-line
-                const dotAnimation = new DotAnimation(this.g);
-                dotAnimation._options.speed = 2;
-                dotAnimation.startAnimationFromSource('1');
-            }
+                        }, filename2);
+                    },filename1)
+                };
+            const oldLayout = this.props.layout===undefined? 'node_link':this.props.layout;
+            //------------------------old_if--------------------------
+            // if (layout === "node-link") {
+            // // eslint-disable-next-line    
+            //     if (filename === undefined || filename === 'nodes_4000_nodelink') {
+            //         // // 这里是测试数据部分
+            //         changeLayout('nodes_4000', 'nodes_4000_nodelink');
+            //         setTimeout(() => { this.bindZoom() }, 1000);
+            //     }   
+            //     else if (filename === 'nodes_70_nodelink')
+            //         changeLayout("nodes_70","nodes_70_nodelink");
+            // }
+            // else {
+            //     if (filename === undefined || filename === 'nodes_4000_nodelink'){
+            //         changeLayout("nodes_4000_nodelink", "nodes_4000")
+            //     }
+            //     else if (filename === 'nodes_70_nodelink')
+            //     changeLayout("nodes_70_nodelink", "nodes_70"); 
+            //     // eslint-disable-next-line
+            //     const dotAnimation = new DotAnimation(this.g);
+            //     dotAnimation._options.speed = 2;
+            //     dotAnimation.startAnimationFromSource('1');
+            // }
+            //------------------------old_if----------------------------
+            const Filename = (filename === undefined ? 'nodes_4000' : filename);
+            changeLayout(this.dataMap[Filename + '_' + oldLayout], this.dataMap[Filename + '_' + layout]);
             this.g.draw();
             this.g.initInteraction();
             this.g.initSearchIndice();
+            if (Filename === "nodes_4000" && layout === 'node_link')
+                setTimeout(() => { this.bindZoom() }, 1000);
         }
         if (target !== this.props.target && target!==undefined  ) {
             const searchParams = new URLSearchParams();
@@ -535,9 +545,9 @@ class ForceGraph extends Component {
                 this.g.draw();
                 this.g.initSearchIndice();
                 this.g.initInteraction();
-                if (filename === "nodes_4000_nodelink")
+                if (filename==='nodes_4000')
                     this.bindZoom();
-            },this.dataMap[filename]);
+            }, this.dataMap[filename + '_node_link']);
         }
         // this.g.draw();
     }

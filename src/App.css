@@ -113,6 +113,14 @@ div.ant-collapse.ant-collapse-icon-position-left{
 .ant-list-item-meta-content .ant-list-item-meta-description{
   color: var(--plain_text);
 }
+span.ant-select-arrow{
+  color: var(--important_font);
+}
+div.ant-select-selection{
+  background-color: var(--canvas_background);
+  color: var(--plain_text);
+  border: 0px;
+}
 .heatmap{
   z-index: 100;
   height:300px;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Button,Radio ,Divider,Icon,Row,Col,Typography,Switch,Menu, Dropdown  } from 'antd';
+import { Card, Button,Radio ,Divider,Icon,Row,Col,Typography,Switch,Menu, Dropdown,Select  } from 'antd';
 import createAction from '../actions';
 import { connect } from 'react-redux'
 import { getPageRank, getCommunityDetect, card_background ,important_font,plain_text,inner_card_background,dividar_color} from '../settings/settings.js'
@@ -56,23 +56,26 @@ class ControlPanel extends Component {
             this.setState({...this.state,filestatus:{filename:menuContent[parseInt(key)],nodesNum:menuContentMap[menuContent[parseInt(key)]].nodesNum,edgesBum:menuContentMap[menuContent[parseInt(key)]].edgesBum}})
         }
         const layoutMap = {
-            1: "node-link",
-            2: "hierarchy"
+            0: "node_link",
+            1: "hierarchy",
+            2: 'square',
+            3: 'circle'
         }
-        const handleLayoutChange = e => {
-            console.log('radio checked', e.target.value);
-            this.setState({ value: e.target.value, });
-            updateLayout(layoutMap[e.target.value]);
+        const handleLayoutChange = (value) => {
+            console.log('radio checked', );
+            this.setState({ value: value });
+            updateLayout(layoutMap[ value]);
         };
-        const menu = (
-            <Menu onClick={handleMenuClick}>
-              <Menu.Item key="1">cluster</Menu.Item>
-              <Menu.Item key="2">community detect</Menu.Item>
-              <Menu.Item key="3">attributes</Menu.Item>
-            </Menu>
+        const selectContent = (
+            <Select defaultValue="0" style={{ width: 140 }} onChange={handleLayoutChange} >
+                <Select.Option value="0">原始布局</Select.Option>
+                <Select.Option value="1">层次布局</Select.Option>
+                <Select.Option value="2">方形布局</Select.Option>
+                <Select.Option value="3">圆形布局</Select.Option>
+            </Select>
         );
-        const menuContent = ["nodes_70_nodelink", "nodes_4000_nodelink"];
-        const menuContentMap={nodes_70_nodelink:{nodesNum:77,edgesBum:254},nodes_4000_nodelink:{nodesNum:4720,edgesBum:13722}}
+        const menuContent = ["nodes_70", "nodes_4000"];
+        const menuContentMap={nodes_70:{nodesNum:77,edgesBum:254},nodes_4000:{nodesNum:4720,edgesBum:13722}}
         const filemenu = (
             <Menu onClick={handleMenuClick}>
                 {menuContent.map((item,i)=><Menu.Item key={i}>{item}</Menu.Item>)}
@@ -129,20 +132,22 @@ class ControlPanel extends Component {
                             <Row><Card.Meta title="编码"/></Row>
                         <Row className="defaultText">
                             <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>颜色</Typography.Text></Col>
-                            <Col span={10}><Dropdown overlay={menu}><Button block> <Icon type="down" /></Button></Dropdown><br/></Col>
+                            <Col span={10}>{selectContent}</Col>
                         </Row>
                         <Row className="defaultText">
                             <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>大小</Typography.Text></Col>
-                            <Col span={10}><Dropdown overlay={menu}><Button block> <Icon type="down" /></Button></Dropdown><br/></Col>
+                            <Col span={10}>{selectContent}</Col>
                         </Row>
                         <Row className="defaultText">
-                            <Col span={10} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>布局</Typography.Text></Col>
-                            <Col span={14}>
+                            <Col span={12} ><Typography.Text strong style={{ height: "32px", display: "table-cell", verticalAlign: "middle" }}>布局</Typography.Text></Col>
+                            {/* <Col span={19}>
                                 <Radio.Group  onChange={e=>{handleLayoutChange(e)}} value={this.state.value} >
                                     <Radio value={1} style={{height:"32px",lineHeight:2}}>原始布局</Radio>
-                                    <Radio value={2} style={{height:"32px",lineHeight:2}}>层次布局</Radio>
+                                    <Radio value={2} style={{ height: "32px", lineHeight: 2 }}>层次布局</Radio>
+                                    <Radio value={3} style={{ height: "32px", lineHeight: 2 }}>层次布局</Radio>
                                 </Radio.Group>
-                            </Col>
+                            </Col> */}
+                            <Col span={10}>{selectContent}</Col>
                             </Row>
                             
                     </Card>

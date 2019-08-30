@@ -16,7 +16,9 @@ const node_4000_hierarchy='data/node_4000_hierarchy.json'
 const node_4000_node_link='data/node_4000_node_link.json'
 const node_70_hierarchy='data/node_70_hierarchy.json'
 const node_70_node_link='data/node_70_node_link.json'
-const node_25_node_link='data/node_25_node_link.json'
+const node_25_node_link = 'data/node_25_node_link.json'
+const node_4000_node_link_circle='data/node_4000_node_link_circle.json'
+const node_4000_node_link_square='data/node_4000_node_link_square.json' 
 
 //------------default outlook style 
 const canvas_background = '#121212'
@@ -49,5 +51,5 @@ const highlightEdge = {
 }
 export {
 getPageRank,getCommunityDetect,getShortestPath,canvas_background,
-important_font,plain_text,card_background,node_color,edge_color,inner_card_background,dividar_color,source_node_clicked,red,    highlightEdge,
-node_4000_hierarchy,node_4000_node_link,node_70_hierarchy,node_70_node_link,node_25_node_link}
+important_font,plain_text,card_background,node_color,edge_color,inner_card_background,dividar_color,source_node_clicked,red,highlightEdge,
+node_4000_hierarchy,node_4000_node_link,node_70_hierarchy,node_70_node_link,node_25_node_link,node_4000_node_link_circle,node_4000_node_link_square}
