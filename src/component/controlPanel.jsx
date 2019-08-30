@@ -67,7 +67,7 @@ class ControlPanel extends Component {
             updateLayout(layoutMap[ value]);
         };
         const selectContent = (
-            <Select defaultValue="0" style={{ width: 140 }} onChange={handleLayoutChange} >
+            <Select defaultValue="0" style={{ width: 140,cursor:"pointer" }} onChange={handleLayoutChange} >
                 <Select.Option value="0">原始布局</Select.Option>
                 <Select.Option value="1">层次布局</Select.Option>
                 <Select.Option value="2">方形布局</Select.Option>
@@ -102,7 +102,7 @@ class ControlPanel extends Component {
                             </Row>    
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text  strong >社团检测</Typography.Text></Col>
-                                <Col><Switch  onChange={(checked)=>handleCommunityDetect(checked)} /></Col>
+                                <Col><Switch  onChange={(checked)=>handleCommunityDetect(checked)}  /></Col>
                             </Row>
                             <Row className="defaultText">
                                 <Col span={18}><Typography.Text strong >Pagerank</Typography.Text></Col>

@@ -242,7 +242,7 @@ class ForceGraph extends Component {
                 addG(this.g);
             })
 
-        },this.dataMap['nodes_4000_node_link']);
+        }, this.dataMap['nodes_4000_node_link']);
         // this.g.edges().forEach(edge => {
         //     edge.style({
         //         fill: {

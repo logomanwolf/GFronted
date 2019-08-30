@@ -81,7 +81,7 @@ class autoComplete extends Component {
                     </Col>
                     <Col span={12}>
                         <h6 style={{ display: "inline" ,lineHeight:"32px" }}>关键词:</h6>{tagsFromServer.map(tag => (
-                            <Tag.CheckableTag style={{display:"inline",margin:"0 0 0 6px", padding:"0px"}} key={tag} checked={selectedTags.indexOf(tag) > -1} onChange={checked => this.handleTagChange(tag, checked)}>{tag}</Tag.CheckableTag>))}
+                            <Tag.CheckableTag style={{display:"inline",margin:"0 0 0 6px", padding:"0px",cursor:"pointer"}} key={tag} checked={selectedTags.indexOf(tag) > -1} onChange={checked => this.handleTagChange(tag, checked)}>{tag}</Tag.CheckableTag>))}
                     </Col>
                 </Row>
             {
