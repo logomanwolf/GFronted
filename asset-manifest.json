@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/GFronted/static/css/main.ab9a07cd.chunk.css",
+    "main.js": "/GFronted/static/js/main.931938d5.chunk.js",
+    "main.js.map": "/GFronted/static/js/main.931938d5.chunk.js.map",
+    "runtime~main.js": "/GFronted/static/js/runtime~main.58e8fdc7.js",
+    "runtime~main.js.map": "/GFronted/static/js/runtime~main.58e8fdc7.js.map",
+    "static/css/2.41a373cd.chunk.css": "/GFronted/static/css/2.41a373cd.chunk.css",
+    "static/js/2.919696f2.chunk.js": "/GFronted/static/js/2.919696f2.chunk.js",
+    "static/js/2.919696f2.chunk.js.map": "/GFronted/static/js/2.919696f2.chunk.js.map",
+    "index.html": "/GFronted/index.html",
+    "precache-manifest.c7f902d5b87b0a95be57c2ed30fe7b25.js": "/GFronted/precache-manifest.c7f902d5b87b0a95be57c2ed30fe7b25.js",
+    "service-worker.js": "/GFronted/service-worker.js",
+    "static/css/2.41a373cd.chunk.css.map": "/GFronted/static/css/2.41a373cd.chunk.css.map",
+    "static/css/main.ab9a07cd.chunk.css.map": "/GFronted/static/css/main.ab9a07cd.chunk.css.map",
+    "static/media/barchart.PNG": "/GFronted/static/media/barchart.a42b4877.PNG",
+    "static/media/colorMap.jpeg": "/GFronted/static/media/colorMap.bfa71897.jpeg",
+    "static/media/minimap.PNG": "/GFronted/static/media/minimap.ce17e2d3.PNG"
+  }
+}
