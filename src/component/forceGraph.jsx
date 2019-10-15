@@ -397,6 +397,7 @@ class ForceGraph extends Component {
                 item.oldStyle = { fill: {...edge_color}, lineWidth: 1 };
                 item.style({ fill: {...edge_color}, lineWidth: 1 })
             })
+            
             g.draw();
             count--;
             if (count < 1) {
