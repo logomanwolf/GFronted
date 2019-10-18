@@ -2,7 +2,7 @@
 
 GFronted is a demo supported by G.js - a high-performanced webGL network library for visualisation and analysis - developed by [Visual Analytics Group in Zhejiang University](https://zjuvag.org/)
 
-## what can you see in GFronted?
+## what can you see in GFronted	?
 
 The project supports network data with attributes like edge weight or node meanings, etc, aiming at exploring  knowledges from a social media network data through visual analysis.
 
@@ -18,4 +18,6 @@ The following interactive applications are enabled in the project:
 - adding nodes to analytic view.
 
 Otherwise, it contains community detecting and page ranking methods.
+
+[To see More Details](https://logomanwolf.github.io/GFronted/)
 
